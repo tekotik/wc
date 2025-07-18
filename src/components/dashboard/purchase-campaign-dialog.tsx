@@ -89,7 +89,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[650px]">
+      <DialogContent className="sm:max-w-[650px] light">
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">Создать новую рассылку</DialogTitle>
           <DialogDescription>
@@ -101,7 +101,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
             <Card
               key={pkg.messages}
               className={cn(
-                "cursor-pointer transition-all relative",
+                "cursor-pointer transition-all relative text-center bg-secondary/30",
                 selectedPackage.messages === pkg.messages
                   ? "border-primary ring-2 ring-primary"
                   : "hover:border-primary/50"
@@ -109,7 +109,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
               onClick={() => setSelectedPackage(pkg)}
             >
               {pkg.recommended && (
-                <div className="absolute -top-3 right-2 bg-accent text-accent-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                <div className="absolute -top-3 right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
                   Рекомендуем
                 </div>
               )}
