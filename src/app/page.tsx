@@ -77,14 +77,15 @@ export default function LandingPage() {
             
             // Constrain movement
             const newY = Math.max(20, Math.min(250, svgPoint.y));
-            const newX = Math.max(50, Math.min(520, svgPoint.x));
+            let newX = svgPoint.x;
 
-            // Prevent points from crossing each other horizontally
-            if (draggingPointIndex > 0 && newX < newPoints[draggingPointIndex - 1].x + 10) {
-              return newPoints;
-            }
-            if (draggingPointIndex < newPoints.length - 1 && newX > newPoints[draggingPointIndex + 1].x - 10) {
-              return newPoints;
+            // Constrain X for first and last points
+            if (draggingPointIndex === 0) {
+                newX = 50;
+            } else if (draggingPointIndex === newPoints.length - 1) {
+                newX = 520;
+            } else {
+                newX = Math.max(prevPoints[0].x + 10, Math.min(prevPoints[2].x - 10, svgPoint.x));
             }
 
             newPoints[draggingPointIndex] = { x: newX, y: newY };
@@ -106,8 +107,9 @@ export default function LandingPage() {
         };
     }, [handleMouseMove, handleMouseUp]);
 
-    // Calculate conversion rate and messages based on the last point's y-position
-    const conversionPercentage = Math.min(((250 - points[2].y) / 230) * 100, 86);
+    // Calculate conversion rate based on the middle point's y-position
+    // A lower Y value means a higher conversion
+    const conversionPercentage = Math.min(((250 - points[1].y) / 230) * 86, 86);
     const messagesCount = Math.round((conversionPercentage / 100) * 1000);
 
 
@@ -229,13 +231,13 @@ export default function LandingPage() {
                                     ].map(({y, label}) => <text key={y} x="40" y={y} textAnchor="end">{label}</text>)}
                                 </g>
 
-                                <path d={areaData} fill="url(#areaGradient)" />
-                                <path d={pathData} stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#neonGlow)'}} />
+                                <path d={areaData} fill="url(#areaGradient)" className="chart-area" />
+                                <path d={pathData} stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" className="chart-line" style={{filter:'url(#neonGlow)'}} />
                                 
                                 <g className="data-points">
                                     {points.map((p, index) => (
                                         <g key={index} transform={`translate(${p.x}, ${p.y})`} 
-                                           className="cursor-grab active:cursor-grabbing"
+                                           className="cursor-grab active:cursor-grabbing chart-point-group"
                                            onMouseDown={() => handleMouseDown(index)}
                                            onTouchStart={() => handleMouseDown(index)}>
                                            <circle r="12" fill="#4ADE80" fillOpacity="0.2" />
@@ -366,3 +368,5 @@ export default function LandingPage() {
         </div>
     );
 }
+
+    

@@ -137,4 +137,32 @@ body {
         border-color: #22C55E;
         transform: scale(1.05);
     }
+
+     /* Chart animation */
+    .chart-line, .chart-area {
+        stroke-dasharray: 1500;
+        stroke-dashoffset: 1500;
+        animation: draw 2s 0.3s ease-out forwards;
+    }
+    .chart-point-group {
+        opacity: 0;
+        animation: fade-in 0.5s ease-out forwards;
+    }
+    /* Staggered animation for points */
+    .chart-point-group:nth-of-type(1) { animation-delay: 1.8s; }
+    .chart-point-group:nth-of-type(2) { animation-delay: 2.0s; }
+    .chart-point-group:nth-of-type(3) { animation-delay: 2.2s; }
+    
+    @keyframes draw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes fade-in {
+        to {
+            opacity: 1;
+        }
+    }
 }
+
+    
