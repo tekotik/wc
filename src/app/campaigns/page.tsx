@@ -90,7 +90,7 @@ export default function CampaignsPage() {
           {submittedMessages.length > 0 && (
             <div className="space-y-4">
                 <h3 className="text-xl font-bold font-headline">Отправленные сообщения</h3>
-                <div className="relative h-[200px]">
+                <div className="relative h-64">
                     <AnimatePresence>
                     {submittedMessages.map((msg, index) => (
                         <motion.div
@@ -106,22 +106,22 @@ export default function CampaignsPage() {
                             transition={{ duration: 0.3, ease: "easeInOut" }}
                             className="absolute w-full"
                         >
-                        <Card 
-                            className="transform transition-transform duration-300 ease-out hover:-translate-y-2"
-                        >
-                            <CardHeader className="flex flex-row items-start justify-between">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-primary" />
-                                    <CardTitle className="text-lg font-headline">Сообщение #{msg.id}</CardTitle>
-                                </div>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveMessage(msg.id)}>
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-card-foreground">{msg.text}</p>
-                            </CardContent>
-                        </Card>
+                            <Card 
+                                className="transform transition-transform duration-300 ease-out hover:-translate-y-2"
+                            >
+                                <CardHeader className="flex flex-row items-start justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <FileText className="h-5 w-5 text-primary" />
+                                        <CardTitle className="text-lg font-headline">Сообщение #{msg.id}</CardTitle>
+                                    </div>
+                                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveMessage(msg.id)}>
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className="text-sm text-card-foreground">{msg.text}</p>
+                                </CardContent>
+                            </Card>
                         </motion.div>
                     ))}
                     </AnimatePresence>
