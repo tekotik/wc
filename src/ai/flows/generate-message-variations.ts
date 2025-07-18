@@ -51,7 +51,7 @@ const prompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: { schema: GenerateMessageVariationsInputSchema },
   output: { schema: GenerateMessageVariationsOutputSchema },
-  prompt: `You are an AI copywriter specializing in creating engaging message copy.
+  prompt: `You are an AI copywriter specializing in creating engaging message copy. Generate all responses in Russian.
 
 Based on the following campaign details, generate {{{numberOfVariations}}} message copy variations. The message copy variations should be different from one another.
 
