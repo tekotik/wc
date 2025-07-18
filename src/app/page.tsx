@@ -6,54 +6,61 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { ElsenderLogo } from '@/components/icons';
 
-function AnimatedNumber({ finalValue, duration, suffix, isFloat = false }: { finalValue: number, duration: number, suffix: string, isFloat?: boolean }) {
-    const [currentValue, setCurrentValue] = useState(0);
-    const ref = useRef<HTMLSpanElement>(null);
+export default function LandingPage() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [leadsCount, setLeadsCount] = useState("0 лидов");
+    const [conversionRate, setConversionRate] = useState("0.0% конверсия");
+    const chartRef = useRef<HTMLElement>(null);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+    const closeMenu = () => setIsMenuOpen(false);
 
     useEffect(() => {
+        const animateValue = (
+            setter: React.Dispatch<React.SetStateAction<string>>,
+            start: number,
+            end: number,
+            duration: number,
+            suffix: string,
+            isFloat = false
+        ) => {
+            let startTimestamp: number | null = null;
+            const step = (timestamp: number) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = progress * (end - start) + start;
+                const formattedValue = isFloat ? value.toFixed(1) : Math.floor(value);
+                setter(`${formattedValue}${suffix}`);
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            };
+            requestAnimationFrame(step);
+        };
+        
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    let startTimestamp: number | null = null;
-                    const step = (timestamp: number) => {
-                        if (!startTimestamp) startTimestamp = timestamp;
-                        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                        const value = progress * finalValue;
-                        setCurrentValue(value);
-                        if (progress < 1) {
-                            requestAnimationFrame(step);
-                        }
-                    };
-                    requestAnimationFrame(step);
+                    animateValue(setLeadsCount, 0, 86, 2000, " лидов");
+                    animateValue(setConversionRate, 0, 8.6, 2000, "% конверсия", true);
                     observer.disconnect();
                 }
             },
             { threshold: 0.5 }
         );
 
-        if (ref.current) {
-            observer.observe(ref.current);
+        if (chartRef.current) {
+            observer.observe(chartRef.current);
         }
 
         return () => {
-          if (ref.current) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            observer.unobserve(ref.current);
-          }
+            if (chartRef.current) {
+                // eslint-disable-next-line react-hooks/exhaustive-deps
+                observer.unobserve(chartRef.current);
+            }
         };
-    }, [finalValue, duration]);
-    
-    const formattedValue = isFloat ? currentValue.toFixed(1) : Math.floor(currentValue);
+    }, []);
 
-    return <span ref={ref}>{formattedValue}{suffix}</span>;
-}
-
-
-export default function LandingPage() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-    const closeMenu = () => setIsMenuOpen(false);
 
     return (
         <div className="antialiased bg-gray-900 text-gray-200 font-body">
@@ -119,7 +126,7 @@ export default function LandingPage() {
                 </section>
                 
                 {/* Interactive Chart Section */}
-                <section id="growth-chart" className="py-20 lg:py-24 bg-gray-900">
+                <section id="growth-chart" ref={chartRef} className="py-20 lg:py-24 bg-gray-900">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
@@ -202,8 +209,8 @@ export default function LandingPage() {
 
                                 <g className="integrated-stats" transform="translate(60, 30)">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
-                                    <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E"><AnimatedNumber finalValue={86} duration={2000} suffix=" лидов" /></text>
-                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB"><AnimatedNumber finalValue={8.6} duration={2000} suffix="% конверсия" isFloat={true} /></text>
+                                    <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E">{leadsCount}</text>
+                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB">{conversionRate}</text>
                                 </g>
                                 <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
