@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/sidebar";
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
-import { ElsenderLogo } from "@/components/icons";
 import { getCampaigns } from "@/lib/campaign-service";
 import CampaignsList from "./_components/campaigns-list";
 
@@ -20,12 +19,6 @@ export default async function CampaignsPage() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <div className="flex items-center gap-2 p-2 justify-center">
-            <ElsenderLogo className="w-7 h-7 text-primary" />
-            <h1 className="text-xl font-bold font-headline text-primary">
-              Elsender
-            </h1>
-          </div>
         </SidebarHeader>
         <SidebarNav />
       </Sidebar>
