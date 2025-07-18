@@ -46,14 +46,14 @@ export default function Home() {
             </div>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className="lg:col-span-3">
+              <ScheduledMessages />
+            </div>
             <div className="lg:col-span-4">
               <ActiveCampaigns
                 selectedCampaignId={selectedCampaignId}
                 onSelectCampaign={setSelectedCampaignId}
               />
-            </div>
-            <div className="lg:col-span-3">
-              <ScheduledMessages />
             </div>
           </div>
           <AiMessageGenerator />
