@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Paperclip } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import type { Campaign } from '@/lib/mock-data';
@@ -126,13 +126,19 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
             </Card>
           ))}
         </div>
-        <DialogFooter>
-          <DialogClose asChild>
+        <DialogFooter className="sm:justify-between">
+           <DialogClose asChild>
             <Button variant="outline">Отмена</Button>
           </DialogClose>
-          <Button onClick={handleCreateCampaign}>
-            Создать рассылку
-          </Button>
+          <div className="flex items-center gap-2 mt-2 sm:mt-0">
+             <Button variant="outline">
+                <Paperclip className="mr-2 h-4 w-4" />
+                Прикрепить базу
+            </Button>
+            <Button onClick={handleCreateCampaign}>
+                Создать рассылку
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
