@@ -4,39 +4,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 // Function to generate the smooth curve path data
-function getCurvePath(points: { x: number; y: number }[]): string {
-    if (points.length < 2) return "";
-
-    const pathParts = [];
-    pathParts.push(`M ${points[0].x} ${points[0].y}`);
-
-    for (let i = 0; i < points.length - 1; i++) {
-        const p1 = points[i];
-        const p2 = points[i + 1];
-
-        const midPoint = {
-            x: (p1.x + p2.x) / 2,
-            y: (p1.y + p2.y) / 2
-        };
-
-        const cp1 = {
-            x: (midPoint.x + p1.x) / 2,
-            y: p1.y
-        };
-
-        const cp2 = {
-            x: (midPoint.x + p1.x) / 2,
-            y: p2.y
-        };
-
-        pathParts.push(`C ${p1.x} ${p1.y}, ${p2.x} ${p1.y}, ${p2.x} ${p2.y}`);
-    }
-
-    return pathParts.join(' ');
-}
-
 function getSmoothCurvePath(points: { x: number; y: number }[]): string {
     if (points.length < 2) return '';
     let d = `M ${points[0].x} ${points[0].y}`;
@@ -104,11 +74,18 @@ export default function LandingPage() {
 
         setPoints(prevPoints => {
             const newPoints = [...prevPoints];
-            const pointToMove = newPoints[draggingPointIndex];
             
             // Constrain movement
-            const newY = Math.max(20, Math.min(250, svgPoint.y)); // Y-axis bounds
-            const newX = pointToMove.x; // Keep X fixed for simplicity
+            const newY = Math.max(20, Math.min(250, svgPoint.y));
+            const newX = Math.max(50, Math.min(520, svgPoint.x));
+
+            // Prevent points from crossing each other horizontally
+            if (draggingPointIndex > 0 && newX < newPoints[draggingPointIndex - 1].x + 10) {
+              return newPoints;
+            }
+            if (draggingPointIndex < newPoints.length - 1 && newX > newPoints[draggingPointIndex + 1].x - 10) {
+              return newPoints;
+            }
 
             newPoints[draggingPointIndex] = { x: newX, y: newY };
             return newPoints;
@@ -174,21 +151,37 @@ export default function LandingPage() {
 
             <main>
                 {/* Hero Section */}
-                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
-                            Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
-                        </h1>
-                        <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
-                            Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
-                        </p>
-                        <div className="flex justify-center items-center space-x-4">
-                            <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
-                                Начать работу
-                            </Link>
-                            <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
-                                Смотреть тарифы
-                            </Link>
+                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 overflow-hidden">
+                    <div className="absolute inset-0 hero-gradient"></div>
+                     <div className="absolute top-0 right-0 -mr-16 -mt-16 lg:w-1/2 w-2/3 opacity-20 lg:opacity-100">
+                        <div className="relative w-full h-full">
+                             <Image 
+                                src="https://i.imgur.com/8BGxINF.png"
+                                alt="Dashboard preview"
+                                width={1200}
+                                height={1000}
+                                className="object-contain"
+                                data-ai-hint="dashboard ui"
+                            />
+                            <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                        </div>
+                    </div>
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left relative">
+                        <div className="max-w-xl">
+                            <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
+                                Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
+                            </h1>
+                            <p className="max-w-3xl text-lg md:text-xl text-gray-300 mb-10">
+                                Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
+                            </p>
+                            <div className="flex justify-center lg:justify-start items-center space-x-4">
+                                <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                                    Начать работу
+                                </Link>
+                                <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
+                                    Смотреть тарифы
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -201,7 +194,7 @@ export default function LandingPage() {
                             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
                         </div>
                         <div className="custom-card p-4 sm:p-8 max-w-4xl mx-auto">
-                            <svg ref={svgRef} className="w-full font-sans cursor-default" viewBox="0 0 550 300">
+                            <svg ref={svgRef} className="w-full font-sans cursor-default" viewBox="0 0 570 300">
                                 <defs>
                                     <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                         <stop offset="0%" style={{stopColor:"#00F2FE"}} />
@@ -238,19 +231,19 @@ export default function LandingPage() {
                                 <g className="data-points">
                                     {points.map((p, index) => (
                                         <g key={index} transform={`translate(${p.x}, ${p.y})`} 
-                                           className="cursor-grab"
+                                           className="cursor-grab active:cursor-grabbing"
                                            onMouseDown={() => handleMouseDown(index)}
                                            onTouchStart={() => handleMouseDown(index)}>
                                            <circle r="12" fill="#4ADE80" fillOpacity="0.2" />
-                                            <circle r="6" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
+                                            <circle r="6" fill={index === 1 ? "#111827" : "#111827"} stroke="#4ADE80" strokeWidth="2" />
                                         </g>
                                     ))}
                                 </g>
                                 
                                 <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
                                     <text x="50" y="275" textAnchor="middle">День 1</text>
-                                    <text x="300" y="275" text-anchor="middle">День 3</text>
-                                    <text x="520" y="275" text-anchor="middle">День 5</text>
+                                    <text x="300" y="275" textAnchor="middle">День 3</text>
+                                    <text x="520" y="275" textAnchor="middle">День 5</text>
                                 </g>
 
                                  <g className="integrated-stats" transform="translate(60, 30)">
