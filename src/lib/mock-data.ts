@@ -26,6 +26,7 @@ export interface Reply {
         fallback: string;
         hint: string;
     };
+    unread?: boolean;
 }
 
 export const allReplies: Reply[] = [
@@ -36,6 +37,7 @@ export const allReplies: Reply[] = [
     reply: "Спасибо, очень актуально! А есть ли размеры побольше?",
     time: "2 мин назад",
     avatar: { src: "https://placehold.co/40x40.png", fallback: "ЕВ", hint: "woman thinking" },
+    unread: true,
   },
   {
     campaignId: "summer_sale_24",
@@ -58,6 +60,7 @@ export const allReplies: Reply[] = [
     reply: "Подскажите, пожалуйста, до какого числа действует скидка на новую коллекцию?",
     time: "48 мин назад",
     avatar: { src: "https://placehold.co/40x40.png", fallback: "АС", hint: "woman casual" },
+    unread: true,
   },
   {
     campaignId: "new_collection_24",

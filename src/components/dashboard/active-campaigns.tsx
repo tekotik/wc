@@ -19,12 +19,14 @@ interface ActiveCampaignsProps {
   campaigns: Campaign[];
   selectedCampaignId: string | null;
   onSelectCampaign: (id: string) => void;
+  unreadReplies: Map<string, number>;
 }
 
 export default function ActiveCampaigns({
   campaigns,
   selectedCampaignId,
-  onSelectCampaign
+  onSelectCampaign,
+  unreadReplies,
 }: ActiveCampaignsProps) {
  
   return (
@@ -48,9 +50,14 @@ export default function ActiveCampaigns({
                       <p className="font-semibold">{campaign.name}</p>
                       <p className="text-xs text-green-500">{campaign.status}</p>
                   </div>
-                  {selectedCampaignId === campaign.id && (
-                      <CheckCircle className="h-5 w-5 text-primary" />
-                  )}
+                  <div className="flex items-center gap-3">
+                    {unreadReplies.has(campaign.id) && (
+                        <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    )}
+                    {selectedCampaignId === campaign.id && (
+                        <CheckCircle className="h-5 w-5 text-primary" />
+                    )}
+                  </div>
               </div>
             </Button>
             <Button variant="outline" size="icon" asChild>

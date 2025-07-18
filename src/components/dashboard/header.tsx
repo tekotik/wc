@@ -23,7 +23,7 @@ import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
 
 
-export default function DashboardHeader() {
+export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies?: boolean }) {
   const [balance, setBalance] = React.useState(1000);
 
   return (
@@ -50,7 +50,13 @@ export default function DashboardHeader() {
                 </Button>
             </TopUpBalanceDialog>
       </div>
-      <Button variant="ghost" size="icon" className="rounded-full">
+      <Button variant="ghost" size="icon" className="rounded-full relative">
+        {hasUnreadReplies && (
+            <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            </span>
+        )}
         <Bell className="h-5 w-5" />
         <span className="sr-only">Переключить уведомления</span>
       </Button>
@@ -62,7 +68,7 @@ export default function DashboardHeader() {
               <AvatarFallback>UA</AvatarFallback>
             </Avatar>
              <span className="sr-only">Переключить меню пользователя</span>
-          </Button>
+          </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>

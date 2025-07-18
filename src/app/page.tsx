@@ -16,6 +16,7 @@ import Dashboard from "@/components/dashboard/dashboard";
 export default async function Home() {
   const campaigns = await getCampaigns();
   const activeCampaigns = campaigns.filter(c => c.status === "Активна");
+  const hasUnreadReplies = allReplies.some(reply => reply.unread);
 
   return (
     <SidebarProvider>
@@ -31,7 +32,7 @@ export default async function Home() {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader hasUnreadReplies={hasUnreadReplies} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} />
           <AiMessageGenerator />
