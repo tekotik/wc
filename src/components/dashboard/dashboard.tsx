@@ -21,7 +21,7 @@ export default function Dashboard({ initialCampaigns, allReplies }: DashboardPro
     const filteredReplies = useMemo(() => {
         if (!selectedCampaignId) {
             // If no campaign is selected, show a generic set of recent replies or empty
-            return allReplies.slice(0, 5); 
+            return allReplies.slice(0, 8); 
         }
         return allReplies.filter(reply => reply.campaignId === selectedCampaignId);
     }, [selectedCampaignId, allReplies]);

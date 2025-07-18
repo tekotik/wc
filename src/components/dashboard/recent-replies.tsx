@@ -1,11 +1,12 @@
 
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MessageCircleReply, ChevronRight } from "lucide-react"
 import type { Reply } from "@/lib/mock-data";
+import { WhatsAppIcon } from "@/components/icons";
 
 interface RecentRepliesProps {
   replies: Reply[];
@@ -27,9 +28,9 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
        {replies.length > 0 ? (
          replies.map((reply, index) => (
           <div className="flex items-start gap-4" key={index}>
-            <Avatar className="h-10 w-10 border">
-              <AvatarImage src={reply.avatar.src} alt="Avatar" data-ai-hint={reply.avatar.hint} />
-              <AvatarFallback>{reply.avatar.fallback}</AvatarFallback>
+            <Avatar className="h-10 w-10 border bg-green-100 flex items-center justify-center">
+                <WhatsAppIcon className="h-5 w-5 text-green-600" />
+                <AvatarFallback>{reply.avatar.fallback}</AvatarFallback>
             </Avatar>
             <div className="grid gap-1 flex-1">
               <div className="flex items-center justify-between">

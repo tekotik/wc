@@ -44,6 +44,13 @@ export const allReplies: Reply[] = [
     time: "15 мин назад",
     avatar: { src: "https://placehold.co/40x40.png", fallback: "МП", hint: "man smiling" },
   },
+  {
+    campaignId: "summer_sale_24",
+    name: "Светлана Кузнецова",
+    reply: "Подскажите, а суммируется ли скидка с картой лояльности?",
+    time: "28 мин назад",
+    avatar: { src: "https://placehold.co/40x40.png", fallback: "СК", hint: "woman glasses" },
+  },
   // Campaign: new_collection_24
   {
     campaignId: "new_collection_24",
@@ -58,6 +65,20 @@ export const allReplies: Reply[] = [
     reply: "Коллекция супер! Есть ли доставка в Санкт-Петербург?",
     time: "1 час назад",
     avatar: { src: "https://placehold.co/40x40.png", fallback: "ИК", hint: "man thoughtful" },
+  },
+  {
+    campaignId: "new_collection_24",
+    name: "Дмитрий Иванов",
+    reply: "Ого, выглядит круто. А из какого материала сделаны куртки?",
+    time: "2 часа назад",
+    avatar: { src: "https://placehold.co/40x40.png", fallback: "ДИ", hint: "man professional" },
+  },
+  {
+    campaignId: "new_collection_24",
+    name: "Мария Новикова",
+    reply: "Здравствуйте! Не могу найти на сайте синее платье из рассылки.",
+    time: "2 часа назад",
+    avatar: { src: "https://placehold.co/40x40.png", fallback: "МН", hint: "woman elegant" },
   },
   // Campaign: loyalty_program
   {
