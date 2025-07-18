@@ -51,12 +51,13 @@ export default function SidebarNav() {
       </SidebarMenuItem>
        <SidebarMenuItem>
         <SidebarMenuButton
-          href="#"
+          asChild
           isActive={isActive("/analytics")}
-          tooltip="Аналитика"
         >
-          <BarChart3 />
-          Аналитика
+          <Link href="/analytics">
+            <BarChart3 />
+            Аналитика
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
