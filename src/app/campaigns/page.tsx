@@ -11,36 +11,39 @@ import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
 import { WappSenderProLogo } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Send, FileText, X } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { FileText, Pencil, PlusCircle } from "lucide-react";
+import Link from 'next/link';
 
-interface Message {
-  id: number;
-  text: string;
-}
+// Mock data for campaigns
+const campaigns = [
+  {
+    id: "summer_sale_24",
+    name: "Летняя распродажа '24",
+    status: "Активна",
+    text: "Не пропустите нашу летнюю распродажу! Скидки до 50% на весь ассортимент. Только до конца недели!",
+  },
+  {
+    id: "new_collection_24",
+    name: "Новая коллекция",
+    status: "Активна",
+    text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
+  },
+  {
+    id: "loyalty_program",
+    name: "Программа лояльности",
+    status: "Активна",
+    text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
+  },
+  {
+    id: "winter_promo",
+    name: "Зимняя акция",
+    status: "Завершена",
+    text: "Зимняя акция завершена. Спасибо за участие!",
+  },
+];
 
-export default function CampaignsPage() {
-  const [message, setMessage] = useState("");
-  const [submittedMessages, setSubmittedMessages] = useState<Message[]>([]);
-  const [nextId, setNextId] = useState(1);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (message.trim() !== "") {
-      setSubmittedMessages(prevMessages => [{ id: nextId, text: message }, ...prevMessages]);
-      setNextId(prevId => prevId + 1);
-      setMessage("");
-    }
-  };
-
-  const handleRemoveMessage = (id: number) => {
-    setSubmittedMessages(prevMessages => prevMessages.filter(msg => msg.id !== id));
-  };
-
-
+export default function CampaignsListPage() {
   return (
     <SidebarProvider>
       <Sidebar>
@@ -58,76 +61,47 @@ export default function CampaignsPage() {
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="font-headline">Создать рассылку</CardTitle>
-              <CardDescription>
-                Напишите текст вашей рассылки и отправьте его на модерацию.
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="font-headline">Все кампании</CardTitle>
+                <CardDescription>
+                  Просмотр и управление вашими маркетинговыми кампаниями.
+                </CardDescription>
+              </div>
+              <Button asChild>
+                <Link href="/campaigns/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Создать кампанию
+                </Link>
+              </Button>
             </CardHeader>
-            <form onSubmit={handleSubmit}>
-              <CardContent>
-                <div className="grid w-full gap-2">
-                  <Label htmlFor="message">Текст рассылки</Label>
-                  <Textarea 
-                    id="message" 
-                    placeholder="Введите текст вашей рассылки здесь..." 
-                    rows={10} 
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    required
-                  />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">
-                  <Send className="mr-2 h-4 w-4" />
-                  Отправить на модерацию
-                </Button>
-              </CardFooter>
-            </form>
+            <CardContent>
+              <div className="space-y-4">
+                {campaigns.map((campaign) => (
+                  <Card key={campaign.id} className="transform transition-transform duration-300 ease-out hover:-translate-y-1">
+                    <CardHeader className="flex flex-row items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-6 w-6 text-primary" />
+                        <div>
+                            <CardTitle className="text-lg font-headline">{campaign.name}</CardTitle>
+                            <span className={`text-xs font-semibold ${campaign.status === "Активна" ? "text-green-500" : "text-muted-foreground"}`}>{campaign.status}</span>
+                        </div>
+                      </div>
+                       <Button variant="outline" size="sm" asChild>
+                            <Link href={`/campaigns/${campaign.id}/edit`}>
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Редактировать
+                            </Link>
+                        </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-card-foreground line-clamp-2">{campaign.text}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
           </Card>
-
-          {submittedMessages.length > 0 && (
-            <div className="space-y-4">
-                <h3 className="text-xl font-bold font-headline">Отправленные сообщения</h3>
-                <div className="relative h-64">
-                    <AnimatePresence>
-                    {submittedMessages.map((msg, index) => (
-                        <motion.div
-                            key={msg.id}
-                            initial={{ y: 0, scale: 1, opacity: 1 }}
-                            animate={{
-                                y: index * -120,
-                                scale: 1 - index * 0.05,
-                                opacity: index > 2 ? 0 : 1 - index * 0.2,
-                                zIndex: submittedMessages.length - index,
-                            }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className="absolute w-full"
-                        >
-                            <Card 
-                                className="transform transition-transform duration-300 ease-out hover:-translate-y-2"
-                            >
-                                <CardHeader className="flex flex-row items-start justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <FileText className="h-5 w-5 text-primary" />
-                                        <CardTitle className="text-lg font-headline">Сообщение #{msg.id}</CardTitle>
-                                    </div>
-                                    <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveMessage(msg.id)}>
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-sm text-card-foreground">{msg.text}</p>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    ))}
-                    </AnimatePresence>
-                </div>
-            </div>
-          )}
         </main>
       </SidebarInset>
     </SidebarProvider>

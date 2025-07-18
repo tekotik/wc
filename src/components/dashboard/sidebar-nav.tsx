@@ -20,27 +20,32 @@ import {
 } from "lucide-react";
 import * as React from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import Link from "next/link";
 
 export default function SidebarNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname === path;
+  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/' || pathname === '/');
+
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton href="/" isActive={isActive("/")} tooltip="Панель управления">
-          <LayoutDashboard />
-          Панель управления
+        <SidebarMenuButton asChild isActive={isActive("/")}>
+          <Link href="/">
+            <LayoutDashboard />
+            Панель управления
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
-          href="/campaigns"
+          asChild
           isActive={isActive("/campaigns")}
-          tooltip="Кампании"
         >
-          <MessageSquareQuote />
-          Кампании
+          <Link href="/campaigns">
+            <MessageSquareQuote />
+            Кампании
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
        <SidebarMenuItem>
