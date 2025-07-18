@@ -48,6 +48,7 @@ export type GenerateMessageVariationsOutput = z.infer<
 
 const prompt = ai.definePrompt({
   name: 'generateMessageVariationsPrompt',
+  model: 'googleai/gemini-pro',
   input: { schema: GenerateMessageVariationsInputSchema },
   output: { schema: GenerateMessageVariationsOutputSchema },
   prompt: `You are an AI copywriter specializing in creating engaging message copy.
