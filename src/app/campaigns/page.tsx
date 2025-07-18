@@ -13,11 +13,12 @@ import DashboardHeader from "@/components/dashboard/header";
 import { WappSenderProLogo } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Pencil, PlusCircle, Rocket, XCircle, PlayCircle, Eye } from "lucide-react";
+import { FileText, Pencil, PlusCircle, Rocket, XCircle, PlayCircle, Eye, BarChart3 } from "lucide-react";
 import Link from 'next/link';
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 
 type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
