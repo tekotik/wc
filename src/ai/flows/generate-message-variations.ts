@@ -11,6 +11,9 @@
 import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 // Configure Genkit with the Google AI plugin.
 // It will automatically use the GOOGLE_API_KEY from your .env file.
