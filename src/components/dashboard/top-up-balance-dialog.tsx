@@ -62,13 +62,13 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] light">
         <DialogHeader>
-          <div className="flex items-center justify-center sm:justify-start gap-2">
+          <div className="flex items-center gap-2">
             <Wallet className="h-6 w-6" />
             <DialogTitle className="font-headline text-xl">Пополнение баланса</DialogTitle>
           </div>
-          <DialogDescription className="text-center sm:text-left pt-2">
+          <DialogDescription className="text-left pt-2">
             Выберите или введите сумму для пополнения. Минимальная сумма — 1000 ₽.
           </DialogDescription>
         </DialogHeader>
@@ -77,9 +77,12 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
             {quickAmounts.map((quickAmount) => (
                 <Button 
                     key={quickAmount} 
-                    variant={amount === quickAmount ? "default" : "outline"}
+                    variant={amount === quickAmount ? "default" : "secondary"}
                     onClick={() => handleAmountSelect(quickAmount)}
-                    className="py-6 text-lg font-bold"
+                    className={cn(
+                        "py-6 text-lg font-bold",
+                        amount === quickAmount ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                    )}
                 >
                     {quickAmount} ₽
                 </Button>
