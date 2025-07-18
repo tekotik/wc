@@ -13,7 +13,7 @@ import DashboardHeader from "@/components/dashboard/header";
 import AiMessageGenerator from "@/components/dashboard/ai-message-generator";
 import ActiveCampaigns from "@/components/dashboard/active-campaigns";
 import { WappSenderProLogo } from "@/components/icons";
-import AnalyticsOverview from "@/components/dashboard/analytics-overview";
+import RecentReplies from "@/components/dashboard/recent-replies";
 
 export default function Home() {
   const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(
@@ -35,7 +35,14 @@ export default function Home() {
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <AnalyticsOverview />
+           <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-6">
+            <div className="lg:col-span-3">
+              <ActiveCampaigns selectedCampaignId={selectedCampaignId} onSelectCampaign={setSelectedCampaignId} />
+            </div>
+            <div className="lg:col-span-4">
+              <RecentReplies selectedCampaignId={selectedCampaignId} />
+            </div>
+          </div>
           <AiMessageGenerator />
         </main>
       </SidebarInset>
