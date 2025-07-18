@@ -34,7 +34,6 @@ function NewCampaignContent() {
     if (messages) {
       setCampaignName(`Рассылка на ${messages} сообщений`);
     } else {
-      // Redirect if no package is selected
       router.push('/campaigns');
        toast({
         variant: "destructive",
@@ -49,8 +48,8 @@ function NewCampaignContent() {
     e.preventDefault();
     console.log("Sending for moderation:", { campaignName, campaignText });
     toast({
-        title: "Кампания отправлена на модерацию!",
-        description: `Кампания "${campaignName}" будет рассмотрена в ближайшее время.`
+        title: "Рассылка отправлена на модерацию!",
+        description: `Рассылка "${campaignName}" будет рассмотрена в ближайшее время.`
     });
     router.push('/campaigns');
   };
@@ -73,28 +72,27 @@ function NewCampaignContent() {
             </Link>
         </Button>
         <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-          Создать новую кампанию
+          Создать новую рассылку
         </h1>
       </div>
       <Card>
         <form onSubmit={handleSubmit}>
             <CardHeader>
-                <CardTitle className="font-headline">Новая кампания</CardTitle>
+                <CardTitle className="font-headline">Новая рассылка</CardTitle>
                 <CardDescription>
-                    Вы выбрали пакет на {messages} сообщений. Заполните детали и отправьте кампанию на модерацию.
+                    Вы выбрали пакет на {messages} сообщений. Заполните детали и отправьте рассылку на модерацию.
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
                     <div className="grid w-full gap-2">
-                    <Label htmlFor="campaignName">Название кампании</Label>
+                    <Label htmlFor="campaignName">Название рассылки</Label>
                     <Input 
                         id="campaignName" 
                         placeholder="Например, 'Весенняя распродажа'" 
                         value={campaignName}
                         onChange={(e) => setCampaignName(e.target.value)}
                         required
-                        readOnly
                     />
                     </div>
                     <div className="grid w-full gap-2">

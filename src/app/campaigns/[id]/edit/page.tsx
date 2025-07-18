@@ -53,21 +53,38 @@ const campaigns = [
     status: "Завершена",
     text: "Зимняя акция завершена. Спасибо за участие!",
   },
+  {
+    id: "draft_campaign_1",
+    name: "Новая рассылка (Черновик)",
+    status: "Черновик",
+    text: "",
+  },
 ];
 
 export default function EditCampaignPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
-  const [campaign, setCampaign] = useState<{id: string; name: string; text: string, status: string} | null>(null);
+  const [campaign, setCampaign] = useState<{id: string; name: string; text: string, status: string, rejectionReason?: string} | null>(null);
   
   useEffect(() => {
-    const foundCampaign = campaigns.find(c => c.id === params.id);
+    // In a real app, you would fetch this data.
+    // Here we find it or create a mock for new drafts.
+    let foundCampaign = campaigns.find(c => c.id === params.id);
+    if (!foundCampaign && params.id.startsWith('draft_campaign_')) {
+        foundCampaign = {
+            id: params.id,
+            name: "Новая рассылка",
+            status: "Черновик",
+            text: ""
+        };
+    }
+
     if (foundCampaign) {
       setCampaign(foundCampaign as any);
     } else {
        toast({
         variant: "destructive",
         title: "Ошибка",
-        description: "Кампания не найдена.",
+        description: "Рассылка не найдена.",
       });
     }
   }, [params.id, toast]);
@@ -78,8 +95,8 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     if (campaign) {
         console.log("Saving campaign:", campaign);
         toast({
-            title: "Кампания обновлена!",
-            description: `Кампания "${campaign.name}" отправлена на повторную модерацию.`
+            title: "Рассылка обновлена!",
+            description: `Рассылка "${campaign.name}" отправлена на модерацию.`
         });
     }
   };
@@ -108,7 +125,7 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
             <SidebarInset>
                 <DashboardHeader />
                 <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 justify-center items-center">
-                    <p>Загрузка данных кампании...</p>
+                    <p>Загрузка данных рассылки...</p>
                 </main>
             </SidebarInset>
         </SidebarProvider>
@@ -116,6 +133,15 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
   }
 
   const isRejected = campaign.status === 'Отклонено';
+  const isDraft = campaign.status === 'Черновик';
+
+  const getButtonContent = () => {
+    if (isRejected) return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на перемодерацию" };
+    if (isDraft) return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на модерацию" };
+    return { icon: <Save className="mr-2 h-4 w-4" />, text: "Сохранить изменения" };
+  }
+
+  const { icon, text } = getButtonContent();
 
   return (
     <SidebarProvider>
@@ -141,7 +167,7 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                 </Link>
             </Button>
             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              Редактировать кампанию
+              Редактировать рассылку
             </h1>
           </div>
           <Card>
@@ -150,15 +176,17 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                     <CardTitle className="font-headline">{campaign.name}</CardTitle>
                     <CardDescription>
                         {isRejected 
-                            ? "Внесите правки и отправьте кампанию на повторную модерацию." 
-                            : "Измените детали вашей кампании и сохраните изменения."
+                            ? "Внесите правки и отправьте рассылку на повторную модерацию." 
+                            : isDraft
+                            ? "Заполните детали рассылки и отправьте ее на модерацию."
+                            : "Измените детали вашей рассылки и сохраните изменения."
                         }
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
                         <div className="grid w-full gap-2">
-                        <Label htmlFor="name">Название кампании</Label>
+                        <Label htmlFor="name">Название рассылки</Label>
                         <Input 
                             id="name" 
                             placeholder="Например, 'Весенняя распродажа'" 
@@ -182,8 +210,8 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                 </CardContent>
                 <CardFooter>
                     <Button type="submit">
-                    {isRejected ? <Send className="mr-2 h-4 w-4" /> : <Save className="mr-2 h-4 w-4" />}
-                    {isRejected ? "Отправить на перемодерацию" : "Сохранить изменения"}
+                        {icon}
+                        {text}
                     </Button>
                 </CardFooter>
             </form>

@@ -36,10 +36,13 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
     console.log(`Purchasing package: ${selectedPackage.messages} messages for ${selectedPackage.price} ₽`);
     toast({
       title: "Пакет приобретен!",
-      description: `Вы успешно приобрели пакет на ${selectedPackage.messages} сообщений.`,
+      description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
     });
     setIsOpen(false);
-    router.push(`/campaigns/new?messages=${selectedPackage.messages}`);
+    // This is a mock implementation. In a real app, you'd create a new campaign
+    // in the database and get its ID.
+    const newCampaignId = `draft_campaign_${Date.now()}`; 
+    router.push(`/campaigns/${newCampaignId}/edit`);
   };
   
   return (
@@ -49,9 +52,9 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
       </DialogTrigger>
       <DialogContent className="sm:max-w-[650px]">
         <DialogHeader>
-          <DialogTitle className="font-headline text-2xl">Создать новую кампанию</DialogTitle>
+          <DialogTitle className="font-headline text-2xl">Создать новую рассылку</DialogTitle>
           <DialogDescription>
-            Создайте кампанию, напишите текст, отправьте на модерацию. После успешной модерации кампания будет запущена, деньги спишутся с вашего баланса.
+            Создайте рассылку, напишите текст, отправьте на модерацию. После успешной модерации рассылка будет запущена, деньги спишутся с вашего баланса.
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4">
@@ -89,7 +92,7 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
             <Button variant="outline">Отмена</Button>
           </DialogClose>
           <Button onClick={handleCreateCampaign}>
-            Создать кампанию
+            Создать рассылку
           </Button>
         </DialogFooter>
       </DialogContent>

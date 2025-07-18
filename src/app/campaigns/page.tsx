@@ -13,7 +13,7 @@ import DashboardHeader from "@/components/dashboard/header";
 import { WappSenderProLogo } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Pencil, Rocket, XCircle, Eye, BarChart3 } from "lucide-react";
+import { FileText, Pencil, Rocket, XCircle, Eye, BarChart3, Send } from "lucide-react";
 import Link from 'next/link';
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -62,6 +62,12 @@ const initialCampaigns: Campaign[] = [
     status: "Завершена",
     text: "Зимняя акция завершена. Спасибо за участие!",
   },
+   {
+    id: "draft_campaign_1",
+    name: "Новая рассылка (Черновик)",
+    status: "Черновик",
+    text: "",
+  },
 ];
 
 const statusStyles: Record<CampaignStatus, string> = {
@@ -80,7 +86,7 @@ export default function CampaignsListPage() {
   const handleLaunch = (id: string) => {
     setCampaigns(campaigns.map(c => c.id === id ? { ...c, status: "Активна" } : c));
      toast({
-      title: "Кампания запущена!",
+      title: "Рассылка запущена!",
       description: "Рассылка успешно стартовала.",
     });
   };
@@ -98,7 +104,7 @@ export default function CampaignsListPage() {
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                <AlertDialogTitle>Вы уверены, что хотите запустить кампанию?</AlertDialogTitle>
+                <AlertDialogTitle>Вы уверены, что хотите запустить рассылку?</AlertDialogTitle>
                 <AlertDialogDescription>
                     Это действие запустит рассылку для кампании "{campaign.name}". Отменить это действие будет невозможно.
                 </AlertDialogDescription>
@@ -116,7 +122,7 @@ export default function CampaignsListPage() {
           <Button variant="outline" size="sm" asChild>
             <Link href={`/campaigns/${campaign.id}/edit`}>
               <Pencil className="mr-2 h-4 w-4" />
-              Редактировать
+              {campaign.status === "Черновик" ? "Заполнить" : "Редактировать"}
             </Link>
           </Button>
         );
@@ -137,6 +143,13 @@ export default function CampaignsListPage() {
               Статистика
             </Link>
           </Button>
+        );
+       case "На модерации":
+         return (
+            <Button variant="outline" size="sm" disabled>
+                <Send className="mr-2 h-4 w-4" />
+                На модерации
+            </Button>
         );
       default:
         return null;
@@ -163,9 +176,9 @@ export default function CampaignsListPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="font-headline">Все кампании</CardTitle>
+                <CardTitle className="font-headline">Все рассылки</CardTitle>
                 <CardDescription>
-                  Создавайте, управляйте, модерируйте и запускайте ваши кампании.
+                  Создавайте, управляйте, модерируйте и запускайте ваши рассылки.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -187,7 +200,7 @@ export default function CampaignsListPage() {
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent>
+                    {campaign.text && <CardContent>
                       <p className="text-sm text-card-foreground line-clamp-2">{campaign.text}</p>
                        {campaign.status === 'Отклонено' && campaign.rejectionReason && (
                         <div className="mt-2 flex items-start gap-2 rounded-md border border-destructive/50 bg-red-50 p-3 text-sm text-red-900">
@@ -197,7 +210,7 @@ export default function CampaignsListPage() {
                           </div>
                         </div>
                       )}
-                    </CardContent>
+                    </CardContent>}
                   </Card>
                 ))}
               </div>

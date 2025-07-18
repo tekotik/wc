@@ -16,8 +16,12 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import PurchaseCampaignDialog from "./purchase-campaign-dialog";
+import TopUpBalanceDialog from "./top-up-balance-dialog";
+import React from 'react';
 
 export default function DashboardHeader() {
+  const [balance, setBalance] = React.useState(1000);
+
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
         <div className="md:hidden">
@@ -32,8 +36,12 @@ export default function DashboardHeader() {
           </PurchaseCampaignDialog>
       </div>
        <div className="flex items-center gap-2">
-          <Wallet className="h-5 w-5 text-muted-foreground" />
-          <span className="font-bold text-lg">1000 ₽</span>
+            <TopUpBalanceDialog>
+                <Button variant="ghost" className="flex items-center gap-2 p-2">
+                    <Wallet className="h-5 w-5 text-muted-foreground" />
+                    <span className="font-bold text-lg">{balance} ₽</span>
+                </Button>
+            </TopUpBalanceDialog>
       </div>
       <Button variant="ghost" size="icon" className="rounded-full">
         <Bell className="h-5 w-5" />
