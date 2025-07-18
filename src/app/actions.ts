@@ -37,15 +37,6 @@ export async function generateMessagesAction(
       data: null,
     };
   }
-  
-  if (!process.env.NEXT_PUBLIC_GOOGLE_API_KEY) {
-    console.error("Google API key is not set.");
-    return {
-      message: "An unexpected error occurred.",
-      errors: { server: "AI service is not configured. Missing API key." },
-      data: null,
-    };
-  }
 
   try {
     const result = await generateMessageVariations(validatedFields.data);

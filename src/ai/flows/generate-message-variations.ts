@@ -1,4 +1,3 @@
-// Use server directive is required when using Genkit.
 'use server';
 
 /**
@@ -9,12 +8,12 @@
  * - GenerateMessageVariationsOutput - The return type for the generateMessageVariations function.
  */
 
-import { genkit, configureGenkit } from 'genkit';
+import { genkit } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 import { z } from 'zod';
 
 // Configure Genkit with the Google AI plugin.
-// It will automatically use the GOOGLE_API_KEY or NEXT_PUBLIC_GOOGLE_API_KEY from your .env file.
+// It will automatically use the GOOGLE_API_KEY from your .env file.
 const ai = genkit({
   plugins: [googleAI()],
 });
