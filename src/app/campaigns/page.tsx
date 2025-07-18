@@ -20,9 +20,9 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
+export type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
 
-interface Campaign {
+export interface Campaign {
     id: string;
     name: string;
     status: CampaignStatus;
@@ -129,7 +129,7 @@ export default function CampaignsListPage() {
        case "Активна":
         return (
           <Button variant="outline" size="sm" asChild>
-            <Link href="#">
+            <Link href={`/campaigns/${campaign.id}/edit`}>
               <Eye className="mr-2 h-4 w-4" />
               Просмотр
             </Link>

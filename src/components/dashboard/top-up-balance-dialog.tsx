@@ -17,7 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
 
-export default function TopUpBalanceDialog({ children }: { children: React.ReactNode }) {
+interface TopUpBalanceDialogProps {
+    children: React.ReactNode;
+    balance: number;
+    setBalance: (value: React.SetStateAction<number>) => void;
+}
+
+export default function TopUpBalanceDialog({ children, balance, setBalance }: TopUpBalanceDialogProps) {
   const [amount, setAmount] = useState(1000);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
@@ -33,8 +39,9 @@ export default function TopUpBalanceDialog({ children }: { children: React.React
     }
     
     // In a real app, this would trigger a payment flow.
-    // For now, we'll just show a success message.
-    console.log(`Topping up balance by ${amount} ₽`);
+    // For now, we'll just update the state.
+    setBalance(prev => prev + amount);
+    
     toast({
       title: "Баланс пополнен!",
       description: `Ваш баланс успешно пополнен на ${amount} ₽.`,

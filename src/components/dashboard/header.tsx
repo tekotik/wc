@@ -1,3 +1,4 @@
+
 import {
   Bell,
   Wallet,
@@ -19,7 +20,13 @@ import PurchaseCampaignDialog from "./purchase-campaign-dialog";
 import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
 
-export default function DashboardHeader() {
+// This is a placeholder for a real state management solution
+// In a real app, this would come from a context or a store.
+interface HeaderProps {
+    setCampaigns?: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+export default function DashboardHeader({ setCampaigns }: HeaderProps) {
   const [balance, setBalance] = React.useState(1000);
 
   return (
@@ -28,7 +35,12 @@ export default function DashboardHeader() {
             <SidebarTrigger />
         </div>
       <div className="w-full flex-1">
-         <PurchaseCampaignDialog>
+         <PurchaseCampaignDialog 
+            balance={balance} 
+            setBalance={setBalance}
+            // @ts-ignore - a bit of a hack for mock state management
+            setCampaigns={setCampaigns}
+         >
             <Button>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Создать рассылку
@@ -36,7 +48,7 @@ export default function DashboardHeader() {
           </PurchaseCampaignDialog>
       </div>
        <div className="flex items-center gap-2">
-            <TopUpBalanceDialog>
+            <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
                 <Button variant="ghost" className="flex items-center gap-2 p-2">
                     <Wallet className="h-5 w-5 text-muted-foreground" />
                     <span className="font-bold text-lg">{balance} ₽</span>
@@ -51,7 +63,7 @@ export default function DashboardHeader() {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" />
+              <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" data-ai-hint="man portrait"/>
               <AvatarFallback>UA</AvatarFallback>
             </Avatar>
              <span className="sr-only">Переключить меню пользователя</span>

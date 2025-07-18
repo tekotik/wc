@@ -16,11 +16,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, Send } from "lucide-react";
+import { Save, ArrowLeft, Send, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 
-// Mock data for campaigns
+// Mock data for campaigns - in a real app, this would be a global state or fetched from a DB
 const campaigns = [
   {
     id: "summer_sale_24",
@@ -31,13 +31,13 @@ const campaigns = [
   {
     id: "new_collection_24",
     name: "Новая коллекция",
-    status: "Активна",
+    status: "Одобрено",
     text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
   },
   {
     id: "loyalty_program",
     name: "Программа лояльности",
-    status: "Активна",
+    status: "На модерации",
     text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
   },
    {
@@ -63,14 +63,13 @@ const campaigns = [
 
 export default function EditCampaignPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
-  const [campaign, setCampaign] = useState<{id: string; name: string; text: string, status: string, rejectionReason?: string} | null>(null);
+  const [campaign, setCampaign] = useState<(typeof campaigns)[0] | null>(null);
   
   useEffect(() => {
     // In a real app, you would fetch this data.
-    // Here we find it or create a mock for new drafts.
     let foundCampaign = campaigns.find(c => c.id === params.id);
     if (foundCampaign) {
-      setCampaign(foundCampaign as any);
+      setCampaign(foundCampaign);
     } else {
        toast({
         variant: "destructive",
@@ -84,11 +83,19 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (campaign) {
+        // In a real app, you would update the campaign in the DB
         console.log("Saving campaign:", campaign);
-        // In a real app, you would update the campaign status to "On Moderation"
+        
+        let message = `Рассылка "${campaign.name}" сохранена.`;
+        if (campaign.status === "Черновик" || campaign.status === "Отклонено") {
+           // Simulate sending to moderation
+           campaign.status = "На модерации";
+           message = `Рассылка "${campaign.name}" отправлена на модерацию.`;
+        }
+
         toast({
-            title: "Рассылка обновлена!",
-            description: `Рассылка "${campaign.name}" отправлена на модерацию.`
+            title: "Успех!",
+            description: message
         });
     }
   };
@@ -124,16 +131,28 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     );
   }
 
-  const isRejected = campaign.status === 'Отклонено';
-  const isDraft = campaign.status === 'Черновик';
+  const isViewOnly = campaign.status === 'Активна' || campaign.status === 'Завершена' || campaign.status === 'На модерации';
 
   const getButtonContent = () => {
-    if (isRejected) return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на перемодерацию" };
-    if (isDraft) return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на модерацию" };
+    if (isViewOnly) return null;
+    if (campaign.status === 'Отклонено') return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на перемодерацию" };
+    if (campaign.status === 'Черновик') return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на модерацию" };
     return { icon: <Save className="mr-2 h-4 w-4" />, text: "Сохранить изменения" };
   }
+  
+  const buttonContent = getButtonContent();
 
-  const { icon, text } = getButtonContent();
+  const getCardDescription = () => {
+    switch (campaign.status) {
+        case 'Черновик': return 'Заполните детали рассылки и отправьте ее на модерацию.';
+        case 'Отклонено': return 'Внесите правки и отправьте рассылку на повторную модерацию.';
+        case 'Активна': return 'Эта рассылка сейчас активна. Редактирование невозможно.';
+        case 'Завершена': return 'Эта рассылка завершена. Редактирование невозможно.';
+        case 'На модерации': return 'Эта рассылка на модерации. Редактирование временно невозможно.';
+        default: return 'Просмотр или редактирование деталей вашей рассылки.';
+    }
+  }
+
 
   return (
     <SidebarProvider>
@@ -159,21 +178,14 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                 </Link>
             </Button>
             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              Редактировать рассылку
+              {isViewOnly ? `Просмотр рассылки` : `Редактировать рассылку`}
             </h1>
           </div>
           <Card>
             <form onSubmit={handleSubmit}>
                 <CardHeader>
                     <CardTitle className="font-headline">{campaign.name}</CardTitle>
-                    <CardDescription>
-                        {isRejected 
-                            ? "Внесите правки и отправьте рассылку на повторную модерацию." 
-                            : isDraft
-                            ? "Заполните детали рассылки и отправьте ее на модерацию."
-                            : "Измените детали вашей рассылки и сохраните изменения."
-                        }
-                    </CardDescription>
+                    <CardDescription>{getCardDescription()}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
@@ -185,6 +197,7 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                             value={campaign.name}
                             onChange={handleInputChange}
                             required
+                            disabled={isViewOnly}
                         />
                         </div>
                         <div className="grid w-full gap-2">
@@ -196,16 +209,19 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                             value={campaign.text}
                             onChange={handleInputChange}
                             required
+                            disabled={isViewOnly}
                         />
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter>
-                    <Button type="submit">
-                        {icon}
-                        {text}
-                    </Button>
-                </CardFooter>
+                {buttonContent && (
+                  <CardFooter>
+                      <Button type="submit">
+                          {buttonContent.icon}
+                          {buttonContent.text}
+                      </Button>
+                  </CardFooter>
+                )}
             </form>
           </Card>
         </main>
@@ -213,3 +229,4 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     </SidebarProvider>
   );
 }
+

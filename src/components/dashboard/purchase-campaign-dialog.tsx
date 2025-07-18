@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import type { Campaign } from '@/app/campaigns/page';
 
 const packages = [
   { messages: 1000, price: 100, recommended: false },
@@ -25,22 +26,55 @@ const packages = [
   { messages: 10000, price: 800, recommended: false },
 ];
 
-export default function PurchaseCampaignDialog({ children }: { children: React.ReactNode }) {
+interface PurchaseCampaignDialogProps {
+  children: React.ReactNode;
+  setCampaigns: React.Dispatch<React.SetStateAction<Campaign[]>>;
+  balance: number;
+  setBalance: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function PurchaseCampaignDialog({ children, setCampaigns, balance, setBalance }: PurchaseCampaignDialogProps) {
   const [selectedPackage, setSelectedPackage] = React.useState(packages[1]);
   const [isOpen, setIsOpen] = React.useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   const handleCreateCampaign = () => {
-    // Here you would typically handle payment and balance deduction
-    console.log(`Purchasing package: ${selectedPackage.messages} messages for ${selectedPackage.price} ₽`);
+    if (balance < selectedPackage.price) {
+        toast({
+            variant: "destructive",
+            title: "Недостаточно средств",
+            description: `На вашем балансе ${balance} ₽, а пакет стоит ${selectedPackage.price} ₽. Пожалуйста, пополните баланс.`,
+        });
+        return;
+    }
+    
+    // Deduct balance
+    setBalance(prev => prev - selectedPackage.price);
+
+    // Create a new campaign draft
+    const newCampaign: Campaign = {
+        id: `draft_${Date.now()}`,
+        name: `Новая рассылка на ${selectedPackage.messages} сообщений`,
+        status: "Черновик",
+        text: "",
+    };
+
+    // This is a mock of updating global state.
+    // In a real app, you would use a state manager or API call.
+    if (setCampaigns) {
+        setCampaigns(prev => [newCampaign, ...prev]);
+    }
+    
     toast({
       title: "Пакет приобретен!",
       description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
     });
+
     setIsOpen(false);
-    // Redirect to the new campaign page with the number of messages as a query param
-    router.push(`/campaigns/new?messages=${selectedPackage.messages}`);
+    
+    // Redirect to the new campaign's edit page
+    router.push(`/campaigns/${newCampaign.id}/edit`);
   };
   
   return (
