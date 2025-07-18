@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft } from "lucide-react";
+import { Save, ArrowLeft, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 
@@ -40,6 +40,13 @@ const campaigns = [
     status: "Активна",
     text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
   },
+   {
+    id: "promo_action_test",
+    name: "Тестовая промо-акция",
+    status: "Отклонено",
+    text: "Наша тестовая промо-акция...",
+    rejectionReason: "Не указана целевая аудитория."
+  },
   {
     id: "winter_promo",
     name: "Зимняя акция",
@@ -50,12 +57,12 @@ const campaigns = [
 
 export default function EditCampaignPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
-  const [campaign, setCampaign] = useState<{id: string; name: string; text: string} | null>(null);
+  const [campaign, setCampaign] = useState<{id: string; name: string; text: string, status: string} | null>(null);
   
   useEffect(() => {
     const foundCampaign = campaigns.find(c => c.id === params.id);
     if (foundCampaign) {
-      setCampaign(foundCampaign);
+      setCampaign(foundCampaign as any);
     } else {
        toast({
         variant: "destructive",
@@ -72,7 +79,7 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
         console.log("Saving campaign:", campaign);
         toast({
             title: "Кампания обновлена!",
-            description: `Кампания "${campaign.name}" была успешно сохранена.`
+            description: `Кампания "${campaign.name}" отправлена на повторную модерацию.`
         });
     }
   };
@@ -108,6 +115,8 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     );
   }
 
+  const isRejected = campaign.status === 'Отклонено';
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -140,7 +149,10 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                 <CardHeader>
                     <CardTitle className="font-headline">{campaign.name}</CardTitle>
                     <CardDescription>
-                        Измените детали вашей кампании и сохраните изменения.
+                        {isRejected 
+                            ? "Внесите правки и отправьте кампанию на повторную модерацию." 
+                            : "Измените детали вашей кампании и сохраните изменения."
+                        }
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -170,8 +182,8 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
                 </CardContent>
                 <CardFooter>
                     <Button type="submit">
-                    <Save className="mr-2 h-4 w-4" />
-                    Сохранить изменения
+                    {isRejected ? <Send className="mr-2 h-4 w-4" /> : <Save className="mr-2 h-4 w-4" />}
+                    {isRejected ? "Отправить на перемодерацию" : "Сохранить изменения"}
                     </Button>
                 </CardFooter>
             </form>

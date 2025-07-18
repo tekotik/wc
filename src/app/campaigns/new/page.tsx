@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 
@@ -28,11 +28,13 @@ export default function NewCampaignPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Here you would typically handle form submission, e.g., send to an API
-    console.log({ campaignName, campaignText });
+    console.log("Sending for moderation:", { campaignName, campaignText });
     toast({
-        title: "Кампания создана!",
-        description: `Кампания "${campaignName}" была успешно создана.`
+        title: "Кампания отправлена на модерацию!",
+        description: `Кампания "${campaignName}" будет рассмотрена в ближайшее время.`
     })
+    // Optionally, redirect the user after submission
+    // router.push('/campaigns');
   };
 
   return (
@@ -67,7 +69,7 @@ export default function NewCampaignPage() {
                 <CardHeader>
                     <CardTitle className="font-headline">Новая кампания</CardTitle>
                     <CardDescription>
-                        Заполните детали ниже, чтобы создать новую кампанию.
+                        Заполните детали и отправьте кампанию на модерацию.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -97,8 +99,8 @@ export default function NewCampaignPage() {
                 </CardContent>
                 <CardFooter>
                     <Button type="submit">
-                    <Save className="mr-2 h-4 w-4" />
-                    Сохранить кампанию
+                        <Send className="mr-2 h-4 w-4" />
+                        Отправить на модерацию
                     </Button>
                 </CardFooter>
             </form>

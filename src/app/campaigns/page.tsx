@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -13,11 +13,24 @@ import DashboardHeader from "@/components/dashboard/header";
 import { WappSenderProLogo } from "@/components/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Pencil, PlusCircle } from "lucide-react";
+import { FileText, Pencil, PlusCircle, Rocket, XCircle, PlayCircle, Eye } from "lucide-react";
 import Link from 'next/link';
+import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 
-// Mock data for campaigns
-const campaigns = [
+
+type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
+
+interface Campaign {
+    id: string;
+    name: string;
+    status: CampaignStatus;
+    text: string;
+    rejectionReason?: string;
+}
+
+const initialCampaigns: Campaign[] = [
   {
     id: "summer_sale_24",
     name: "Летняя распродажа '24",
@@ -27,14 +40,21 @@ const campaigns = [
   {
     id: "new_collection_24",
     name: "Новая коллекция",
-    status: "Активна",
+    status: "Одобрено",
     text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
   },
   {
     id: "loyalty_program",
     name: "Программа лояльности",
-    status: "Активна",
+    status: "На модерации",
     text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
+  },
+   {
+    id: "promo_action_test",
+    name: "Тестовая промо-акция",
+    status: "Отклонено",
+    text: "Наша тестовая промо-акция...",
+    rejectionReason: "Не указана целевая аудитория."
   },
   {
     id: "winter_promo",
@@ -44,7 +64,86 @@ const campaigns = [
   },
 ];
 
+const statusStyles: Record<CampaignStatus, string> = {
+    "Черновик": "bg-gray-100 text-gray-800",
+    "На модерации": "bg-yellow-100 text-yellow-800",
+    "Одобрено": "bg-blue-100 text-blue-800",
+    "Отклонено": "bg-red-100 text-red-800",
+    "Активна": "bg-green-100 text-green-800",
+    "Завершена": "bg-purple-100 text-purple-800",
+};
+
 export default function CampaignsListPage() {
+  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const { toast } = useToast();
+
+  const handleLaunch = (id: string) => {
+    setCampaigns(campaigns.map(c => c.id === id ? { ...c, status: "Активна" } : c));
+     toast({
+      title: "Кампания запущена!",
+      description: "Рассылка успешно стартовала.",
+    });
+  };
+
+  const getActions = (campaign: Campaign) => {
+    switch (campaign.status) {
+      case "Одобрено":
+        return (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button size="sm">
+                    <Rocket className="mr-2 h-4 w-4" />
+                    Запустить
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Вы уверены, что хотите запустить кампанию?</AlertDialogTitle>
+                <AlertDialogDescription>
+                    Это действие запустит рассылку для кампании "{campaign.name}". Отменить это действие будет невозможно.
+                </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                <AlertDialogCancel>Отмена</AlertDialogCancel>
+                <AlertDialogAction onClick={() => handleLaunch(campaign.id)}>Запустить</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        );
+      case "Отклонено":
+      case "Черновик":
+        return (
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/campaigns/${campaign.id}/edit`}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Редактировать
+            </Link>
+          </Button>
+        );
+       case "Активна":
+        return (
+          <Button variant="outline" size="sm" asChild>
+            <Link href="#">
+              <Eye className="mr-2 h-4 w-4" />
+              Просмотр
+            </Link>
+          </Button>
+        );
+      case "Завершена":
+         return (
+          <Button variant="outline" size="sm" asChild>
+            <Link href="#">
+              <BarChart3 className="mr-2 h-4 w-4" />
+              Статистика
+            </Link>
+          </Button>
+        );
+      default:
+        return null;
+    }
+  };
+
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -66,7 +165,7 @@ export default function CampaignsListPage() {
               <div>
                 <CardTitle className="font-headline">Все кампании</CardTitle>
                 <CardDescription>
-                  Просмотр и управление вашими маркетинговыми кампаниями.
+                  Создавайте, управляйте, модерируйте и запускайте ваши кампании.
                 </CardDescription>
               </div>
               <Button asChild>
@@ -80,23 +179,30 @@ export default function CampaignsListPage() {
               <div className="space-y-4">
                 {campaigns.map((campaign) => (
                   <Card key={campaign.id} className="transform transition-transform duration-300 ease-out hover:-translate-y-1">
-                    <CardHeader className="flex flex-row items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-6 w-6 text-primary" />
-                        <div>
-                            <CardTitle className="text-lg font-headline">{campaign.name}</CardTitle>
-                            <span className={`text-xs font-semibold ${campaign.status === "Активна" ? "text-green-500" : "text-muted-foreground"}`}>{campaign.status}</span>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <FileText className="h-6 w-6 text-primary" />
+                            <div>
+                                <CardTitle className="text-lg font-headline">{campaign.name}</CardTitle>
+                                <Badge className={cn("font-semibold", statusStyles[campaign.status])}>{campaign.status}</Badge>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           {getActions(campaign)}
                         </div>
                       </div>
-                       <Button variant="outline" size="sm" asChild>
-                            <Link href={`/campaigns/${campaign.id}/edit`}>
-                                <Pencil className="mr-2 h-4 w-4" />
-                                Редактировать
-                            </Link>
-                        </Button>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-card-foreground line-clamp-2">{campaign.text}</p>
+                       {campaign.status === 'Отклонено' && campaign.rejectionReason && (
+                        <div className="mt-2 flex items-start gap-2 rounded-md border border-destructive/50 bg-red-50 p-3 text-sm text-red-900">
+                          <XCircle className="h-5 w-5 flex-shrink-0" />
+                          <div>
+                            <span className="font-semibold">Причина отклонения:</span> {campaign.rejectionReason}
+                          </div>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
