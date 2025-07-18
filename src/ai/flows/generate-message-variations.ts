@@ -55,6 +55,8 @@ const prompt = ai.definePrompt({
 
 Based on the following campaign details, generate {{{numberOfVariations}}} message copy variations. The message copy variations should be different from one another.
 
+IMPORTANT: Your response must only contain the message text. Do not add any prefixes like "Вариант 1:", titles, or markdown formatting like asterisks.
+
 Campaign Details: {{{campaignDetails}}}
 
 Message Copy Variations:`,
