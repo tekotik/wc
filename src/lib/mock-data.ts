@@ -1,3 +1,4 @@
+
 export type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
 
 export interface Campaign {
@@ -6,6 +7,13 @@ export interface Campaign {
     status: CampaignStatus;
     text: string;
     rejectionReason?: string;
+    stats?: {
+      data: Array<{
+        date: string;
+        sent: number;
+        replies: number;
+      }>
+    }
 }
 
 export interface Reply {

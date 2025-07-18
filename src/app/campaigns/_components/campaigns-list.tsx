@@ -103,7 +103,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
       case "Завершена":
          return (
           <Button variant="outline" size="sm" asChild>
-            <Link href="#">
+            <Link href={`/campaigns/${campaign.id}/stats`}>
               <BarChart3 className="mr-2 h-4 w-4" />
               Статистика
             </Link>
