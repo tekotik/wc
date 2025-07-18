@@ -1,6 +1,7 @@
 import {
   Bell,
   Search,
+  Wallet,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,10 @@ export default function DashboardHeader() {
             />
           </div>
         </form>
+      </div>
+       <div className="flex items-center gap-2">
+          <Wallet className="h-5 w-5 text-muted-foreground" />
+          <span className="font-bold text-lg">1000 ₽</span>
       </div>
       <Button variant="ghost" size="icon" className="rounded-full">
         <Bell className="h-5 w-5" />
