@@ -64,12 +64,12 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] light">
-        <DialogHeader>
+        <DialogHeader className="text-left">
           <div className="flex items-center gap-2">
             <Wallet className="h-6 w-6 text-muted-foreground" />
-            <DialogTitle className="font-headline text-xl">Пополнение баланса</DialogTitle>
+            <DialogTitle className="font-headline text-xl text-card-foreground">Пополнение баланса</DialogTitle>
           </div>
-          <DialogDescription className="text-left pt-2">
+          <DialogDescription className="text-left pt-2 text-muted-foreground">
             Выберите или введите сумму для пополнения. Минимальная сумма — 1000 ₽.
           </DialogDescription>
         </DialogHeader>
@@ -81,7 +81,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
                     variant={amount === quickAmount ? "default" : "secondary"}
                     onClick={() => handleAmountSelect(quickAmount)}
                     className={cn(
-                        "py-6 text-lg font-bold h-auto",
+                        "py-3 text-base font-bold h-auto",
                          amount === quickAmount 
                             ? "bg-primary text-primary-foreground hover:bg-primary/90" 
                             : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -98,7 +98,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                className="pl-8 h-12 text-lg text-center font-bold"
+                className="pl-8 h-12 text-base text-center text-muted-foreground"
                 min="1000"
                 step="100"
                 placeholder="1000"
@@ -109,7 +109,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
           <DialogClose asChild>
             <Button variant="outline">Отмена</Button>
           </DialogClose>
-          <Button onClick={handleTopUp}>Пополнить на {amount} ₽</Button>
+          <Button onClick={handleTopUp} disabled={amount < 1000}>Пополнить на {amount} ₽</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
