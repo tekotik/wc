@@ -32,7 +32,8 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
   const { toast } = useToast();
 
   const handleTopUp = () => {
-    if (amount < 1000) {
+    const numericAmount = Number(amount);
+    if (isNaN(numericAmount) || numericAmount < 1000) {
       toast({
         variant: "destructive",
         title: "Ошибка",
@@ -43,11 +44,11 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
     
     // In a real app, this would trigger a payment flow.
     // For now, we'll just update the state.
-    setBalance(prev => prev + amount);
+    setBalance(prev => prev + numericAmount);
     
     toast({
       title: "Баланс пополнен!",
-      description: `Ваш баланс успешно пополнен на ${amount} ₽.`,
+      description: `Ваш баланс успешно пополнен на ${numericAmount} ₽.`,
     });
     setIsOpen(false);
     setAmount(1000); // Reset to default after top-up
@@ -65,7 +66,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
       <DialogContent className="sm:max-w-[425px] light">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            <Wallet className="h-6 w-6" />
+            <Wallet className="h-6 w-6 text-muted-foreground" />
             <DialogTitle className="font-headline text-xl">Пополнение баланса</DialogTitle>
           </div>
           <DialogDescription className="text-left pt-2">
@@ -80,8 +81,10 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
                     variant={amount === quickAmount ? "default" : "secondary"}
                     onClick={() => handleAmountSelect(quickAmount)}
                     className={cn(
-                        "py-6 text-lg font-bold",
-                        amount === quickAmount ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                        "py-6 text-lg font-bold h-auto",
+                         amount === quickAmount 
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                     )}
                 >
                     {quickAmount} ₽
@@ -98,7 +101,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
                 className="pl-8 h-12 text-lg text-center font-bold"
                 min="1000"
                 step="100"
-                placeholder="Или введите свою сумму"
+                placeholder="1000"
               />
           </div>
         </div>
