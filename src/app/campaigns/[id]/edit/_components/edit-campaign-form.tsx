@@ -26,7 +26,10 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
     let newStatus = campaign.status;
     let toastMessage = `Рассылка "${campaign.name}" сохранена.`;
 
-    if (campaign.status === "Черновик" || campaign.status === "Отклонено") {
+    // This logic determines if the action is "send to moderation"
+    const isSendingToModeration = e.nativeEvent.submitter?.innerText?.includes("модерацию");
+
+    if (isSendingToModeration && (campaign.status === "Черновик" || campaign.status === "Отклонено")) {
         newStatus = "На модерации";
         toastMessage = `Рассылка "${campaign.name}" отправлена на модерацию.`;
     }
@@ -60,14 +63,44 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
 
   const isViewOnly = campaign.status === 'Активна' || campaign.status === 'Завершена' || campaign.status === 'На модерации';
 
-  const getButtonContent = () => {
+  const getFooterContent = () => {
     if (isViewOnly) return null;
-    if (campaign.status === 'Отклонено') return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на перемодерацию" };
-    if (campaign.status === 'Черновик') return { icon: <Send className="mr-2 h-4 w-4" />, text: "Отправить на модерацию" };
-    return { icon: <Save className="mr-2 h-4 w-4" />, text: "Сохранить изменения" };
+
+    const baseSaveButton = (
+        <Button type="submit" variant="outline">
+            <Save className="mr-2 h-4 w-4" />
+            Сохранить изменения
+        </Button>
+    );
+
+    let mainActionButton;
+
+    if (campaign.status === 'Отклонено') {
+        mainActionButton = (
+            <Button type="submit">
+                <Send className="mr-2 h-4 w-4" />
+                Отправить на перемодерацию
+            </Button>
+        );
+    }
+    if (campaign.status === 'Черновик') {
+        mainActionButton = (
+            <Button type="submit">
+                <Send className="mr-2 h-4 w-4" />
+                Отправить на модерацию
+            </Button>
+        );
+    }
+
+    return (
+        <div className="flex justify-between w-full">
+            <div>{mainActionButton}</div>
+            {campaign.status === 'Черновик' && <div>{baseSaveButton}</div>}
+        </div>
+    );
   }
   
-  const buttonContent = getButtonContent();
+  const footerContent = getFooterContent();
 
   const getCardDescription = () => {
     switch (campaign.status) {
@@ -127,12 +160,9 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
                     </div>
                 </div>
             </CardContent>
-            {buttonContent && (
+            {footerContent && (
                 <CardFooter>
-                    <Button type="submit">
-                        {buttonContent.icon}
-                        {buttonContent.text}
-                    </Button>
+                    {footerContent}
                 </CardFooter>
             )}
         </form>
