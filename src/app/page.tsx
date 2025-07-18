@@ -106,6 +106,10 @@ export default function LandingPage() {
         };
     }, [handleMouseMove, handleMouseUp]);
 
+    // Calculate conversion rate and messages based on the last point's y-position
+    const conversionPercentage = Math.min(((250 - points[2].y) / 230) * 100, 86);
+    const messagesCount = Math.round((conversionPercentage / 100) * 1000);
+
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const closeMenu = () => setIsMenuOpen(false);
@@ -248,8 +252,8 @@ export default function LandingPage() {
 
                                  <g className="integrated-stats" transform="translate(60, 30)">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
-                                    <text y="30" fontSize="24" fontWeight="bold" fill="#00F2FE">{Math.round((250 - points[2].y) / 230 * 1000)} сообщений</text>
-                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB">{(((250 - points[2].y) / 230 * 1000) / 1000 * 100).toFixed(1)}% конверсия</text>
+                                    <text y="30" fontSize="24" fontWeight="bold" fill="#00F2FE">{messagesCount} сообщений</text>
+                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB">{conversionPercentage.toFixed(1)}% конверсия</text>
                                 </g>
                                 <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
