@@ -25,7 +25,7 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleModerate = async (id: string, newStatus: "Одобрено" | "Отклонено", reason?: string) => {
+  const handleModerate = async (id: string, newStatus: "Активна" | "Отклонено", reason?: string) => {
     const campaign = campaigns.find(c => c.id === id);
     if (!campaign) return;
 
@@ -88,9 +88,9 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
                         </div>
                     </div>
                     <div className="flex flex-col sm:flex-row items-center gap-2">
-                        <Button size="sm" onClick={() => handleModerate(campaign.id, "Одобрено")}>
+                        <Button size="sm" onClick={() => handleModerate(campaign.id, "Активна")}>
                             <CheckCircle2 className="mr-2 h-4 w-4" />
-                            Одобрить
+                            Одобрить и запустить
                         </Button>
                         <Button variant="destructive" size="sm" onClick={() => openRejectDialog(campaign)}>
                             <XCircle className="mr-2 h-4 w-4" />
