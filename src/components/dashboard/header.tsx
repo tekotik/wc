@@ -68,7 +68,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
               <AvatarFallback>UA</AvatarFallback>
             </Avatar>
             <span className="sr-only">Переключить меню пользователя</span>
-          </button>
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
