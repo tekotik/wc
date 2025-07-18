@@ -8,36 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { CheckCircle, Pencil } from "lucide-react";
 import Link from 'next/link';
+import { mockCampaigns } from "@/lib/mock-data";
 
-const campaigns = [
-  {
-    id: "summer_sale_24",
-    name: "Летняя распродажа '24",
-    status: "Активна",
-    text: "Не пропустите нашу летнюю распродажу! Скидки до 50% на весь ассортимент. Только до конца недели!",
-  },
-  {
-    id: "new_collection_24",
-    name: "Новая коллекция",
-    status: "Активна",
-    text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
-  },
-  {
-    id: "loyalty_program",
-    name: "Программа лояльности",
-    status: "Активна",
-    text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
-  },
-  {
-    id: "winter_promo",
-    name: "Зимняя акция",
-    status: "Завершена",
-    text: "Зимняя акция завершена. Спасибо за участие!",
-  },
-];
 
 interface ActiveCampaignsProps {
   selectedCampaignId: string | null;
@@ -48,7 +22,7 @@ export default function ActiveCampaigns({
   selectedCampaignId,
   onSelectCampaign,
 }: ActiveCampaignsProps) {
-  const activeCampaigns = campaigns.filter(c => c.status === "Активна");
+  const activeCampaigns = mockCampaigns.filter(c => c.status === "Активна");
 
   return (
     <Card>

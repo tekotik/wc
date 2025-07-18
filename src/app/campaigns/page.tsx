@@ -19,56 +19,9 @@ import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import type { Campaign, CampaignStatus } from "@/lib/mock-data";
+import { mockCampaigns } from "@/lib/mock-data";
 
-export type CampaignStatus = "Черновик" | "На модерации" | "Одобрено" | "Отклонено" | "Активна" | "Завершена";
-
-export interface Campaign {
-    id: string;
-    name: string;
-    status: CampaignStatus;
-    text: string;
-    rejectionReason?: string;
-}
-
-const initialCampaigns: Campaign[] = [
-  {
-    id: "summer_sale_24",
-    name: "Летняя распродажа '24",
-    status: "Активна",
-    text: "Не пропустите нашу летнюю распродажу! Скидки до 50% на весь ассортимент. Только до конца недели!",
-  },
-  {
-    id: "new_collection_24",
-    name: "Новая коллекция",
-    status: "Одобрено",
-    text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
-  },
-  {
-    id: "loyalty_program",
-    name: "Программа лояльности",
-    status: "На модерации",
-    text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
-  },
-   {
-    id: "promo_action_test",
-    name: "Тестовая промо-акция",
-    status: "Отклонено",
-    text: "Наша тестовая промо-акция...",
-    rejectionReason: "Не указана целевая аудитория."
-  },
-  {
-    id: "winter_promo",
-    name: "Зимняя акция",
-    status: "Завершена",
-    text: "Зимняя акция завершена. Спасибо за участие!",
-  },
-   {
-    id: "draft_campaign_1",
-    name: "Новая рассылка (Черновик)",
-    status: "Черновик",
-    text: "",
-  },
-];
 
 const statusStyles: Record<CampaignStatus, string> = {
     "Черновик": "bg-gray-100 text-gray-800",
@@ -80,7 +33,7 @@ const statusStyles: Record<CampaignStatus, string> = {
 };
 
 export default function CampaignsListPage() {
-  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const [campaigns, setCampaigns] = useState(mockCampaigns);
   const { toast } = useToast();
 
   const handleLaunch = (id: string) => {
@@ -171,7 +124,7 @@ export default function CampaignsListPage() {
         <SidebarNav />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader setCampaigns={setCampaigns} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">

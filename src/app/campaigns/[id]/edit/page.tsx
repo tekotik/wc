@@ -16,58 +16,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, Send, Eye } from "lucide-react";
+import { Save, ArrowLeft, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import { mockCampaigns } from "@/lib/mock-data";
 
-// Mock data for campaigns - in a real app, this would be a global state or fetched from a DB
-const campaigns = [
-  {
-    id: "summer_sale_24",
-    name: "Летняя распродажа '24",
-    status: "Активна",
-    text: "Не пропустите нашу летнюю распродажу! Скидки до 50% на весь ассортимент. Только до конца недели!",
-  },
-  {
-    id: "new_collection_24",
-    name: "Новая коллекция",
-    status: "Одобрено",
-    text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
-  },
-  {
-    id: "loyalty_program",
-    name: "Программа лояльности",
-    status: "На модерации",
-    text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
-  },
-   {
-    id: "promo_action_test",
-    name: "Тестовая промо-акция",
-    status: "Отклонено",
-    text: "Наша тестовая промо-акция...",
-    rejectionReason: "Не указана целевая аудитория."
-  },
-  {
-    id: "winter_promo",
-    name: "Зимняя акция",
-    status: "Завершена",
-    text: "Зимняя акция завершена. Спасибо за участие!",
-  },
-  {
-    id: "draft_campaign_1",
-    name: "Новая рассылка (Черновик)",
-    status: "Черновик",
-    text: "",
-  },
-];
 
 export default function EditCampaignPage({ params }: { params: { id: string } }) {
   const { toast } = useToast();
-  const [campaign, setCampaign] = useState<(typeof campaigns)[0] | null>(null);
+  const [campaign, setCampaign] = useState<(typeof mockCampaigns)[0] | null>(null);
   
   useEffect(() => {
     // In a real app, you would fetch this data.
-    let foundCampaign = campaigns.find(c => c.id === params.id);
+    let foundCampaign = mockCampaigns.find(c => c.id === params.id);
     if (foundCampaign) {
       setCampaign(foundCampaign);
     } else {
@@ -229,4 +190,3 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     </SidebarProvider>
   );
 }
-

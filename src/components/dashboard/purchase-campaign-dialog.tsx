@@ -18,7 +18,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import type { Campaign } from '@/app/campaigns/page';
+import type { Campaign } from '@/lib/mock-data';
+import { mockCampaigns } from '@/lib/mock-data';
 
 const packages = [
   { messages: 1000, price: 100, recommended: false },
@@ -62,6 +63,7 @@ export default function PurchaseCampaignDialog({ children, setCampaigns, balance
 
     // This is a mock of updating global state.
     // In a real app, you would use a state manager or API call.
+    mockCampaigns.unshift(newCampaign); // Add to the beginning of the array
     if (setCampaigns) {
         setCampaigns(prev => [newCampaign, ...prev]);
     }
