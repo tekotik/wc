@@ -53,6 +53,13 @@ export const allReplies: Reply[] = [
     time: "28 мин назад",
     avatar: { src: "https://placehold.co/40x40.png", fallback: "СК", hint: "woman glasses" },
   },
+   {
+    campaignId: "summer_sale_24",
+    name: "Артур Пирожков",
+    reply: "Это просто бомба!",
+    time: "45 мин назад",
+    avatar: { src: "https://placehold.co/40x40.png", fallback: "АП", hint: "man handsome" },
+  },
   // Campaign: new_collection_24
   {
     campaignId: "new_collection_24",

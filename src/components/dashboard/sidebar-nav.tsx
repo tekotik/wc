@@ -18,6 +18,7 @@ import {
   Settings,
   BarChart3,
   ChevronDown,
+  Shield,
 } from "lucide-react";
 import * as React from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -45,7 +46,7 @@ export default function SidebarNav() {
         >
           <Link href="/campaigns">
             <MessageSquareQuote />
-            Кампании
+            Рассылки
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -57,6 +58,17 @@ export default function SidebarNav() {
           <Link href="/analytics">
             <BarChart3 />
             Аналитика
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+       <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive("/admin")}
+        >
+          <Link href="/admin">
+            <Shield />
+            Админка
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

@@ -18,7 +18,7 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
             <CardTitle className="font-headline">Последние ответы</CardTitle>
-            <CardDescription>Ответы клиентов на ваши кампании.</CardDescription>
+            <CardDescription>Ответы клиентов на ваши рассылки.</CardDescription>
         </div>
         <Button variant="outline" size="sm">
             Все ответы <ChevronRight className="ml-2 h-4 w-4" />
@@ -45,7 +45,7 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
          ))
        ) : (
         <div className="text-center text-muted-foreground py-8">
-            <p>Ответов для этой кампании пока нет.</p>
+            <p>Ответов для этой рассылки пока нет.</p>
         </div>
        )}
       </CardContent>

@@ -71,7 +71,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
                 <AlertDialogHeader>
                 <AlertDialogTitle>Вы уверены, что хотите запустить рассылку?</AlertDialogTitle>
                 <AlertDialogDescription>
-                    Это действие запустит рассылку для кампании "{campaign.name}". Отменить это действие будет невозможно.
+                    Это действие запустит рассылку "{campaign.name}". Отменить это действие будет невозможно.
                 </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>

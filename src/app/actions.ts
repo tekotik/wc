@@ -5,8 +5,8 @@ import { generateMessageVariations } from "@/ai/flows/generate-message-variation
 import { z } from "zod";
 
 const inputSchema = z.object({
-  campaignDetails: z.string().min(10, {
-    message: "Campaign details must be at least 10 characters long.",
+  details: z.string().min(10, {
+    message: "Детали рассылки должны содержать не менее 10 символов.",
   }),
   numberOfVariations: z.coerce.number().int().min(1).max(5).default(3),
 });
@@ -14,7 +14,7 @@ const inputSchema = z.object({
 export type FormState = {
   message: string | null;
   errors: {
-    campaignDetails?: string[];
+    details?: string[];
     numberOfVariations?: string[];
     server?: string;
   } | null;
@@ -26,13 +26,13 @@ export async function generateMessagesAction(
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = inputSchema.safeParse({
-    campaignDetails: formData.get("campaignDetails"),
+    details: formData.get("details"),
     numberOfVariations: formData.get("numberOfVariations"),
   });
 
   if (!validatedFields.success) {
     return {
-      message: "Invalid form data.",
+      message: "Неверные данные формы.",
       errors: validatedFields.error.flatten().fieldErrors,
       data: null,
     };
@@ -42,22 +42,22 @@ export async function generateMessagesAction(
     const result = await generateMessageVariations(validatedFields.data);
     if (!result.messageVariations || result.messageVariations.length === 0) {
       return {
-        message: "The AI couldn't generate messages based on your input. Please try again with more specific details.",
-        errors: { server: "No variations generated." },
+        message: "ИИ не смог сгенерировать сообщения на основе вашего ввода. Пожалуйста, попробуйте еще раз с более конкретными деталями.",
+        errors: { server: "Варианты не сгенерированы." },
         data: null,
       }
     }
     return {
-      message: "Success!",
+      message: "Успех!",
       errors: null,
       data: result.messageVariations,
     };
   } catch (error) {
     console.error(error);
-    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
+    const errorMessage = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
     return {
-      message: "An unexpected error occurred.",
-      errors: { server: `Failed to connect to the AI service: ${errorMessage}` },
+      message: "Произошла непредвиденная ошибка.",
+      errors: { server: `Не удалось подключиться к сервису ИИ: ${errorMessage}` },
       data: null,
     };
   }

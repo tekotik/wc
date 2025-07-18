@@ -27,7 +27,7 @@ export default function StatsView({ campaign }: StatsViewProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Статистика кампании</CardTitle>
+        <CardTitle className="font-headline">Статистика рассылки</CardTitle>
         <CardDescription>Обзор эффективности рассылки "{campaign.name}".</CardDescription>
       </CardHeader>
       <CardContent>
@@ -55,7 +55,7 @@ export default function StatsView({ campaign }: StatsViewProps) {
         </ChartContainer>
         ) : (
             <div className="text-center py-12 text-muted-foreground">
-                <p>Данные по статистике для этой кампании отсутствуют.</p>
+                <p>Данные по статистике для этой рассылки отсутствуют.</p>
             </div>
         )}
       </CardContent>

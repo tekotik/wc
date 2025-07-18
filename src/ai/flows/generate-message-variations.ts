@@ -23,9 +23,9 @@ const ai = genkit({
 
 
 const GenerateMessageVariationsInputSchema = z.object({
-  campaignDetails: z
+  details: z
     .string()
-    .describe('Details about the campaign, including the target audience, goals, and key message points.'),
+    .describe('Details about the mailing, including the target audience, goals, and key message points.'),
   numberOfVariations: z
     .number()
     .int()
@@ -53,9 +53,9 @@ const prompt = ai.definePrompt({
   output: { schema: GenerateMessageVariationsOutputSchema },
   prompt: `You are an AI copywriter specializing in creating engaging message copy. Generate all responses in Russian.
 
-Based on the following campaign details, generate {{{numberOfVariations}}} distinct message copy variations.
+Based on the following mailing details, generate {{{numberOfVariations}}} distinct message copy variations.
 
-Campaign Details: {{{campaignDetails}}}
+Mailing Details: {{{details}}}
 
 IMPORTANT: The output must be a JSON object. The 'messageVariations' array should contain only the raw message text. Do not add any prefixes like "Вариант 1:", titles, or markdown formatting like asterisks to the strings within the array.`,
 });

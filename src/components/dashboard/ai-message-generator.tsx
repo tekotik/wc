@@ -89,22 +89,22 @@ export default function AiMessageGenerator() {
       <CardHeader>
         <CardTitle className="font-headline">AI Генератор сообщений</CardTitle>
         <CardDescription>
-          Опишите свою кампанию, и ИИ создаст для вас привлекательные варианты сообщений.
+          Опишите свою рассылку, и ИИ создаст для вас привлекательные варианты сообщений.
         </CardDescription>
       </CardHeader>
       <form action={formAction} ref={formRef}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="campaignDetails">Детали кампании</Label>
+            <Label htmlFor="details">Детали рассылки</Label>
             <Textarea
-              id="campaignDetails"
-              name="campaignDetails"
+              id="details"
+              name="details"
               placeholder="Например, распродажа нашей новой летней коллекции, целевая аудитория — молодые люди 18-25 лет. Ключевое сообщение: 'Скидка 50% только 48 часов'."
               rows={5}
               required
             />
-            {state.errors?.campaignDetails && (
-              <p className="text-sm text-destructive">{state.errors.campaignDetails[0]}</p>
+            {state.errors?.details && (
+              <p className="text-sm text-destructive">{state.errors.details[0]}</p>
             )}
           </div>
           <div className="space-y-2">

@@ -32,9 +32,9 @@ export default function ActiveCampaigns({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Активные кампании</CardTitle>
+        <CardTitle className="font-headline">Активные рассылки</CardTitle>
         <CardDescription>
-          Выберите кампанию, чтобы посмотреть ответы, или отредактируйте ее.
+          Выберите рассылку, чтобы посмотреть ответы, или отредактируйте ее.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-2">

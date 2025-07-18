@@ -21,6 +21,7 @@ export async function updateCampaignAction(campaign: Campaign) {
         await saveCampaign(campaign);
         revalidatePath('/campaigns');
         revalidatePath(`/campaigns/${campaign.id}/edit`);
+        revalidatePath('/admin');
         revalidatePath('/');
         return { success: true, campaign };
     } catch (error) {
