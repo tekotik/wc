@@ -5,6 +5,7 @@ import {
   Bell,
   Wallet,
   PlusCircle,
+  User,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import PurchaseCampaignDialog from "./purchase-campaign-dialog";
 import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
@@ -64,8 +65,9 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" data-ai-hint="man portrait"/>
-              <AvatarFallback>UA</AvatarFallback>
+              <AvatarFallback>
+                <User className="h-5 w-5" />
+              </AvatarFallback>
             </Avatar>
             <span className="sr-only">Переключить меню пользователя</span>
           </Button>
