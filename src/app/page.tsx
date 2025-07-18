@@ -162,7 +162,7 @@ export default function LandingPage() {
                         <div className="relative h-full">
                              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900 z-10"></div>
                              <Image 
-                                src="https://i.imgur.com/8BGxINF.png"
+                                src="https://i.imgur.com/vcTgzOW.png"
                                 alt="Dashboard preview"
                                 layout="fill"
                                 className="object-contain object-right-top"
