@@ -31,15 +31,9 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
-      <div className="flex items-center gap-4">
         <div className="md:hidden">
             <SidebarTrigger />
         </div>
-        <Link href="/dashboard" className="flex items-center gap-2 text-foreground">
-            <ElsenderLogo className="w-6 h-6 text-primary" />
-            <span className="text-lg font-bold font-headline hidden md:inline-block">Elsender</span>
-        </Link>
-      </div>
       <div className="w-full flex-1">
         <PurchaseCampaignDialog 
           balance={balance} 

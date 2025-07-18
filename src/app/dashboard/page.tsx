@@ -11,6 +11,8 @@ import AiMessageGenerator from "@/components/dashboard/ai-message-generator";
 import { getCampaigns } from "@/lib/campaign-service";
 import { allReplies } from "@/lib/mock-data";
 import Dashboard from "@/components/dashboard/dashboard";
+import Link from "next/link";
+import { ElsenderLogo } from "@/components/icons";
 
 export default async function DashboardPage() {
   const campaigns = await getCampaigns();
@@ -21,7 +23,10 @@ export default async function DashboardPage() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-           {/* The logo is now in the main DashboardHeader, so we can remove it from here to avoid duplication */}
+          <Link href="/dashboard" className="flex items-center gap-2 text-sidebar-foreground">
+            <ElsenderLogo className="w-7 h-7 text-primary" />
+            <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
+          </Link>
         </SidebarHeader>
         <SidebarNav />
       </Sidebar>

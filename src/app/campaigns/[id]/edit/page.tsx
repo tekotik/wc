@@ -11,6 +11,8 @@ import DashboardHeader from '@/components/dashboard/header';
 import { notFound } from 'next/navigation';
 import { getCampaignById } from '@/lib/campaign-service';
 import EditCampaignForm from './_components/edit-campaign-form';
+import Link from "next/link";
+import { ElsenderLogo } from "@/components/icons";
 
 export default async function EditCampaignPage({ params }: { params: { id: string } }) {
   const campaign = await getCampaignById(params.id);
@@ -23,6 +25,10 @@ export default async function EditCampaignPage({ params }: { params: { id: strin
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
+           <Link href="/dashboard" className="flex items-center gap-2 text-sidebar-foreground">
+            <ElsenderLogo className="w-7 h-7 text-primary" />
+            <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
+          </Link>
         </SidebarHeader>
         <SidebarNav />
       </Sidebar>
