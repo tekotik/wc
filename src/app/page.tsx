@@ -159,18 +159,15 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 overflow-hidden">
                     <div className="absolute inset-0 hero-gradient"></div>
-                     <div className="absolute top-0 right-0 h-full lg:w-1/2 w-full opacity-20 lg:opacity-100 flex items-center">
-                        <div className="relative w-full h-full">
-                             <Image 
-                                src="https://i.imgur.com/8BGxINF.png"
-                                alt="Dashboard preview"
-                                layout="fill"
-                                objectFit="contain"
-                                className="object-right"
-                                data-ai-hint="dashboard ui"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-                        </div>
+                     <div className="absolute inset-0 flex items-center justify-end opacity-25 lg:opacity-40">
+                         <Image 
+                            src="https://i.imgur.com/8BGxINF.png"
+                            alt="Dashboard preview"
+                            width={1200}
+                            height={800}
+                            className="object-contain object-right mix-blend-screen"
+                            data-ai-hint="dashboard ui"
+                        />
                     </div>
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
                         <div className="max-w-3xl mx-auto">
