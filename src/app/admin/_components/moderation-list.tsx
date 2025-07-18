@@ -79,20 +79,20 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
           <div className="space-y-4">
             {campaigns.map((campaign) => (
               <Card key={campaign.id} className="p-4">
-                <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                        <FileText className="h-6 w-6 text-muted-foreground mt-1" />
+                <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+                    <div className="flex items-start gap-4 flex-1">
+                        <FileText className="h-6 w-6 text-muted-foreground mt-1 flex-shrink-0" />
                         <div className="flex-1">
                             <h3 className="font-semibold font-headline">{campaign.name}</h3>
                             <p className="text-sm text-card-foreground mt-2 bg-secondary p-3 rounded-md">{campaign.text}</p>
                         </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-2">
-                        <Button size="sm" onClick={() => handleModerate(campaign.id, "Активна")}>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto self-end md:self-start">
+                        <Button size="sm" onClick={() => handleModerate(campaign.id, "Активна")} className="flex-grow md:flex-grow-0">
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Одобрить и запустить
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={() => openRejectDialog(campaign)}>
+                        <Button variant="destructive" size="sm" onClick={() => openRejectDialog(campaign)} className="flex-grow md:flex-grow-0">
                             <XCircle className="mr-2 h-4 w-4" />
                             Отклонить
                         </Button>
