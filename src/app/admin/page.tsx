@@ -32,7 +32,9 @@ export default async function AdminPage() {
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <ModerationList initialCampaigns={moderationCampaigns} />
+          <div className="max-w-7xl mx-auto w-full">
+            <ModerationList initialCampaigns={moderationCampaigns} />
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>

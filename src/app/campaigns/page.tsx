@@ -31,7 +31,9 @@ export default async function CampaignsPage() {
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <CampaignsList initialCampaigns={campaigns} />
+          <div className="max-w-7xl mx-auto w-full">
+            <CampaignsList initialCampaigns={campaigns} />
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>

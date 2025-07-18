@@ -35,7 +35,9 @@ export default async function EditCampaignPage({ params }: { params: { id: strin
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <EditCampaignForm campaign={campaign} />
+          <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
+            <EditCampaignForm campaign={campaign} />
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>

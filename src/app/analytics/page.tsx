@@ -32,7 +32,9 @@ export default async function AnalyticsPage() {
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <AnalyticsOverview campaigns={completedCampaigns} />
+           <div className="max-w-7xl mx-auto w-full">
+            <AnalyticsOverview campaigns={completedCampaigns} />
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>

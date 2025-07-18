@@ -37,18 +37,20 @@ export default async function CampaignStatsPage({ params }: { params: { id: stri
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-            <div className="flex items-center gap-4">
-                <Button variant="outline" size="icon" className="h-7 w-7" asChild>
-                    <Link href="/campaigns">
-                        <ArrowLeft className="h-4 w-4" />
-                        <span className="sr-only">Назад</span>
-                    </Link>
-                </Button>
-                <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                    Статистика: {campaign.name}
-                </h1>
+            <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                  <Button variant="outline" size="icon" className="h-7 w-7" asChild>
+                      <Link href="/campaigns">
+                          <ArrowLeft className="h-4 w-4" />
+                          <span className="sr-only">Назад</span>
+                      </Link>
+                  </Button>
+                  <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+                      Статистика: {campaign.name}
+                  </h1>
+              </div>
+              <StatsView campaign={campaign} />
             </div>
-            <StatsView campaign={campaign} />
         </main>
       </SidebarInset>
     </SidebarProvider>

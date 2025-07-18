@@ -108,7 +108,6 @@ export default function LandingPage() {
     }, [handleMouseMove, handleMouseUp]);
 
     // Calculate conversion rate based on the middle point's y-position
-    // A lower Y value means a higher conversion
     const conversionPercentage = Math.min(((250 - points[1].y) / 230) * 86, 86);
     const messagesCount = Math.round((conversionPercentage / 100) * 1000);
 
@@ -159,25 +158,27 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 overflow-hidden">
                     <div className="absolute inset-0 hero-gradient"></div>
-                     <div className="absolute inset-0 flex items-center justify-end opacity-25 lg:opacity-40">
-                         <Image 
-                            src="https://i.imgur.com/8BGxINF.png"
-                            alt="Dashboard preview"
-                            width={1200}
-                            height={800}
-                            className="object-contain object-right mix-blend-screen"
-                            data-ai-hint="dashboard ui"
-                        />
+                     <div className="absolute inset-y-0 right-0 w-1/2 lg:w-2/5">
+                        <div className="relative h-full">
+                             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900 z-10"></div>
+                             <Image 
+                                src="https://i.imgur.com/8BGxINF.png"
+                                alt="Dashboard preview"
+                                layout="fill"
+                                className="object-contain object-right-top"
+                                data-ai-hint="dashboard ui"
+                            />
+                        </div>
                     </div>
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-                        <div className="max-w-3xl mx-auto">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+                        <div className="max-w-xl">
                             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
                                 Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
                             </h1>
                             <p className="text-lg md:text-xl text-gray-300 mb-10">
                                 Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
                             </p>
-                            <div className="flex justify-center items-center space-x-4">
+                            <div className="flex justify-start items-center space-x-4">
                                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                                     Начать работу
                                 </Link>

@@ -33,8 +33,10 @@ export default async function DashboardPage() {
       <SidebarInset>
         <DashboardHeader hasUnreadReplies={hasUnreadReplies} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} />
-          <AiMessageGenerator />
+          <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
+            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} />
+            <AiMessageGenerator />
+          </div>
         </main>
       </SidebarInset>
     </SidebarProvider>
