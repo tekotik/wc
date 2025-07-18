@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   CardContent,
@@ -16,27 +16,17 @@ import type { Campaign } from "@/lib/mock-data";
 
 
 interface ActiveCampaignsProps {
-  initialCampaigns: Campaign[];
+  campaigns: Campaign[];
+  selectedCampaignId: string | null;
+  onSelectCampaign: (id: string) => void;
 }
 
 export default function ActiveCampaigns({
-  initialCampaigns
+  campaigns,
+  selectedCampaignId,
+  onSelectCampaign
 }: ActiveCampaignsProps) {
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(initialCampaigns[0]?.id || null);
-
-  // This component now receives the initial list but doesn't need to modify it.
-  // The list is managed on the server.
-  const activeCampaigns = initialCampaigns;
-  
-  const handleSelectCampaign = (id: string) => {
-    // This now just updates local UI state for which campaign is selected.
-    // It doesn't need to pass this state up.
-    setSelectedCampaignId(id);
-    // In a real app, you might emit an event or use a global state manager
-    // to let RecentReplies know which campaign was selected.
-    // For now, we will adjust RecentReplies to be more static or fetch its own data.
-  };
-
+ 
   return (
     <Card>
       <CardHeader>
@@ -46,12 +36,12 @@ export default function ActiveCampaigns({
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-2">
-        {activeCampaigns.map((campaign) => (
+        {campaigns.map((campaign) => (
           <div key={campaign.id} className="flex items-center gap-2">
             <Button
               variant={selectedCampaignId === campaign.id ? "secondary" : "ghost"}
               className="w-full justify-start text-left h-auto py-2 flex-grow"
-              onClick={() => handleSelectCampaign(campaign.id)}
+              onClick={() => onSelectCampaign(campaign.id)}
             >
               <div className="flex items-center justify-between w-full">
                   <div className="flex flex-col">
@@ -70,7 +60,7 @@ export default function ActiveCampaigns({
             </Button>
           </div>
         ))}
-         {activeCampaigns.length === 0 && (
+         {campaigns.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">Активных рассылок нет.</p>
         )}
       </CardContent>

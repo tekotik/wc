@@ -8,10 +8,10 @@ import {
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
 import AiMessageGenerator from "@/components/dashboard/ai-message-generator";
-import ActiveCampaigns from "@/components/dashboard/active-campaigns";
 import { WappSenderProLogo } from "@/components/icons";
-import RecentReplies from "@/components/dashboard/recent-replies";
 import { getCampaigns } from "@/lib/campaign-service";
+import { allReplies } from "@/lib/mock-data";
+import Dashboard from "@/components/dashboard/dashboard";
 
 export default async function Home() {
   const campaigns = await getCampaigns();
@@ -33,15 +33,7 @@ export default async function Home() {
       <SidebarInset>
         <DashboardHeader />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-           <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-6">
-            <div className="lg:col-span-3">
-              <ActiveCampaigns initialCampaigns={activeCampaigns} />
-            </div>
-            <div className="lg:col-span-4">
-               {/* This component will now manage its own state */}
-               <RecentReplies />
-            </div>
-          </div>
+          <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} />
           <AiMessageGenerator />
         </main>
       </SidebarInset>
