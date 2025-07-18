@@ -1,6 +1,8 @@
+
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generateMessagesAction, type FormState } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,7 +64,7 @@ function CopyButton({ textToCopy }: { textToCopy: string }) {
 }
 
 export default function AiMessageGenerator() {
-  const [state, formAction] = useFormState(generateMessagesAction, initialState);
+  const [state, formAction] = useActionState(generateMessagesAction, initialState);
   const formRef = React.useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
