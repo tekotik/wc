@@ -28,34 +28,34 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
-        <div className="md:hidden">
-            <SidebarTrigger />
-        </div>
-      <div className="w-full flex-1">
-         <PurchaseCampaignDialog 
-            balance={balance} 
-            setBalance={setBalance}
-         >
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Создать рассылку
-            </Button>
-          </PurchaseCampaignDialog>
+      <div className="md:hidden">
+        <SidebarTrigger />
       </div>
-       <div className="flex items-center gap-2">
-            <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
-                <Button variant="ghost" className="flex items-center gap-2 p-2">
-                    <Wallet className="h-5 w-5 text-muted-foreground" />
-                    <span className="font-bold text-lg">{balance} ₽</span>
-                </Button>
-            </TopUpBalanceDialog>
+      <div className="w-full flex-1">
+        <PurchaseCampaignDialog 
+          balance={balance} 
+          setBalance={setBalance}
+        >
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Создать рассылку
+          </Button>
+        </PurchaseCampaignDialog>
+      </div>
+      <div className="flex items-center gap-2">
+        <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
+          <Button variant="ghost" className="flex items-center gap-2 p-2">
+            <Wallet className="h-5 w-5 text-muted-foreground" />
+            <span className="font-bold text-lg">{balance} ₽</span>
+          </Button>
+        </TopUpBalanceDialog>
       </div>
       <Button variant="ghost" size="icon" className="rounded-full relative">
         {hasUnreadReplies && (
-            <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
-            </span>
+          <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+          </span>
         )}
         <Bell className="h-5 w-5" />
         <span className="sr-only">Переключить уведомления</span>
@@ -67,7 +67,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
               <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" data-ai-hint="man portrait"/>
               <AvatarFallback>UA</AvatarFallback>
             </Avatar>
-             <span className="sr-only">Переключить меню пользователя</span>
+            <span className="sr-only">Переключить меню пользователя</span>
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
