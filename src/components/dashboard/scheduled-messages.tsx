@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 
 const scheduledMessages = [
   {
@@ -56,9 +56,10 @@ const scheduledMessages = [
 
 export default function ScheduledMessages() {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="font-headline">Запланированные сообщения</CardTitle>
+        <CardDescription>Сообщения, ожидающие отправки.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6">
        {scheduledMessages.map((message) => (
