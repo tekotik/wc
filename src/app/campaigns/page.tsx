@@ -1,6 +1,7 @@
+
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -10,7 +11,7 @@ import {
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
 import { WappSenderProLogo } from "@/components/icons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Pencil, PlusCircle } from "lucide-react";
 import Link from 'next/link';
