@@ -8,42 +8,6 @@ export interface Campaign {
     rejectionReason?: string;
 }
 
-export const mockCampaigns: Campaign[] = [
-  {
-    id: "summer_sale_24",
-    name: "Летняя распродажа '24",
-    status: "Активна",
-    text: "Не пропустите нашу летнюю распродажу! Скидки до 50% на весь ассортимент. Только до конца недели!",
-  },
-  {
-    id: "new_collection_24",
-    name: "Новая коллекция",
-    status: "Одобрено",
-    text: "Встречайте нашу новую коллекцию! Стильные новинки уже ждут вас. Посмотрите первыми!",
-  },
-  {
-    id: "loyalty_program",
-    name: "Программа лояльности",
-    status: "На модерации",
-    text: "Присоединяйтесь к нашей программе лояльности и получайте эксклюзивные скидки и бонусы!",
-  },
-   {
-    id: "promo_action_test",
-    name: "Тестовая промо-акция",
-    status: "Отклонено",
-    text: "Наша тестовая промо-акция...",
-    rejectionReason: "Не указана целевая аудитория."
-  },
-  {
-    id: "winter_promo",
-    name: "Зимняя акция",
-    status: "Завершена",
-    text: "Зимняя акция завершена. Спасибо за участие!",
-  },
-  {
-    id: "draft_campaign_1",
-    name: "Новая рассылка (Черновик)",
-    status: "Черновик",
-    text: "",
-  },
-];
+// This data is now seeded into campaigns.json and this file is no longer the source of truth.
+// It is kept for type definitions.
+export const mockCampaigns: Campaign[] = [];

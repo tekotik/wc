@@ -1,7 +1,4 @@
 
-"use client";
-
-import { useState } from "react";
 import {
   SidebarProvider,
   Sidebar,
@@ -14,11 +11,12 @@ import AiMessageGenerator from "@/components/dashboard/ai-message-generator";
 import ActiveCampaigns from "@/components/dashboard/active-campaigns";
 import { WappSenderProLogo } from "@/components/icons";
 import RecentReplies from "@/components/dashboard/recent-replies";
+import { getCampaigns } from "@/lib/campaign-service";
 
-export default function Home() {
-  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(
-    "summer_sale_24"
-  );
+export default async function Home() {
+  const campaigns = await getCampaigns();
+  const activeCampaigns = campaigns.filter(c => c.status === "Активна");
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -37,10 +35,11 @@ export default function Home() {
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
            <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-6">
             <div className="lg:col-span-3">
-              <ActiveCampaigns selectedCampaignId={selectedCampaignId} onSelectCampaign={setSelectedCampaignId} />
+              <ActiveCampaigns initialCampaigns={activeCampaigns} />
             </div>
             <div className="lg:col-span-4">
-              <RecentReplies selectedCampaignId={selectedCampaignId} />
+               {/* This component will now manage its own state */}
+               <RecentReplies />
             </div>
           </div>
           <AiMessageGenerator />

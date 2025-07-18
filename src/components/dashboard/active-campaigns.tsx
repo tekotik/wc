@@ -1,5 +1,7 @@
+
 "use client";
 
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,19 +12,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Pencil } from "lucide-react";
 import Link from 'next/link';
-import { mockCampaigns } from "@/lib/mock-data";
+import type { Campaign } from "@/lib/mock-data";
 
 
 interface ActiveCampaignsProps {
-  selectedCampaignId: string | null;
-  onSelectCampaign: (id: string | null) => void;
+  initialCampaigns: Campaign[];
 }
 
 export default function ActiveCampaigns({
-  selectedCampaignId,
-  onSelectCampaign,
+  initialCampaigns
 }: ActiveCampaignsProps) {
-  const activeCampaigns = mockCampaigns.filter(c => c.status === "Активна");
+  const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(initialCampaigns[0]?.id || null);
+
+  // This component now receives the initial list but doesn't need to modify it.
+  // The list is managed on the server.
+  const activeCampaigns = initialCampaigns;
+  
+  const handleSelectCampaign = (id: string) => {
+    // This now just updates local UI state for which campaign is selected.
+    // It doesn't need to pass this state up.
+    setSelectedCampaignId(id);
+    // In a real app, you might emit an event or use a global state manager
+    // to let RecentReplies know which campaign was selected.
+    // For now, we will adjust RecentReplies to be more static or fetch its own data.
+  };
 
   return (
     <Card>
@@ -38,7 +51,7 @@ export default function ActiveCampaigns({
             <Button
               variant={selectedCampaignId === campaign.id ? "secondary" : "ghost"}
               className="w-full justify-start text-left h-auto py-2 flex-grow"
-              onClick={() => onSelectCampaign(campaign.id)}
+              onClick={() => handleSelectCampaign(campaign.id)}
             >
               <div className="flex items-center justify-between w-full">
                   <div className="flex flex-col">
@@ -57,6 +70,9 @@ export default function ActiveCampaigns({
             </Button>
           </div>
         ))}
+         {activeCampaigns.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-4">Активных рассылок нет.</p>
+        )}
       </CardContent>
     </Card>
   );

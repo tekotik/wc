@@ -1,4 +1,6 @@
 
+"use client";
+
 import {
   Bell,
   Wallet,
@@ -20,13 +22,8 @@ import PurchaseCampaignDialog from "./purchase-campaign-dialog";
 import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
 
-// This is a placeholder for a real state management solution
-// In a real app, this would come from a context or a store.
-interface HeaderProps {
-    setCampaigns?: React.Dispatch<React.SetStateAction<any[]>>;
-}
 
-export default function DashboardHeader({ setCampaigns }: HeaderProps) {
+export default function DashboardHeader() {
   const [balance, setBalance] = React.useState(1000);
 
   return (
@@ -38,8 +35,6 @@ export default function DashboardHeader({ setCampaigns }: HeaderProps) {
          <PurchaseCampaignDialog 
             balance={balance} 
             setBalance={setBalance}
-            // @ts-ignore - a bit of a hack for mock state management
-            setCampaigns={setCampaigns}
          >
             <Button>
                 <PlusCircle className="mr-2 h-4 w-4" />

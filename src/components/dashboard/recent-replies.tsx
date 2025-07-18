@@ -1,9 +1,11 @@
+
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MessageCircleReply, ChevronRight } from "lucide-react"
+import { useState } from "react";
 
 const allReplies = [
   // Campaign: summer_sale_24
@@ -46,21 +48,19 @@ const allReplies = [
   },
 ];
 
-interface RecentRepliesProps {
-  selectedCampaignId: string | null;
-}
 
-export default function RecentReplies({ selectedCampaignId }: RecentRepliesProps) {
-  const repliesToShow = selectedCampaignId
-    ? allReplies.filter(reply => reply.campaignId === selectedCampaignId)
-    : [];
+export default function RecentReplies() {
+  // Since we can't easily pass state between server components and client components
+  // without a full re-render, we will make this component less dynamic for now.
+  // It will show all recent replies instead of filtering by a selected campaign.
+  const [repliesToShow] = useState(allReplies.slice(0, 5));
 
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
             <CardTitle className="font-headline">Последние ответы</CardTitle>
-            <CardDescription>Ответы клиентов на выбранную кампанию.</CardDescription>
+            <CardDescription>Ответы клиентов на ваши кампании.</CardDescription>
         </div>
         <Button variant="outline" size="sm">
             Все ответы <ChevronRight className="ml-2 h-4 w-4" />
@@ -88,7 +88,7 @@ export default function RecentReplies({ selectedCampaignId }: RecentRepliesProps
          ))
        ) : (
         <div className="text-center text-muted-foreground py-8">
-            <p>Выберите кампанию, чтобы увидеть ответы.</p>
+            <p>Ответов пока нет.</p>
         </div>
        )}
       </CardContent>

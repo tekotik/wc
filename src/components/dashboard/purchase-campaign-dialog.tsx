@@ -19,7 +19,8 @@ import { CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import type { Campaign } from '@/lib/mock-data';
-import { mockCampaigns } from '@/lib/mock-data';
+import { createCampaignAction } from '@/app/campaigns/actions';
+
 
 const packages = [
   { messages: 1000, price: 100, recommended: false },
@@ -29,18 +30,17 @@ const packages = [
 
 interface PurchaseCampaignDialogProps {
   children: React.ReactNode;
-  setCampaigns: React.Dispatch<React.SetStateAction<Campaign[]>>;
   balance: number;
   setBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function PurchaseCampaignDialog({ children, setCampaigns, balance, setBalance }: PurchaseCampaignDialogProps) {
+export default function PurchaseCampaignDialog({ children, balance, setBalance }: PurchaseCampaignDialogProps) {
   const [selectedPackage, setSelectedPackage] = React.useState(packages[1]);
   const [isOpen, setIsOpen] = React.useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleCreateCampaign = () => {
+  const handleCreateCampaign = async () => {
     if (balance < selectedPackage.price) {
         toast({
             variant: "destructive",
@@ -61,22 +61,27 @@ export default function PurchaseCampaignDialog({ children, setCampaigns, balance
         text: "",
     };
 
-    // This is a mock of updating global state.
-    // In a real app, you would use a state manager or API call.
-    mockCampaigns.unshift(newCampaign); // Add to the beginning of the array
-    if (setCampaigns) {
-        setCampaigns(prev => [newCampaign, ...prev]);
-    }
-    
-    toast({
-      title: "Пакет приобретен!",
-      description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
-    });
+    const result = await createCampaignAction(newCampaign);
 
-    setIsOpen(false);
-    
-    // Redirect to the new campaign's edit page
-    router.push(`/campaigns/${newCampaign.id}/edit`);
+    if (result.success) {
+      toast({
+        title: "Пакет приобретен!",
+        description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
+      });
+
+      setIsOpen(false);
+      
+      // Redirect to the new campaign's edit page
+      router.push(`/campaigns/${result.campaignId}/edit`);
+    } else {
+       toast({
+          variant: "destructive",
+          title: "Ошибка",
+          description: result.message,
+       });
+       // refund
+       setBalance(prev => prev + selectedPackage.price);
+    }
   };
   
   return (
