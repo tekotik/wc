@@ -26,14 +26,14 @@ import Link from "next/link";
 
 export default function SidebarNav() {
   const pathname = usePathname();
-  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/' || pathname === '/');
+  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard');
 
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive("/")}>
-          <Link href="/">
+        <SidebarMenuButton asChild isActive={isActive("/dashboard")}>
+          <Link href="/dashboard">
             <LayoutDashboard />
             Панель управления
           </Link>

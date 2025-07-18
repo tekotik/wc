@@ -9,7 +9,7 @@ export async function createCampaignAction(newCampaign: Campaign) {
   try {
     await addCampaign(newCampaign);
     revalidatePath('/campaigns');
-    revalidatePath('/');
+    revalidatePath('/dashboard');
     return { success: true, campaignId: newCampaign.id };
   } catch (error) {
     return { success: false, message: 'Не удалось создать рассылку.' };
@@ -22,7 +22,7 @@ export async function updateCampaignAction(campaign: Campaign) {
         revalidatePath('/campaigns');
         revalidatePath(`/campaigns/${campaign.id}/edit`);
         revalidatePath('/admin');
-        revalidatePath('/');
+        revalidatePath('/dashboard');
         return { success: true, campaign };
     } catch (error) {
         return { success: false, message: 'Не удалось сохранить рассылку.' };
