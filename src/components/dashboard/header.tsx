@@ -48,7 +48,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
       <div className="flex items-center gap-2">
         <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
           <Button variant="ghost" className="flex items-center gap-2 p-2">
-            <Wallet className="h-5 w-5" />
+            <Wallet className="h-5 w-5 text-foreground" />
             <span className="font-bold text-lg text-foreground">{balance} ₽</span>
           </Button>
         </TopUpBalanceDialog>
@@ -60,7 +60,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
           </span>
         )}
-        <Bell className="h-5 w-5" />
+        <Bell className="h-5 w-5 text-foreground" />
         <span className="sr-only">Переключить уведомления</span>
       </Button>
       <DropdownMenu>
@@ -68,7 +68,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
           <Button variant="ghost" size="icon" className="rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarFallback>
-                <User className="h-5 w-5" />
+                <User className="h-5 w-5 text-foreground" />
               </AvatarFallback>
             </Avatar>
             <span className="sr-only">Переключить меню пользователя</span>
