@@ -48,8 +48,8 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
       <div className="flex items-center gap-2">
         <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
           <Button variant="ghost" className="flex items-center gap-2 p-2">
-            <Wallet className="h-5 w-5 text-muted-foreground" />
-            <span className="font-bold text-lg">{balance} ₽</span>
+            <Wallet className="h-5 w-5" />
+            <span className="font-bold text-lg text-foreground">{balance} ₽</span>
           </Button>
         </TopUpBalanceDialog>
       </div>
