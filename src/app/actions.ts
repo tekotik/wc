@@ -37,9 +37,8 @@ export async function generateMessagesAction(
       data: null,
     };
   }
-
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
-  if (!apiKey) {
+  
+  if (!process.env.NEXT_PUBLIC_GOOGLE_API_KEY) {
     console.error("Google API key is not set.");
     return {
       message: "An unexpected error occurred.",
@@ -49,7 +48,7 @@ export async function generateMessagesAction(
   }
 
   try {
-    const result = await generateMessageVariations({ ...validatedFields.data, apiKey });
+    const result = await generateMessageVariations(validatedFields.data);
     if (!result.messageVariations || result.messageVariations.length === 0) {
       return {
         message: "The AI couldn't generate messages based on your input. Please try again with more specific details.",
@@ -64,9 +63,10 @@ export async function generateMessagesAction(
     };
   } catch (error) {
     console.error(error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
     return {
       message: "An unexpected error occurred.",
-      errors: { server: "Failed to connect to the AI service. Please try again later." },
+      errors: { server: `Failed to connect to the AI service: ${errorMessage}` },
       data: null,
     };
   }
