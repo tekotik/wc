@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { WappSenderProLogo } from '@/components/icons';
+import { ElsenderLogo } from '@/components/icons';
 import { Rocket, Shield, BarChart3, Bot, CheckCircle, ArrowRight } from 'lucide-react';
 import LandingHeader from '@/components/landing/header';
 
@@ -73,12 +73,12 @@ export default function LandingPage() {
                     Управляйте WhatsApp рассылками профессионально
                 </h1>
                 <p className="mt-6 text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
-                    WappSender Pro — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
+                    Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
                     <Button asChild size="lg" className="font-bold text-lg py-7 px-10 shadow-lg">
                         <Link href="/dashboard">
-                            Начать бесплатно
+                            Начать работу
                             <ArrowRight className="ml-2" />
                         </Link>
                     </Button>
@@ -187,7 +187,7 @@ export default function LandingPage() {
         <section className="py-20 sm:py-32">
              <div className="container mx-auto px-4 text-center">
                  <h2 className="text-3xl lg:text-4xl font-bold font-headline text-primary">Готовы увеличить продажи?</h2>
-                 <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Присоединяйтесь к сотням компаний, которые уже используют WappSender Pro для роста своего бизнеса.</p>
+                 <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.</p>
                  <Button asChild size="lg" className="mt-8 font-bold text-lg py-7 px-10 shadow-lg">
                     <Link href="/dashboard">
                         Начать работу
@@ -202,15 +202,15 @@ export default function LandingPage() {
       <footer className="py-8 border-t border-border/20">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center text-muted-foreground">
           <div className="flex items-center gap-2">
-            <WappSenderProLogo className="w-6 h-6" />
-            <span className="font-bold">WappSender Pro</span>
+            <ElsenderLogo className="w-6 h-6" />
+            <span className="font-bold">Elsender</span>
           </div>
           <div className="flex gap-4 mt-4 md:mt-0">
              <Link href="#features" className="hover:text-primary">Возможности</Link>
              <Link href="#pricing" className="hover:text-primary">Тарифы</Link>
              <Link href="#" className="hover:text-primary">Документация</Link>
           </div>
-          <p className="mt-4 md:mt-0">&copy; {new Date().getFullYear()} WappSender Pro. Все права защищены.</p>
+          <p className="mt-4 md:mt-0">&copy; {new Date().getFullYear()} Elsender. Все права защищены.</p>
         </div>
       </footer>
     </div>

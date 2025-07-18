@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'WappSender Pro',
+  title: 'Elsender',
   description: 'Лучший инструмент для ваших рассылок.',
 };
 

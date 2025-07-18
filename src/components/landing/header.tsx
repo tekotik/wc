@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { WappSenderProLogo } from '@/components/icons';
+import { ElsenderLogo } from '@/components/icons';
 import { User, Menu } from 'lucide-react';
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 import React from 'react';
@@ -15,8 +15,8 @@ export default function LandingHeader() {
     <header className="absolute top-0 left-0 w-full p-4 z-30 bg-transparent">
         <div className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-2 text-foreground">
-                <WappSenderProLogo className="w-8 h-8 text-primary" />
-                <span className="text-xl font-bold font-headline">WappSender Pro</span>
+                <ElsenderLogo className="w-8 h-8 text-primary" />
+                <span className="text-xl font-bold font-headline">Elsender</span>
             </Link>
             
             {/* Desktop Nav */}
@@ -49,8 +49,8 @@ export default function LandingHeader() {
                     <SheetContent side="right">
                         <div className="flex flex-col gap-6 pt-10">
                             <Link href="/" className="flex items-center gap-2 text-foreground mb-4" onClick={() => setIsOpen(false)}>
-                                <WappSenderProLogo className="w-8 h-8 text-primary" />
-                                <span className="text-xl font-bold font-headline">WappSender Pro</span>
+                                <ElsenderLogo className="w-8 h-8 text-primary" />
+                                <span className="text-xl font-bold font-headline">Elsender</span>
                             </Link>
                             <Link href="#features" className="text-lg" onClick={() => setIsOpen(false)}>Возможности</Link>
                             <Link href="#how-it-works" className="text-lg" onClick={() => setIsOpen(false)}>Как это работает</Link>

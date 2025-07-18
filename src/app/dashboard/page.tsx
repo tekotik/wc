@@ -8,7 +8,7 @@ import {
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
 import AiMessageGenerator from "@/components/dashboard/ai-message-generator";
-import { WappSenderProLogo } from "@/components/icons";
+import { ElsenderLogo } from "@/components/icons";
 import { getCampaigns } from "@/lib/campaign-service";
 import { allReplies } from "@/lib/mock-data";
 import Dashboard from "@/components/dashboard/dashboard";
@@ -23,9 +23,9 @@ export default async function DashboardPage() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2 justify-center">
-            <WappSenderProLogo className="w-7 h-7 text-primary" />
+            <ElsenderLogo className="w-7 h-7 text-primary" />
             <h1 className="text-xl font-bold font-headline text-primary">
-              WappSender Pro
+              Elsender
             </h1>
           </div>
         </SidebarHeader>

@@ -1,5 +1,5 @@
 
-import { WappSenderProLogo } from "@/components/icons";
+import { ElsenderLogo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,9 +19,9 @@ export default function LoginPage() {
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
           <div className="flex items-center justify-center gap-2 mb-4">
-              <WappSenderProLogo className="w-8 h-8 text-primary" />
+              <ElsenderLogo className="w-8 h-8 text-primary" />
               <h1 className="text-2xl font-bold font-headline text-primary">
-                WappSender Pro
+                Elsender
               </h1>
           </div>
           <CardTitle className="text-2xl text-center font-headline">Войти в аккаунт</CardTitle>

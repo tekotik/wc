@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/sidebar';
 import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
-import { WappSenderProLogo } from '@/components/icons';
+import { ElsenderLogo } from '@/components/icons';
 import { notFound } from 'next/navigation';
 import { getCampaignById } from '@/lib/campaign-service';
 import StatsView from './_components/stats-view';
@@ -28,9 +28,9 @@ export default async function CampaignStatsPage({ params }: { params: { id: stri
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2 justify-center">
-            <WappSenderProLogo className="w-7 h-7 text-primary" />
+            <ElsenderLogo className="w-7 h-7 text-primary" />
             <h1 className="text-xl font-bold font-headline text-primary">
-              WappSender Pro
+              Elsender
             </h1>
           </div>
         </SidebarHeader>
