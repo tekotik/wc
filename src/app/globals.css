@@ -40,13 +40,13 @@ body {
     --radius: 0.5rem;
 
      /* Custom App Colors */
-    --sidebar-background: 142.1 70% 12%;
+    --sidebar-background: 220 13% 18%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 142.1 76.2% 36.3%;
     --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 142.1 70% 18%;
+    --sidebar-accent: 220 13% 22%;
     --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 142.1 70% 15%;
+    --sidebar-border: 220 13% 25%;
     --sidebar-ring: 142.1 76.2% 36.3%;
 
      /* Chart colors */
@@ -87,13 +87,13 @@ body {
     --ring: 142.1 76.2% 36.3%;
 
     /* Custom App Colors */
-    --sidebar-background: 142.1 70% 12%;
+    --sidebar-background: 220 13% 18%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 142.1 76.2% 36.3%;
     --sidebar-primary-foreground: 210 20% 98%;
-    --sidebar-accent: 142.1 70% 18%;
+    --sidebar-accent: 220 13% 22%;
     --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 142.1 70% 15%;
+    --sidebar-border: 220 13% 25%;
     --sidebar-ring: 142.1 76.2% 36.3%;
   }
 }

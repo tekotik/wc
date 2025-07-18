@@ -159,28 +159,28 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 overflow-hidden">
                     <div className="absolute inset-0 hero-gradient"></div>
-                     <div className="absolute top-0 right-0 h-full lg:w-1/2 w-2/3 opacity-20 lg:opacity-100">
+                     <div className="absolute top-0 right-0 h-full lg:w-1/2 w-full opacity-20 lg:opacity-100 flex items-center">
                         <div className="relative w-full h-full">
                              <Image 
                                 src="https://i.imgur.com/8BGxINF.png"
                                 alt="Dashboard preview"
-                                width={1200}
-                                height={1000}
-                                className="object-contain"
+                                layout="fill"
+                                objectFit="contain"
+                                className="object-right"
                                 data-ai-hint="dashboard ui"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
                         </div>
                     </div>
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left relative">
-                        <div className="max-w-xl">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+                        <div className="max-w-3xl mx-auto">
                             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
                                 Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
                             </h1>
-                            <p className="max-w-3xl text-lg md:text-xl text-gray-300 mb-10">
+                            <p className="text-lg md:text-xl text-gray-300 mb-10">
                                 Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
                             </p>
-                            <div className="flex justify-center lg:justify-start items-center space-x-4">
+                            <div className="flex justify-center items-center space-x-4">
                                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                                     Начать работу
                                 </Link>
