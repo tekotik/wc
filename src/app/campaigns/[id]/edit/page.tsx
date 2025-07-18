@@ -69,15 +69,6 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     // In a real app, you would fetch this data.
     // Here we find it or create a mock for new drafts.
     let foundCampaign = campaigns.find(c => c.id === params.id);
-    if (!foundCampaign && params.id.startsWith('draft_campaign_')) {
-        foundCampaign = {
-            id: params.id,
-            name: "Новая рассылка",
-            status: "Черновик",
-            text: ""
-        };
-    }
-
     if (foundCampaign) {
       setCampaign(foundCampaign as any);
     } else {
@@ -94,6 +85,7 @@ export default function EditCampaignPage({ params }: { params: { id: string } })
     e.preventDefault();
     if (campaign) {
         console.log("Saving campaign:", campaign);
+        // In a real app, you would update the campaign status to "On Moderation"
         toast({
             title: "Рассылка обновлена!",
             description: `Рассылка "${campaign.name}" отправлена на модерацию.`

@@ -46,11 +46,14 @@ function NewCampaignContent() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // In a real app, you would add the new campaign to your database
+    // with "On moderation" status. Here we simulate it.
     console.log("Sending for moderation:", { campaignName, campaignText });
     toast({
         title: "Рассылка отправлена на модерацию!",
         description: `Рассылка "${campaignName}" будет рассмотрена в ближайшее время.`
     });
+    // Redirect to the campaigns list where the new campaign would appear.
     router.push('/campaigns');
   };
 

@@ -39,10 +39,8 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
       description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
     });
     setIsOpen(false);
-    // This is a mock implementation. In a real app, you'd create a new campaign
-    // in the database and get its ID.
-    const newCampaignId = `draft_campaign_${Date.now()}`; 
-    router.push(`/campaigns/${newCampaignId}/edit`);
+    // Redirect to the new campaign page with the number of messages as a query param
+    router.push(`/campaigns/new?messages=${selectedPackage.messages}`);
   };
   
   return (
