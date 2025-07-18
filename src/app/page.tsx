@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { ElsenderLogo } from '@/components/icons';
 
 function AnimatedNumber({ finalValue, duration, suffix, isFloat = false }: { finalValue: number, duration: number, suffix: string, isFloat?: boolean }) {
     const [currentValue, setCurrentValue] = useState(0);
@@ -35,7 +35,12 @@ function AnimatedNumber({ finalValue, duration, suffix, isFloat = false }: { fin
             observer.observe(ref.current);
         }
 
-        return () => observer.disconnect();
+        return () => {
+          if (ref.current) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            observer.unobserve(ref.current);
+          }
+        };
     }, [finalValue, duration]);
     
     const formattedValue = isFloat ? currentValue.toFixed(1) : Math.floor(currentValue);
@@ -55,13 +60,16 @@ export default function LandingPage() {
             {/* Header */}
             <header className="absolute w-full z-20 py-6 px-4 sm:px-6 lg:px-8">
                 <nav className="container mx-auto flex justify-between items-center">
-                    <div className="text-2xl font-bold text-white font-headline">
-                        Elsender
-                    </div>
+                    <Link href="/" className="flex items-center gap-2 text-white">
+                        <ElsenderLogo className="w-7 h-7" />
+                        <div className="text-2xl font-bold font-headline">
+                            Elsender
+                        </div>
+                    </Link>
                     <div className="hidden md:flex items-center space-x-8">
-                        <Link href="/#features" className="text-gray-300 hover:text-white transition">Возможности</Link>
-                        <Link href="/#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
-                        <Link href="/#how-it-works" className="text-gray-300 hover:text-white transition">Документация</Link>
+                        <Link href="#features" className="text-gray-300 hover:text-white transition">Возможности</Link>
+                        <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
+                        <Link href="#how-it-works" className="text-gray-300 hover:text-white transition">Документация</Link>
                     </div>
                     <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                         Начать работу
@@ -91,22 +99,8 @@ export default function LandingPage() {
 
             <main>
                 {/* Hero Section */}
-                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient overflow-hidden">
-                    <div className="absolute top-0 right-0 -mr-16 -mt-0 opacity-10 lg:opacity-30">
-                        <Image
-                            src="https://i.imgur.com/vcTgzOW.png"
-                            width={800}
-                            height={600}
-                            alt="Elsender Interface"
-                            className="w-auto h-auto max-w-3xl"
-                            data-ai-hint="interface dashboard"
-                            priority
-                            unoptimized
-                        />
-                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
-                         <div className="absolute inset-0 bg-gradient-to-l from-gray-900 via-transparent to-transparent"></div>
-                    </div>
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                         <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
                             Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
                         </h1>
