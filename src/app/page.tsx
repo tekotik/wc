@@ -90,9 +90,23 @@ export default function LandingPage() {
             </div>
 
             <main>
-                 {/* Hero Section */}
-                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                {/* Hero Section */}
+                <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient overflow-hidden">
+                    <div className="absolute top-0 right-0 -mr-16 -mt-0 opacity-10 lg:opacity-30">
+                        <Image
+                            src="https://i.imgur.com/vcTgzOW.png"
+                            width={800}
+                            height={600}
+                            alt="Elsender Interface"
+                            className="w-auto h-auto max-w-3xl"
+                            data-ai-hint="interface dashboard"
+                            priority
+                            unoptimized
+                        />
+                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                         <div className="absolute inset-0 bg-gradient-to-l from-gray-900 via-transparent to-transparent"></div>
+                    </div>
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                         <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
                             Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
                         </h1>
@@ -309,3 +323,4 @@ export default function LandingPage() {
         </div>
     );
 }
+
