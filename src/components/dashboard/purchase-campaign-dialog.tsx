@@ -51,7 +51,7 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl">Создать новую кампанию</DialogTitle>
           <DialogDescription>
-            Сначала выберите пакет сообщений для вашей рассылки. Баланс будет списан после выбора.
+            Создайте кампанию, напишите текст, отправьте на модерацию. После успешной модерации кампания будет запущена, деньги спишутся с вашего баланса.
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4">
@@ -89,7 +89,7 @@ export default function PurchaseCampaignDialog({ children }: { children: React.R
             <Button variant="outline">Отмена</Button>
           </DialogClose>
           <Button onClick={handleCreateCampaign}>
-            Создать рассылку за {selectedPackage.price} ₽
+            Создать кампанию
           </Button>
         </DialogFooter>
       </DialogContent>
