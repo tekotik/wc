@@ -28,14 +28,14 @@ export default function SidebarNav() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton href="#" isActive={isActive("/")} tooltip="Панель управления">
+        <SidebarMenuButton href="/" isActive={isActive("/")} tooltip="Панель управления">
           <LayoutDashboard />
           Панель управления
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
-          href="#"
+          href="/campaigns"
           isActive={isActive("/campaigns")}
           tooltip="Кампании"
         >
