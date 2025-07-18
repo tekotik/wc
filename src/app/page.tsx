@@ -1,70 +1,144 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
+// Function to generate the smooth curve path data
+function getCurvePath(points: { x: number; y: number }[]): string {
+    if (points.length < 2) return "";
+
+    const pathParts = [];
+    pathParts.push(`M ${points[0].x} ${points[0].y}`);
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+
+        const midPoint = {
+            x: (p1.x + p2.x) / 2,
+            y: (p1.y + p2.y) / 2
+        };
+
+        const cp1 = {
+            x: (midPoint.x + p1.x) / 2,
+            y: p1.y
+        };
+
+        const cp2 = {
+            x: (midPoint.x + p1.x) / 2,
+            y: p2.y
+        };
+
+        pathParts.push(`C ${p1.x} ${p1.y}, ${p2.x} ${p1.y}, ${p2.x} ${p2.y}`);
+    }
+
+    return pathParts.join(' ');
+}
+
+function getSmoothCurvePath(points: { x: number; y: number }[]): string {
+    if (points.length < 2) return '';
+    let d = `M ${points[0].x} ${points[0].y}`;
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p0 = i > 0 ? points[i - 1] : points[i];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = i < points.length - 2 ? points[i + 2] : p2;
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+    return d;
+}
+
+
 export default function LandingPage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const leadsCountRef = useRef<SVGTextElement>(null);
-    const conversionRateRef = useRef<SVGTextElement>(null);
-    const chartSectionRef = useRef<HTMLElement>(null);
+    
+    // --- Chart State ---
+    const svgRef = useRef<SVGSVGElement>(null);
+    const [points, setPoints] = useState([
+        { x: 50, y: 220 },
+        { x: 300, y: 120 },
+        { x: 520, y: 40 }
+    ]);
+    const [draggingPointIndex, setDraggingPointIndex] = useState<number | null>(null);
+
+    const pathData = getSmoothCurvePath(points);
+    const areaData = `${pathData} L ${points[points.length - 1].x} 250 L ${points[0].x} 250 Z`;
+
+    const handleMouseDown = (index: number) => {
+        setDraggingPointIndex(index);
+    };
+
+    const handleMouseUp = useCallback(() => {
+        setDraggingPointIndex(null);
+    }, []);
+
+    const handleMouseMove = useCallback((event: MouseEvent | TouchEvent) => {
+        if (draggingPointIndex === null || !svgRef.current) return;
+
+        const svg = svgRef.current;
+        const ctm = svg.getScreenCTM();
+        if (!ctm) return;
+
+        let clientX, clientY;
+        if (window.TouchEvent && event instanceof TouchEvent) {
+            clientX = event.touches[0].clientX;
+            clientY = event.touches[0].clientY;
+        } else {
+            clientX = (event as MouseEvent).clientX;
+            clientY = (event as MouseEvent).clientY;
+        }
+
+        const pt = svg.createSVGPoint();
+        pt.x = clientX;
+        pt.y = clientY;
+        const svgPoint = pt.matrixTransform(ctm.inverse());
+
+        setPoints(prevPoints => {
+            const newPoints = [...prevPoints];
+            const pointToMove = newPoints[draggingPointIndex];
+            
+            // Constrain movement
+            const newY = Math.max(20, Math.min(250, svgPoint.y)); // Y-axis bounds
+            const newX = pointToMove.x; // Keep X fixed for simplicity
+
+            newPoints[draggingPointIndex] = { x: newX, y: newY };
+            return newPoints;
+        });
+    }, [draggingPointIndex]);
+    
+    useEffect(() => {
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        window.addEventListener('touchmove', handleMouseMove);
+        window.addEventListener('touchend', handleMouseUp);
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+            window.removeEventListener('touchmove', handleMouseMove);
+            window.removeEventListener('touchend', handleMouseUp);
+        };
+    }, [handleMouseMove, handleMouseUp]);
+
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const closeMenu = () => setIsMenuOpen(false);
 
-    useEffect(() => {
-        function animateSVGText(obj: SVGTextElement | null, start: number, end: number, duration: number, suffix: string, isFloat = false) {
-            if (!obj) return;
-            let startTimestamp: number | null = null;
-            const step = (timestamp: number) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                let currentValue = progress * (end - start) + start;
-                if (isFloat) {
-                    obj.textContent = `${currentValue.toFixed(1)}${suffix}`;
-                } else {
-                    obj.textContent = `${Math.floor(currentValue)}${suffix}`;
-                }
-                if (progress < 1) {
-                    window.requestAnimationFrame(step);
-                }
-            };
-            window.requestAnimationFrame(step);
-        }
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        animateSVGText(leadsCountRef.current, 0, 86, 2000, ' лидов');
-                        animateSVGText(conversionRateRef.current, 0, 8.6, 2000, '% конверсия', true);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.5 }
-        );
-
-        if (chartSectionRef.current) {
-            observer.observe(chartSectionRef.current);
-        }
-
-        return () => {
-            if (chartSectionRef.current) {
-                observer.unobserve(chartSectionRef.current);
-            }
-        };
-    }, []);
-
-
     return (
-        <div className="antialiased bg-gray-900 text-gray-200">
+        <div className="antialiased bg-gray-900 text-gray-200 font-body">
             {/* Header */}
             <header className="absolute w-full z-20 py-6 px-4 sm:px-6 lg:px-8">
                 <nav className="container mx-auto flex justify-between items-center">
-                    <div className="text-2xl font-bold text-white">
+                    <div className="text-2xl font-bold text-white font-headline">
                         Elsender
                     </div>
                     <div className="hidden md:flex items-center space-x-8">
@@ -90,9 +164,9 @@ export default function LandingPage() {
                 <button onClick={toggleMenu} className="absolute top-7 right-4 text-white">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
-                <Link href="#features" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300">Возможности</Link>
-                <Link href="#pricing" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300">Тарифы</Link>
-                <Link href="#" onClick={closeMenu} className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300">Документация</Link>
+                <Link href="#features" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 font-headline">Возможности</Link>
+                <Link href="#pricing" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 font-headline">Тарифы</Link>
+                <Link href="#" onClick={closeMenu} className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 font-headline">Документация</Link>
                 <Link href="/dashboard" onClick={closeMenu} className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                     Начать работу
                 </Link>
@@ -120,24 +194,24 @@ export default function LandingPage() {
                 </section>
 
                 {/* Interactive Chart Section */}
-                <section id="growth-chart" ref={chartSectionRef} className="py-20 lg:py-24 bg-gray-900">
+                <section id="growth-chart" className="py-20 lg:py-24 bg-gray-900">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-16">
                             <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
                             <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
                         </div>
                         <div className="custom-card p-4 sm:p-8 max-w-4xl mx-auto">
-                            <svg className="w-full font-sans" viewBox="0 0 550 300">
+                            <svg ref={svgRef} className="w-full font-sans cursor-default" viewBox="0 0 550 300">
                                 <defs>
                                     <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" style={{stopColor:"#22C55E"}} />
+                                        <stop offset="0%" style={{stopColor:"#00F2FE"}} />
                                         <stop offset="100%" style={{stopColor:"#4ADE80"}} />
                                     </linearGradient>
                                     <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" style={{stopColor:"#22C55E", stopOpacity:0.3}} />
+                                        <stop offset="0%" style={{stopColor:"#00F2FE", stopOpacity:0.3}} />
                                         <stop offset="100%" style={{stopColor:"#111827", stopOpacity:0}} />
                                     </linearGradient>
-                                    <filter id="glow">
+                                    <filter id="neonGlow">
                                         <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
                                         <feMerge>
                                             <feMergeNode in="coloredBlur"/>
@@ -145,59 +219,44 @@ export default function LandingPage() {
                                         </feMerge>
                                     </filter>
                                 </defs>
-                                <g className="grid-lines" stroke="#374151" strokeWidth="1">
-                                    <line x1="50" y1="50" x2="520" y2="50" />
-                                    <line x1="50" y1="100" x2="520" y2="100" />
-                                    <line x1="50" y1="150" x2="520" y2="150" />
-                                    <line x1="50" y1="200" x2="520" y2="200" />
-                                    <line x1="50" y1="250" x2="520" y2="250" />
+                                <g className="grid-lines" stroke="#374151" strokeOpacity="0.5" strokeWidth="1">
+                                    {[50, 100, 150, 200, 250].map(y => <line key={y} x1="50" y1={y} x2="520" y2={y} />)}
                                 </g>
                                 <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
-                                    <text x="40" y="255" textAnchor="end">0</text>
-                                    <text x="40" y="205" textAnchor="end">25</text>
-                                    <text x="40" y="155" textAnchor="end">50</text>
-                                    <text x="40" y="105" textAnchor="end">75</text>
-                                    <text x="40" y="55" textAnchor="end">100</text>
+                                    {[
+                                      {y: 255, label: 0},
+                                      {y: 205, label: 250},
+                                      {y: 155, label: 500},
+                                      {y: 105, label: 750},
+                                      {y: 55, label: 1000}
+                                    ].map(({y, label}) => <text key={y} x="40" y={y} textAnchor="end">{label}</text>)}
                                 </g>
-                                <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
-                                <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
+
+                                <path d={areaData} fill="url(#areaGradient)" />
+                                <path d={pathData} stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#neonGlow)'}} />
+                                
                                 <g className="data-points">
-                                    <g className="chart-point" transform="translate(50, 220)">
-                                        <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                        <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                        <g className="chart-tooltip" transform="translate(0, -35)">
-                                            <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                            <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text>
+                                    {points.map((p, index) => (
+                                        <g key={index} transform={`translate(${p.x}, ${p.y})`} 
+                                           className="cursor-grab"
+                                           onMouseDown={() => handleMouseDown(index)}
+                                           onTouchStart={() => handleMouseDown(index)}>
+                                           <circle r="12" fill="#4ADE80" fillOpacity="0.2" />
+                                            <circle r="6" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
                                         </g>
-                                    </g>
-                                    <g className="chart-point" transform="translate(300, 120)">
-                                        <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                        <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                        <g className="chart-tooltip" transform="translate(0, -35)">
-                                            <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                            <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text>
-                                        </g>
-                                    </g>
-                                    <g className="chart-point" transform="translate(520, 40)">
-                                        <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                        <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                        <g className="chart-tooltip" transform="translate(0, -35)">
-                                            <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                            <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text>
-                                        </g>
-                                    </g>
+                                    ))}
                                 </g>
+                                
                                 <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
                                     <text x="50" y="275" textAnchor="middle">День 1</text>
-                                    <text x="185" y="275" textAnchor="middle">День 2</text>
-                                    <text x="300" y="275" textAnchor="middle">День 3</text>
-                                    <text x="415" y="275" textAnchor="middle">День 4</text>
-                                    <text x="520" y="275" textAnchor="middle">День 5</text>
+                                    <text x="300" y="275" text-anchor="middle">День 3</text>
+                                    <text x="520" y="275" text-anchor="middle">День 5</text>
                                 </g>
-                                <g className="integrated-stats" transform="translate(60, 30)">
+
+                                 <g className="integrated-stats" transform="translate(60, 30)">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
-                                    <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" ref={leadsCountRef}>0 лидов</text>
-                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB" ref={conversionRateRef}>0.0% конверсия</text>
+                                    <text y="30" fontSize="24" fontWeight="bold" fill="#00F2FE">{Math.round((250 - points[2].y) / 230 * 1000)} сообщений</text>
+                                    <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB">{(((250 - points[2].y) / 230 * 1000) / 1000 * 100).toFixed(1)}% конверсия</text>
                                 </g>
                                 <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
                                     <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>

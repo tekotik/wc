@@ -9,33 +9,33 @@ body {
 
 @layer base {
   :root {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
 
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
  
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
  
-    --primary: 142.1 76.2% 41.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 20% 98%;
  
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
  
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 215 27.9% 16.9%;
     --muted-foreground: 215 20.2% 65.1%;
  
-    --accent: 142.1 76.2% 41.2%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 210 20% 98%;
  
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142.1 76.2% 41.2%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 217.2 91.2% 59.8%;
  
     --radius: 0.5rem;
 
@@ -50,41 +50,41 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
 
      /* Chart colors */
-    --chart-1: 142.1 76.2% 41.2%;
-    --chart-2: 217.2 91.2% 59.8%;
+    --chart-1: 217.2 91.2% 59.8%;
+    --chart-2: 142.1 76.2% 41.2%;
     --chart-3: 0 72.2% 50.6%;
     --chart-4: 217.2 91.2% 70%;
     --chart-5: 217.2 91.2% 80%;
   }
 
   .dark {
-    --background: 222 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
  
-    --card: 222 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
  
-    --popover: 222 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
  
-    --primary: 142.1 76.2% 41.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 20% 98%;
  
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
  
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 215 27.9% 16.9%;
     --muted-foreground: 215 20.2% 65.1%;
  
-    --accent: 142.1 76.2% 41.2%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 210 20% 98%;
  
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 210 20% 98%;
  
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142.1 76.2% 41.2%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 217.2 91.2% 59.8%;
 
     /* Custom App Colors */
     --sidebar-background: 224 71.4% 4.1%;
@@ -136,37 +136,5 @@ body {
     .popular-plan {
         border-color: #22C55E;
         transform: scale(1.05);
-    }
-    /* Chart animation */
-    .chart-line, .chart-area {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
-        animation: draw 2s 0.5s ease-in-out forwards;
-    }
-    .chart-point-circle {
-        opacity: 0;
-        animation: fade-in 0.5s 2.5s ease forwards;
-    }
-    .chart-point:hover .chart-point-circle-hover {
-        opacity: 1;
-    }
-    .chart-tooltip {
-        opacity: 0;
-        transition: opacity 0.2s ease;
-        pointer-events: none;
-    }
-    .chart-point:hover .chart-tooltip {
-        opacity: 1;
-        pointer-events: all;
-    }
-    @keyframes draw {
-        to {
-            stroke-dashoffset: 0;
-        }
-    }
-    @keyframes fade-in {
-        to {
-            opacity: 1;
-        }
     }
 }
