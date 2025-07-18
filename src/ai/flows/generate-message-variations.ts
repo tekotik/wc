@@ -52,7 +52,7 @@ const prompt = ai.definePrompt({
 
   Campaign Details: {{{campaignDetails}}}
 
-  Message Copy Variations:`, // Specify the key in the input object
+  Message Copy Variations:`,
 });
 
 const generateMessageVariationsFlow = ai.defineFlow(
