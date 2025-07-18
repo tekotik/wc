@@ -137,4 +137,36 @@ body {
         border-color: #22C55E;
         transform: scale(1.05);
     }
+     /* Chart animation */
+    .chart-line, .chart-area {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        animation: draw 2s 0.5s ease-in-out forwards;
+    }
+    .chart-point-circle {
+        opacity: 0;
+        animation: fade-in 0.5s 2.5s ease forwards;
+    }
+    .chart-point:hover .chart-point-circle-hover {
+        opacity: 1;
+    }
+    .chart-tooltip {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        pointer-events: none;
+    }
+    .chart-point:hover .chart-tooltip {
+        opacity: 1;
+        pointer-events: all;
+    }
+    @keyframes draw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes fade-in {
+        to {
+            opacity: 1;
+        }
+    }
 }
