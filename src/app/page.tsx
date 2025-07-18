@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -159,7 +158,7 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 overflow-hidden">
                     <div className="absolute inset-0 hero-gradient"></div>
-                     <div className="absolute top-0 right-0 -mr-16 -mt-16 lg:w-1/2 w-2/3 opacity-20 lg:opacity-100">
+                     <div className="absolute top-0 right-0 h-full lg:w-1/2 w-2/3 opacity-20 lg:opacity-100">
                         <div className="relative w-full h-full">
                              <Image 
                                 src="https://i.imgur.com/8BGxINF.png"
@@ -169,7 +168,8 @@ export default function LandingPage() {
                                 className="object-contain"
                                 data-ai-hint="dashboard ui"
                             />
-                            <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/50 to-transparent"></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
                         </div>
                     </div>
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center lg:text-left relative">
@@ -368,5 +368,3 @@ export default function LandingPage() {
         </div>
     );
 }
-
-    
