@@ -28,7 +28,7 @@ export default function DashboardHeader() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search campaigns..."
+              placeholder="Поиск кампаний..."
               className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
             />
           </div>
@@ -36,7 +36,7 @@ export default function DashboardHeader() {
       </div>
       <Button variant="ghost" size="icon" className="rounded-full">
         <Bell className="h-5 w-5" />
-        <span className="sr-only">Toggle notifications</span>
+        <span className="sr-only">Переключить уведомления</span>
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -45,16 +45,16 @@ export default function DashboardHeader() {
               <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" />
               <AvatarFallback>UA</AvatarFallback>
             </Avatar>
-             <span className="sr-only">Toggle user menu</span>
+             <span className="sr-only">Переключить меню пользователя</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuItem>Настройки</DropdownMenuItem>
+          <DropdownMenuItem>Поддержка</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem>Выйти</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

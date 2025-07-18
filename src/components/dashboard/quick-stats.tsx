@@ -4,28 +4,28 @@ import { Send, CheckCircle2, BookOpen, XCircle } from "lucide-react";
 const stats = [
   {
     icon: Send,
-    title: "Messages Sent",
+    title: "Сообщений отправлено",
     value: "12,345",
     change: "+12.5%",
     changeType: "increase",
   },
   {
     icon: CheckCircle2,
-    title: "Delivery Rate",
+    title: "Коэффициент доставки",
     value: "99.2%",
     change: "+0.2%",
     changeType: "increase",
   },
   {
     icon: BookOpen,
-    title: "Read Rate",
+    title: "Коэффициент прочтения",
     value: "85.7%",
     change: "-1.8%",
     changeType: "decrease",
   },
   {
     icon: XCircle,
-    title: "Failed",
+    title: "Не удалось",
     value: "98",
     change: "+5",
     changeType: "decrease",
@@ -44,7 +44,7 @@ export default function QuickStats() {
           <CardContent>
             <div className="text-2xl font-bold font-headline">{stat.value}</div>
             <p className={`text-xs ${stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'}`}>
-              {stat.change} vs last month
+              {stat.change} по сравнению с прошлым месяцем
             </p>
           </CardContent>
         </Card>

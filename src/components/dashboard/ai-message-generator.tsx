@@ -32,12 +32,12 @@ function SubmitButton() {
       {pending ? (
         <>
           <Bot className="mr-2 h-4 w-4 animate-spin" />
-          Generating...
+          Генерация...
         </>
       ) : (
         <>
           <Bot className="mr-2 h-4 w-4" />
-          Generate Messages
+          Сгенерировать сообщения
         </>
       )}
     </Button>
@@ -69,14 +69,14 @@ export default function AiMessageGenerator() {
   React.useEffect(() => {
     if (state.message === "Success!") {
       toast({
-        title: "Messages Generated!",
-        description: "Your new message variations are ready.",
+        title: "Сообщения сгенерированы!",
+        description: "Ваши новые варианты сообщений готовы.",
       });
       formRef.current?.reset();
     } else if (state.errors?.server) {
        toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
+        title: "Ой! Что-то пошло не так.",
         description: state.errors.server,
       });
     }
@@ -85,20 +85,19 @@ export default function AiMessageGenerator() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="font-headline">AI Message Generator</CardTitle>
+        <CardTitle className="font-headline">AI Генератор сообщений</CardTitle>
         <CardDescription>
-          Describe your campaign and let AI create compelling message variations
-          for you.
+          Опишите свою кампанию, и ИИ создаст для вас привлекательные варианты сообщений.
         </CardDescription>
       </CardHeader>
       <form action={formAction} ref={formRef}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="campaignDetails">Campaign Details</Label>
+            <Label htmlFor="campaignDetails">Детали кампании</Label>
             <Textarea
               id="campaignDetails"
               name="campaignDetails"
-              placeholder="e.g., A flash sale for our new summer collection, targeting young adults aged 18-25. Key message is '50% off for 48 hours only'."
+              placeholder="Например, распродажа нашей новой летней коллекции, целевая аудитория — молодые люди 18-25 лет. Ключевое сообщение: 'Скидка 50% только 48 часов'."
               rows={5}
               required
             />
@@ -107,7 +106,7 @@ export default function AiMessageGenerator() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="numberOfVariations">Number of Variations (1-5)</Label>
+            <Label htmlFor="numberOfVariations">Количество вариантов (1-5)</Label>
             <Input
               id="numberOfVariations"
               name="numberOfVariations"
@@ -127,7 +126,7 @@ export default function AiMessageGenerator() {
       </form>
       {state.data && (
         <CardContent className="space-y-4">
-            <h3 className="text-lg font-semibold font-headline">Generated Variations</h3>
+            <h3 className="text-lg font-semibold font-headline">Сгенерированные варианты</h3>
             <div className="space-y-3">
             {state.data.map((variation, index) => (
                 <div key={index} className="flex items-start gap-4 p-4 border rounded-lg bg-secondary/50">

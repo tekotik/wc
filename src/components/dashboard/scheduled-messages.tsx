@@ -3,9 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const scheduledMessages = [
   {
-    name: "Olivia Martin",
+    name: "Оливия Мартин",
     handle: "olivia.martin@email.com",
-    time: "in 1 hour",
+    time: "через 1 час",
     avatar: {
       src: "https://placehold.co/40x40.png",
       fallback: "OM",
@@ -13,9 +13,9 @@ const scheduledMessages = [
     },
   },
   {
-    name: "Jackson Lee",
+    name: "Джексон Ли",
     handle: "jackson.lee@email.com",
-    time: "in 3 hours",
+    time: "через 3 часа",
     avatar: {
       src: "https://placehold.co/40x40.png",
       fallback: "JL",
@@ -23,9 +23,9 @@ const scheduledMessages = [
     },
   },
   {
-    name: "Isabella Nguyen",
+    name: "Изабелла Нгуен",
     handle: "isabella.nguyen@email.com",
-    time: "tomorrow at 9:00 AM",
+    time: "завтра в 9:00",
      avatar: {
       src: "https://placehold.co/40x40.png",
       fallback: "IN",
@@ -33,9 +33,9 @@ const scheduledMessages = [
     },
   },
     {
-    name: "William Kim",
+    name: "Уильям Ким",
     handle: "will@email.com",
-    time: "tomorrow at 1:00 PM",
+    time: "завтра в 13:00",
      avatar: {
       src: "https://placehold.co/40x40.png",
       fallback: "WK",
@@ -43,9 +43,9 @@ const scheduledMessages = [
     },
   },
     {
-    name: "Sofia Davis",
+    name: "София Дэвис",
     handle: "sofia.davis@email.com",
-    time: "in 2 days",
+    time: "через 2 дня",
      avatar: {
       src: "https://placehold.co/40x40.png",
       fallback: "SD",
@@ -58,7 +58,7 @@ export default function ScheduledMessages() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Scheduled Messages</CardTitle>
+        <CardTitle className="font-headline">Запланированные сообщения</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-6">
        {scheduledMessages.map((message) => (

@@ -28,49 +28,49 @@ export default function SidebarNav() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton href="#" isActive={isActive("/")} tooltip="Dashboard">
+        <SidebarMenuButton href="#" isActive={isActive("/")} tooltip="Панель управления">
           <LayoutDashboard />
-          Dashboard
+          Панель управления
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
           href="#"
           isActive={isActive("/campaigns")}
-          tooltip="Campaigns"
+          tooltip="Кампании"
         >
           <MessageSquareQuote />
-          Campaigns
+          Кампании
         </SidebarMenuButton>
       </SidebarMenuItem>
        <SidebarMenuItem>
         <SidebarMenuButton
           href="#"
           isActive={isActive("/analytics")}
-          tooltip="Analytics"
+          tooltip="Аналитика"
         >
           <BarChart3 />
-          Analytics
+          Аналитика
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
           href="#"
           isActive={isActive("/contacts")}
-          tooltip="Contacts"
+          tooltip="Контакты"
         >
           <Users />
-          Contacts
+          Контакты
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
           href="#"
           isActive={isActive("/settings")}
-          tooltip="Settings"
+          tooltip="Настройки"
         >
           <Settings />
-          Settings
+          Настройки
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
