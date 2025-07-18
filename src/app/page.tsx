@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -168,7 +169,6 @@ export default function LandingPage() {
                                 className="object-contain"
                                 data-ai-hint="dashboard ui"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/50 to-transparent"></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
                         </div>
                     </div>
@@ -248,7 +248,7 @@ export default function LandingPage() {
                                 
                                 <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
                                     <text x="50" y="275" textAnchor="middle">День 1</text>
-                                    <text x="300" y="275" textAnchor="middle">День 3</text>
+                                    <text x="300" y="275" text-anchor="middle">День 3</text>
                                     <text x="520" y="275" textAnchor="middle">День 5</text>
                                 </g>
 
