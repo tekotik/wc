@@ -4,10 +4,9 @@ config();
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 
+// This is a default instance, but API calls should provide their own key.
 export const ai = genkit({
   plugins: [
-    googleAI({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-    }),
+    googleAI(),
   ],
 });

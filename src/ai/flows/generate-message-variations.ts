@@ -9,10 +9,12 @@
  * - GenerateMessageVariationsOutput - The return type for the generateMessageVariations function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { genkit } from 'genkit';
+import { googleAI } from '@genkit-ai/googleai';
+import { z } from 'zod';
 
 const GenerateMessageVariationsInputSchema = z.object({
+  apiKey: z.string(),
   campaignDetails: z
     .string()
     .describe('Details about the campaign, including the target audience, goals, and key message points.'),
@@ -39,30 +41,39 @@ export type GenerateMessageVariationsOutput = z.infer<
 export async function generateMessageVariations(
   input: GenerateMessageVariationsInput
 ): Promise<GenerateMessageVariationsOutput> {
-  return generateMessageVariationsFlow(input);
-}
+  const ai = genkit({
+    plugins: [
+      googleAI({
+        apiKey: input.apiKey,
+      }),
+    ],
+  });
 
-const prompt = ai.definePrompt({
-  name: 'generateMessageVariationsPrompt',
-  input: {schema: GenerateMessageVariationsInputSchema},
-  output: {schema: GenerateMessageVariationsOutputSchema},
-  prompt: `You are an AI copywriter specializing in creating engaging message copy.
+  const prompt = ai.definePrompt({
+    name: 'generateMessageVariationsPrompt',
+    input: { schema: GenerateMessageVariationsInputSchema.omit({ apiKey: true }) },
+    output: { schema: GenerateMessageVariationsOutputSchema },
+    prompt: `You are an AI copywriter specializing in creating engaging message copy.
 
   Based on the following campaign details, generate {{{numberOfVariations}}} message copy variations. The message copy variations should be different from one another.
 
   Campaign Details: {{{campaignDetails}}}
 
   Message Copy Variations:`,
-});
+  });
 
-const generateMessageVariationsFlow = ai.defineFlow(
-  {
-    name: 'generateMessageVariationsFlow',
-    inputSchema: GenerateMessageVariationsInputSchema,
-    outputSchema: GenerateMessageVariationsOutputSchema,
-  },
-  async input => {
-    const {output} = await prompt(input);
-    return output!;
-  }
-);
+  const generateMessageVariationsFlow = ai.defineFlow(
+    {
+      name: 'generateMessageVariationsFlow',
+      inputSchema: GenerateMessageVariationsInputSchema.omit({ apiKey: true }),
+      outputSchema: GenerateMessageVariationsOutputSchema,
+    },
+    async (flowInput) => {
+      const { output } = await prompt(flowInput);
+      return output!;
+    }
+  );
+
+  const { apiKey, ...flowInput } = input;
+  return generateMessageVariationsFlow(flowInput);
+}

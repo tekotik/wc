@@ -38,8 +38,18 @@ export async function generateMessagesAction(
     };
   }
 
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+  if (!apiKey) {
+    console.error("Google API key is not set.");
+    return {
+      message: "An unexpected error occurred.",
+      errors: { server: "AI service is not configured. Missing API key." },
+      data: null,
+    };
+  }
+
   try {
-    const result = await generateMessageVariations(validatedFields.data);
+    const result = await generateMessageVariations({ ...validatedFields.data, apiKey });
     if (!result.messageVariations || result.messageVariations.length === 0) {
       return {
         message: "The AI couldn't generate messages based on your input. Please try again with more specific details.",
