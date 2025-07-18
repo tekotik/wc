@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Send, FileText, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface Message {
   id: number;
@@ -89,16 +90,24 @@ export default function CampaignsPage() {
           {submittedMessages.length > 0 && (
             <div className="space-y-4">
                 <h3 className="text-xl font-bold font-headline">Отправленные сообщения</h3>
-                <div className="relative">
+                <div className="relative h-[200px]">
+                    <AnimatePresence>
                     {submittedMessages.map((msg, index) => (
-                        <Card 
-                            key={msg.id} 
-                            className="relative mb-[-100px] transform transition-all duration-300 ease-out hover:-translate-y-2"
-                            style={{ 
+                        <motion.div
+                            key={msg.id}
+                            initial={{ y: 0, scale: 1, opacity: 1 }}
+                            animate={{
+                                y: index * -120,
+                                scale: 1 - index * 0.05,
+                                opacity: index > 2 ? 0 : 1 - index * 0.2,
                                 zIndex: submittedMessages.length - index,
-                                transform: `translateY(${index * -100}px) scale(${1 - index * 0.05})`,
-                                opacity: 1 - index * 0.1,
-                             }}
+                            }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="absolute w-full"
+                        >
+                        <Card 
+                            className="transform transition-transform duration-300 ease-out hover:-translate-y-2"
                         >
                             <CardHeader className="flex flex-row items-start justify-between">
                                 <div className="flex items-center gap-2">
@@ -113,7 +122,9 @@ export default function CampaignsPage() {
                                 <p className="text-sm text-card-foreground">{msg.text}</p>
                             </CardContent>
                         </Card>
+                        </motion.div>
                     ))}
+                    </AnimatePresence>
                 </div>
             </div>
           )}
