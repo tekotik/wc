@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { Sparkles, ShieldCheck, Rocket, BarChart2 } from 'lucide-react';
+import { Sparkles, ShieldCheck, Rocket, BarChart2, Download, Send, CheckCircle } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -292,7 +292,7 @@ export default function LandingPage() {
                           <path
                               d="M 20 20 Q 250 60 500 20 T 980 20"
                               stroke="url(#curve-gradient)"
-                              strokeWidth="6"
+                              strokeWidth="8"
                               fill="none"
                               className="curve-line"
                               markerEnd="url(#arrowhead)"
@@ -302,18 +302,18 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
-                            <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Загрузите базу номеров</h3>
+                            <p className="text-gray-400">Мы бесплатно проверим её на наличие аккаунтов WhatsApp, чтобы исключить "пустые" отправки.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
-                            <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Отправьте текст сообщения</h3>
+                            <p className="text-gray-400">Можно обычный или уже рандомизированный.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
-                            <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Укажите желаемую дату и время</h3>
+                            <p className="text-gray-400">Выберите удобное время для начала рассылки.</p>
                         </div>
                     </div>
                 </div>
