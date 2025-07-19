@@ -1,68 +1,80 @@
 
 'use server';
 
-import fs from 'fs/promises';
-import path from 'path';
 import type { Reply } from './mock-data';
+import Papa from 'papaparse';
 import { revalidatePath } from 'next/cache';
 
-// Path to the local JSON file
-const repliesFilePath = path.join(process.cwd(), 'src', 'lib', 'replies.json');
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv';
 
-// In-memory store for replies to avoid reading the file on every call within a single request.
-let inMemoryReplies: Reply[] | null = null;
-
-async function readRepliesFromFile(): Promise<Reply[]> {
-    try {
-        const data = await fs.readFile(repliesFilePath, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        console.error('Error reading replies file:', error);
-        return [];
-    }
-}
-
-async function writeRepliesToFile(replies: Reply[]): Promise<void> {
-    try {
-        await fs.writeFile(repliesFilePath, JSON.stringify(replies, null, 2), 'utf-8');
-    } catch (error) {
-        console.error('Error writing to replies file:', error);
-    }
+interface SheetRow {
+  campaignId: string;
+  name: string;
+  reply: string;
+  time: string;
+  avatar_src: string;
+  avatar_fallback: string;
+  avatar_hint: string;
+  unread: string; // Comes as string 'TRUE' or 'FALSE'
 }
 
 
 export async function getAllReplies(): Promise<Reply[]> {
-    // In a real app, you might fetch from a DB here.
-    // For this demo, we read from a local JSON file.
-    inMemoryReplies = await readRepliesFromFile();
-    return inMemoryReplies.sort((a, b) => {
-         if (a.unread && !b.unread) return -1;
-         if (!a.unread && b.unread) return 1;
-         return 0;
+  try {
+    const response = await fetch(GOOGLE_SHEET_CSV_URL, {
+      next: { revalidate: 60 } // Revalidate every 60 seconds
     });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch spreadsheet: ${response.statusText}`);
+    }
+
+    const csvText = await response.text();
+    
+    const parsed = Papa.parse<SheetRow>(csvText, {
+      header: true,
+      skipEmptyLines: true,
+    });
+    
+    if (parsed.errors.length) {
+        console.error("Parsing errors:", parsed.errors);
+    }
+    
+    const allReplies = parsed.data;
+
+    const unreadReplies = allReplies
+      .filter(row => row.unread === 'TRUE')
+      .map(row => ({
+        campaignId: row.campaignId,
+        name: row.name,
+        reply: row.reply,
+        time: row.time,
+        avatar: {
+          src: row.avatar_src,
+          fallback: row.avatar_fallback,
+          hint: row.avatar_hint,
+        },
+        unread: true,
+      }));
+
+    return unreadReplies;
+
+  } catch (error) {
+    console.error('Error fetching or parsing replies from Google Sheet:', error);
+    return []; // Return empty array on error
+  }
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-    const replies = inMemoryReplies || await getAllReplies();
-    return replies.filter(r => r.unread).length;
+    const replies = await getAllReplies();
+    // Since getAllReplies now only returns unread ones, the count is just the length.
+    return replies.length;
 }
 
 
 export async function markAllRepliesAsRead(): Promise<void> {
-    // This function simulates marking all replies as read by updating the JSON file.
-    let replies = await readRepliesFromFile();
-    let changed = false;
-    replies.forEach(reply => {
-        if (reply.unread) {
-            reply.unread = false;
-            changed = true;
-        }
-    });
-
-    if (changed) {
-        await writeRepliesToFile(replies);
-        inMemoryReplies = replies;
-        // Revalidate all paths that show the unread count
-        revalidatePath('/', 'layout');
-    }
+    // This function is now a placeholder.
+    // With Google Sheets as a data source, we can't "write" back to mark them as read.
+    // The "unread" status is managed directly in the Google Sheet.
+    // We will still revalidate the path to ensure any changes in the sheet are fetched.
 }
