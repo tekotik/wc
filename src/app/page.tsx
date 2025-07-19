@@ -1,23 +1,26 @@
 
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { ElsenderLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export default function LandingPage() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
     const closeMenu = () => setIsMenuOpen(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
       document.body.classList.remove('dashboard');
+      document.documentElement.classList.add('dark');
       document.body.style.backgroundColor = 'hsl(var(--background))';
       return () => {
          document.body.style.backgroundColor = '';
+         document.documentElement.classList.remove('dark');
       }
     }, [])
 
@@ -37,8 +40,8 @@ export default function LandingPage() {
                         <Button variant="ghost" asChild><Link href="#pricing">Тарифы</Link></Button>
                         <Button variant="ghost" asChild><Link href="#how-it-works">Документация</Link></Button>
                     </div>
-                    <Link href="/dashboard" className={cn("hidden md:block font-semibold py-2 px-5 rounded-lg btn-gradient")}>
-                        Начать работу
+                     <Link href="/dashboard" className={cn("hidden md:block font-semibold py-2 px-5 rounded-lg btn-gradient")}>
+                        Начать рассылку
                     </Link>
                     <div className="md:hidden">
                         <button onClick={toggleMenu} className="text-foreground focus:outline-none">
@@ -59,7 +62,7 @@ export default function LandingPage() {
                 <Link href="#pricing" onClick={closeMenu} className="text-3xl font-bold text-foreground mb-8 hover:text-primary transition-colors duration-300 font-headline">Тарифы</Link>
                 <Link href="#how-it-works" onClick={closeMenu} className="text-3xl font-bold text-foreground mb-12 hover:text-primary transition-colors duration-300 font-headline">Документация</Link>
                 <Link href="/dashboard" onClick={closeMenu} className="btn-gradient font-bold py-3 px-8 rounded-lg text-lg transition-colors">
-                    Начать работу
+                    Начать рассылку
                 </Link>
             </div>
 
@@ -74,12 +77,13 @@ export default function LandingPage() {
                         <p className="max-w-3xl mx-auto text-lg md:text-xl text-muted-foreground mb-10">
                             Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
                         </p>
-                        <div className="flex justify-center items-center gap-4">
-                            <Link href="/dashboard" className={cn("btn-gradient font-bold py-3 px-8 rounded-xl text-lg w-44 h-16 flex items-center justify-center")}>
-                                Начать<br/>работу
+                        <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                            <Link href="/dashboard" className={cn("group btn-gradient font-bold py-4 px-6 rounded-lg text-lg inline-flex items-center justify-center")}>
+                                Начать рассылку
+                                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                             </Link>
-                            <Link href="#pricing" className="flex items-center justify-center text-center bg-secondary text-secondary-foreground font-semibold py-3 px-8 rounded-xl text-lg hover:bg-secondary/80 transition-colors w-44 h-16">
-                                Смотреть<br/>тарифы
+                            <Link href="#pricing" className="bg-secondary text-secondary-foreground font-semibold py-4 px-6 rounded-lg text-lg hover:bg-secondary/80 transition-colors inline-flex items-center justify-center">
+                                Смотреть тарифы
                             </Link>
                         </div>
                     </div>
@@ -166,8 +170,9 @@ export default function LandingPage() {
                         <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
                             Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                         </p>
-                        <Link href="/dashboard" className="btn-gradient font-bold py-4 px-10 rounded-lg text-xl">
-                            Начать работу
+                        <Link href="/dashboard" className="group btn-gradient font-bold py-4 px-10 rounded-lg text-xl inline-flex items-center justify-center">
+                            Начать рассылку
+                            <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
                         </Link>
                     </div>
                 </section>
@@ -186,4 +191,5 @@ export default function LandingPage() {
             </footer>
         </div>
     );
-}
+
+    
