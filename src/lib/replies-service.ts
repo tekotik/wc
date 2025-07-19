@@ -1,3 +1,4 @@
+
 'use server';
 
 import type { Reply } from './mock-data';
@@ -10,7 +11,7 @@ const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_
 async function fetchAndParseReplies(): Promise<Reply[]> {
   try {
     const response = await fetch(GOOGLE_SHEET_CSV_URL, {
-      next: { revalidate: 600 }, // Cache for 10 minutes
+      next: { revalidate: 60 }, // Cache for 1 minute
     });
 
     if (!response.ok) {
@@ -32,23 +33,19 @@ async function fetchAndParseReplies(): Promise<Reply[]> {
     // Transform and filter data
     const replies: Reply[] = allRows
       .map((row, index) => ({
-        // Use campaignId from sheet, fallback to a default if needed
-        campaignId: row.campaignId || 'Testo', 
-        // Use name from sheet, fallback to a default
-        name: row.name || `Пользователь ${index + 1}`, 
+        campaignId: row.campaignId || 'unknown',
+        name: row.name || `Пользователь ${index + 1}`,
         reply: row.reply || '',
-        // Use time from sheet, format it if necessary
-        time: row.time || new Date().toLocaleTimeString(), 
+        time: row.time || new Date().toLocaleTimeString(),
         avatar: {
           src: "https://placehold.co/40x40.png",
-          fallback: (row.name || 'П').charAt(0),
+          fallback: (row.name || 'П').charAt(0).toUpperCase(),
           hint: "person user",
         },
-        // The "green" messages have 'unread' in the unread column
+        // The "unread" messages have 'unread' in the unread column
         unread: row.unread === 'unread',
       }))
-      // CRITICAL: Filter out rows without a reply text or campaignId
-      .filter(reply => reply.reply && reply.campaignId);
+      .filter(reply => reply.reply && reply.campaignId && reply.campaignId !== 'unknown');
 
     return replies;
 
@@ -61,20 +58,20 @@ async function fetchAndParseReplies(): Promise<Reply[]> {
 
 export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: Date }> {
     const replies = await fetchAndParseReplies();
-    // We only care about the unread ones for display filtering
-    const greenReplies = replies.filter(r => r.unread);
-    return { replies: greenReplies, lastFetched: new Date() };
+    // Return all valid replies
+    return { replies, lastFetched: new Date() };
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-  const { replies } = await getAllReplies();
-  // The function now only returns unread replies, so we can just return the length
-  return replies.length;
+  const replies = await fetchAndParseReplies();
+  // Count only the ones marked as unread
+  return replies.filter(r => r.unread).length;
 }
 
 export async function markAllRepliesAsRead(): Promise<void> {
     // This action cannot modify the Google Sheet.
-    // Revalidating the path will fetch fresh data.
-    revalidatePath('/replies');
-    revalidatePath('/dashboard');
+    // It's a conceptual action. The revalidation is what fetches fresh data
+    // and makes the app aware of any changes made directly in the sheet.
+    // The actual revalidation is now handled in the server action that calls this.
+    console.log("Simulating marking all replies as read. Revalidation will occur in the server action.");
 }
