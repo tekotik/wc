@@ -1,4 +1,5 @@
 
+
 import {
   SidebarProvider,
   Sidebar,
@@ -14,11 +15,11 @@ import Dashboard from "@/components/dashboard/dashboard";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import React from 'react';
-import QuickStats from "@/components/dashboard/quick-stats";
 
 export default async function DashboardPage() {
   const campaigns = await getCampaigns();
   const activeCampaigns = campaigns.filter(c => c.status === "Активна");
+  const completedCampaigns = campaigns.filter(c => c.status === 'Завершена' && c.stats);
   const hasUnreadReplies = allReplies.some(reply => reply.unread);
 
   return (
@@ -36,10 +37,7 @@ export default async function DashboardPage() {
         <DashboardHeader hasUnreadReplies={hasUnreadReplies} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
-             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <QuickStats />
-            </div>
-            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} />
+            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
             <AiMessageGenerator />
           </div>
         </main>
