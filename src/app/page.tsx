@@ -119,7 +119,7 @@ export default function LandingPage() {
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
-                   Добро пожаловать в L-Sender
+                   WhatsApp рассылка
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
@@ -386,5 +386,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-    
