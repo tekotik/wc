@@ -38,12 +38,23 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
         return unreadMap;
     }, [allReplies]);
 
+    const sortedCampaigns = useMemo(() => {
+        if (!Array.isArray(initialCampaigns)) return [];
+        return [...initialCampaigns].sort((a, b) => {
+            const aHasUnread = unreadRepliesByCampaign.has(a.id);
+            const bHasUnread = unreadRepliesByCampaign.has(b.id);
+            if (aHasUnread && !bHasUnread) return -1;
+            if (!aHasUnread && bHasUnread) return 1;
+            return 0;
+        });
+    }, [initialCampaigns, unreadRepliesByCampaign]);
+
 
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 lg:gap-6">
         <div className="lg:col-span-3">
             <ActiveCampaigns 
-                campaigns={initialCampaigns}
+                campaigns={sortedCampaigns}
                 selectedCampaignId={selectedCampaignId}
                 onSelectCampaign={handleSelectCampaign}
                 unreadReplies={unreadRepliesByCampaign}
