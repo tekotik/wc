@@ -69,11 +69,11 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
 
       setIsOpen(false);
       
-      // Store the new campaign in localStorage to be picked up by the campaigns page
+      // Store the new campaign in localStorage to be picked up by the edit page
       localStorage.setItem('pendingCampaign', JSON.stringify(result.campaign));
 
-      // Redirect to the campaigns list page
-      router.push(`/campaigns`);
+      // Redirect to the edit page
+      router.push(`/campaigns/${result.campaign.id}/edit`);
     } else {
        toast({
           variant: "destructive",
