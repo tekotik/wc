@@ -5,7 +5,6 @@ import React, { useState, useMemo } from 'react';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import ActiveCampaigns from './active-campaigns';
 import RecentReplies from './recent-replies';
-import AnalyticsOverview from './analytics-overview';
 
 interface DashboardProps {
     initialCampaigns: Campaign[];
@@ -40,9 +39,6 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
 
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 lg:gap-6">
-        <div className="lg:col-span-7">
-            <AnalyticsOverview campaigns={completedCampaigns} />
-        </div>
         <div className="lg:col-span-3">
             <ActiveCampaigns 
                 campaigns={initialCampaigns}
