@@ -12,15 +12,15 @@ import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
 import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/lib/replies-service';
 import RepliesView from './_components/replies-view';
-import { revalidatePath } from 'next/cache';
 
 export default async function RepliesPage() {
+  // Mark all as read when the page is visited.
+  // The revalidation is now handled inside markAllRepliesAsRead.
+  await markAllRepliesAsRead();
+
   const replies = await getAllReplies(); 
   const unreadCount = await getUnreadRepliesCount();
 
-  // Mark all as read when the page is visited
-  await markAllRepliesAsRead();
-  revalidatePath('/', 'layout'); // Revalidate all pages to update the badge
 
   return (
     <SidebarProvider>
@@ -36,9 +36,11 @@ export default async function RepliesPage() {
             </span>
           </Link>
         </SidebarHeader>
+        {/* Pass 0 directly as unread count is reset on this page */}
         <SidebarNav unreadCount={0} />
       </Sidebar>
       <SidebarInset>
+        {/* Pass 0 directly as unread count is reset on this page */}
         <DashboardHeader unreadCount={0} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto w-full max-w-7xl">

@@ -1,4 +1,3 @@
-
 [
   {
     "campaignId": "summer_sale_24",
@@ -10,7 +9,7 @@
       "fallback": "ЕВ",
       "hint": "woman thinking"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -21,7 +20,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "МП",
       "hint": "man smiling"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -32,7 +32,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "СК",
       "hint": "woman glasses"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -43,7 +44,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "АП",
       "hint": "man handsome"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -55,7 +57,7 @@
       "fallback": "АС",
       "hint": "woman casual"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -66,7 +68,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "ИК",
       "hint": "man thoughtful"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -77,7 +80,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "ДИ",
       "hint": "man professional"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -88,7 +92,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "МН",
       "hint": "woman elegant"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "loyalty_program",
@@ -100,6 +105,6 @@
       "fallback": "ОБ",
       "hint": "woman happy"
     },
-    "unread": true
+    "unread": false
   }
 ]
