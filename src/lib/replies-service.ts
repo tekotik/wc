@@ -61,7 +61,11 @@ async function fetchRepliesFromSheet(): Promise<Reply[]> {
 export async function getAllReplies(): Promise<Reply[]> {
     const freshReplies = await fetchRepliesFromSheet();
     inMemoryReplies = freshReplies;
-    return freshReplies.sort((a, b) => (b.unread ? 1 : 0) - (a.unread ? 1 : 0));
+    return freshReplies.sort((a, b) => {
+         if (a.unread && !b.unread) return -1;
+         if (!a.unread && b.unread) return 1;
+         return 0; // Keep original order for items with same read status
+    });
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
@@ -73,6 +77,6 @@ export async function getUnreadRepliesCount(): Promise<number> {
 export async function markAllRepliesAsRead(): Promise<void> {
     // NOTE: This function is now a no-op because we cannot write back to the Google Sheet.
     // The "unread" status is now managed directly in the Google Sheet.
-    // We will still revalidate the path to ensure any changes in the sheet are fetched.
-    revalidatePath('/', 'layout');
+    // Calling revalidatePath() here is not allowed during page render,
+    // so we rely on the timed revalidation in fetch.
 }

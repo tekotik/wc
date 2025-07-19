@@ -14,13 +14,13 @@ import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/li
 import RepliesView from './_components/replies-view';
 
 export default async function RepliesPage() {
-  // Mark all as read when the page is visited.
-  // The revalidation is now handled inside markAllRepliesAsRead.
+  // Although this function is currently a no-op, we keep the call
+  // in case write-back functionality is added in the future.
   await markAllRepliesAsRead();
 
   const replies = await getAllReplies(); 
-  // Get the count AFTER marking them as read for the current view, but before revalidation happens
-  const unreadCount = await getUnreadRepliesCount();
+  // After the conceptual "mark as read", the unread count for the nav should be 0.
+  const unreadCount = 0;
 
 
   return (
@@ -38,11 +38,11 @@ export default async function RepliesPage() {
           </Link>
         </SidebarHeader>
         {/* Pass 0 directly as unread count is reset on this page */}
-        <SidebarNav unreadCount={0} />
+        <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
         {/* Pass 0 directly as unread count is reset on this page */}
-        <DashboardHeader unreadCount={0} />
+        <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto w-full max-w-7xl">
             <RepliesView initialReplies={replies} />
