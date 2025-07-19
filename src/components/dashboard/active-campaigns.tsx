@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Pencil } from "lucide-react";
 import Link from 'next/link';
 import type { Campaign } from "@/lib/mock-data";
+import { Badge } from "@/components/ui/badge";
 
 
 interface ActiveCampaignsProps {
@@ -52,7 +53,12 @@ export default function ActiveCampaigns({
                   </div>
                   <div className="flex items-center gap-3">
                     {unreadReplies.has(campaign.id) && (
-                        <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                         <Badge
+                            variant="default"
+                            className="h-5 w-5 min-w-5 p-0 flex items-center justify-center rounded-full bg-primary text-primary-foreground"
+                        >
+                            {unreadReplies.get(campaign.id)}
+                        </Badge>
                     )}
                     {selectedCampaignId === campaign.id && (
                         <CheckCircle className="h-5 w-5 text-primary" />
