@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { Sparkles, ShieldCheck, Rocket, BarChart2, Download, Send, CheckCircle } from 'lucide-react';
+import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -125,7 +125,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="btn-glitch">
+                    <Link href="/dashboard" className="bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-lg text-lg hover:bg-primary/90 transition">
                         <span className="link-inner">Начать работу</span>
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -284,36 +284,31 @@ export default function LandingPage() {
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                              <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-                                refX="0" refY="3.5" orient="auto">
-                                <polygon points="0 0, 10 3.5, 0 7" fill="url(#curve-gradient)" />
-                              </marker>
                           </defs>
                           <path
-                              d="M 20 20 Q 250 60 500 20 T 980 20"
+                              d="M 20 30 Q 250 50 500 30 T 980 30"
                               stroke="url(#curve-gradient)"
                               strokeWidth="8"
                               fill="none"
                               className="curve-line"
-                              markerEnd="url(#arrowhead)"
                           />
                       </svg>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Загрузите базу номеров</h3>
-                            <p className="text-gray-400">Мы бесплатно проверим её на наличие аккаунтов WhatsApp, чтобы исключить "пустые" отправки.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
+                            <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Отправьте текст сообщения</h3>
-                            <p className="text-gray-400">Можно обычный или уже рандомизированный.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
+                            <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Укажите желаемую дату и время</h3>
-                            <p className="text-gray-400">Выберите удобное время для начала рассылки.</p>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
+                            <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
                         </div>
                     </div>
                 </div>
@@ -325,45 +320,19 @@ export default function LandingPage() {
             <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
             </div>
-            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Plan 1: Start */}
-              <div className="card p-8 flex flex-col text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
-                  <p className="text-gray-400 mb-6">Для быстрого начала</p>
-                  <div className="text-5xl font-bold text-white my-4">1000<span className="text-2xl text-gray-400">₽</span></div>
-                  <p className="text-primary font-semibold mb-8">1 000 сообщений</p>
-                  <div className="flex-grow"></div>
-                  <Link href="/dashboard" className="mt-auto bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition w-full">
-                      Выбрать тариф
-                  </Link>
-              </div>
-
-              {/* Plan 2: Pro (Popular) */}
-              <div className="card p-8 flex flex-col text-center popular-plan relative">
-                  <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
-                    <span className="bg-green-500 text-gray-900 text-sm font-bold px-4 py-1 rounded-full uppercase">Популярный выбор</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
-                  <p className="text-gray-400 mb-6">Для активного роста</p>
-                  <div className="text-5xl font-bold text-white my-4">4500<span className="text-2xl text-gray-400">₽</span></div>
-                  <p className="text-primary font-semibold mb-8">5 000 сообщений</p>
-                  <div className="flex-grow"></div>
-                  <Link href="/dashboard" className="mt-auto btn-gradient text-white font-semibold py-3 px-6 rounded-lg w-full">
-                      Выбрать тариф
-                  </Link>
-              </div>
-
-              {/* Plan 3: Business */}
-              <div className="card p-8 flex flex-col text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Бизнес</h3>
-                  <p className="text-gray-400 mb-6">Для крупных компаний</p>
-                  <div className="text-5xl font-bold text-white my-4">8000<span className="text-2xl text-gray-400">₽</span></div>
-                  <p className="text-primary font-semibold mb-8">10 000 сообщений</p>
-                  <div className="flex-grow"></div>
-                  <Link href="/dashboard" className="mt-auto bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition w-full">
-                      Выбрать тариф
-                  </Link>
-              </div>
+            <div className="max-w-4xl mx-auto space-y-8">
+                <div className="card p-6 md:p-8">
+                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
+                    <p className="text-gray-300 text-lg">300–500 сообщений — <span className="text-primary font-semibold">9 ₽</span> за сообщение</p>
+                </div>
+                <div className="card p-6 md:p-8">
+                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
+                    <p className="text-gray-300 text-lg">501–1000 сообщений — <span className="text-primary font-semibold">8 ₽</span> за сообщение</p>
+                </div>
+                <div className="card p-6 md:p-8">
+                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Бизнес</h3>
+                    <p className="text-gray-300 text-lg">1001–2000 сообщений — <span className="text-primary font-semibold">7 ₽</span> за сообщение</p>
+                </div>
             </div>
              <div className="text-center mt-16">
                  <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
@@ -395,7 +364,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="btn-glitch">
+                <Link href="/dashboard" className="bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-lg text-lg hover:bg-primary/90 transition">
                     <span className="link-inner">Начать работу</span>
                 </Link>
             </div>
