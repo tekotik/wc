@@ -97,7 +97,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
             Создайте рассылку, напишите текст, отправьте на модерацию. После успешной модерации рассылка будет запущена, деньги спишутся с вашего баланса.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4">
+        <div className="flex flex-col gap-4 py-4">
           {packages.map((pkg) => (
             <div
               key={pkg.messages}

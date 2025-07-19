@@ -148,7 +148,7 @@ export default function LandingPage() {
     `}</style>
     <div className="antialiased">
     <header className="absolute w-full z-20 py-6">
-        <nav className="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
             <Link href="/dashboard" className="text-2xl font-bold text-white flex items-center gap-2">
                 <ElsenderLogo className="w-7 h-7" />
                 Elsender
@@ -168,7 +168,7 @@ export default function LandingPage() {
                     </svg>
                 </button>
             </div>
-        </nav>
+        </div>
     </header>
 
     <div id="mobile-menu" className="mobile-menu fixed top-0 right-0 h-full w-full bg-gray-900/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
@@ -184,25 +184,27 @@ export default function LandingPage() {
     </div>
 
     <main>
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                    Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
-                </h1>
-                <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
-                    Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
-                </p>
-                <div className="flex justify-center items-center space-x-4">
-                     <Link href="/dashboard" className="group btn-gradient inline-flex items-center justify-center text-white font-bold py-3 px-8 rounded-lg text-lg">
-                        Начать рассылку
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </Link>
-                    <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
-                        Смотреть тарифы
-                    </Link>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
+                <div className="text-center">
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                        Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
+                    </h1>
+                    <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
+                        Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
+                    </p>
+                    <div className="flex justify-center items-center space-x-4">
+                         <Link href="/dashboard" className="group btn-gradient inline-flex items-center justify-center text-white font-bold py-3 px-8 rounded-lg text-lg">
+                            Начать рассылку
+                            <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                        </Link>
+                        <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
+                            Смотреть тарифы
+                        </Link>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <section id="growth-chart" className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -258,9 +260,8 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
-
-        <section id="features" className="py-20 lg:py-24">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="features" className="py-20 lg:py-24">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
@@ -295,8 +296,8 @@ export default function LandingPage() {
                         <p className="text-gray-400">Отслеживайте ключевые метрики: доставку, прочтения и ответы. Принимайте решения на основе данных.</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
         
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -327,8 +328,8 @@ export default function LandingPage() {
             </div>
         </section>
 
-        <section id="pricing" className="py-20 lg:py-24">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="pricing" className="py-20 lg:py-24">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Прозрачные тарифы</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Выберите план, который идеально подходит для ваших задач. Никаких скрытых платежей.</p>
@@ -369,8 +370,8 @@ export default function LandingPage() {
                         <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>API для интеграций</span>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
