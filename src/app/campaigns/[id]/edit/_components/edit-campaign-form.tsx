@@ -1,24 +1,51 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, Send } from "lucide-react";
+import { Save, ArrowLeft, Send, Paperclip } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import type { Campaign } from "@/lib/mock-data";
 import { updateCampaignAction } from "@/app/campaigns/actions";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 
 export default function EditCampaignForm({ campaign: initialCampaign }: { campaign: Campaign }) {
   const { toast } = useToast();
   const [campaign, setCampaign] = useState(initialCampaign);
+  const [fileName, setFileName] = useState(initialCampaign.baseFile?.name || "");
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        setCampaign({
+          ...campaign,
+          baseFile: { name: file.name, content },
+        });
+        setFileName(file.name);
+         toast({
+            title: "Файл прикреплен",
+            description: file.name,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,7 +54,7 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
     let toastMessage = `Рассылка "${campaign.name}" сохранена.`;
 
     // This logic determines if the action is "send to moderation"
-    const isSendingToModeration = e.nativeEvent.submitter?.innerText?.includes("модерацию");
+    const isSendingToModeration = (e.nativeEvent as SubmitEvent).submitter?.textContent?.includes("модерацию");
 
     if (isSendingToModeration && (campaign.status === "Черновик" || campaign.status === "Отклонено")) {
         newStatus = "На модерации";
@@ -72,6 +99,22 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
             Сохранить изменения
         </Button>
     );
+    
+    const attachFileButton = (
+      <>
+        <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+            accept=".csv, .txt, .json"
+        />
+        <Button type="button" variant="outline" onClick={handleAttachClick}>
+            <Paperclip className={cn("mr-2 h-4 w-4", fileName && "text-primary")} />
+            {fileName ? "База прикреплена" : "Прикрепить базу"}
+        </Button>
+      </>
+    );
 
     let mainActionButton;
 
@@ -93,9 +136,12 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
     }
 
     return (
-        <div className="flex justify-between w-full">
-            <div>{mainActionButton}</div>
-            {campaign.status === 'Черновик' && <div>{baseSaveButton}</div>}
+        <div className="flex justify-between items-center w-full">
+            <div className="flex items-center gap-2">{mainActionButton}</div>
+            <div className="flex items-center gap-2">
+              {attachFileButton}
+              {campaign.status === 'Черновик' && baseSaveButton}
+            </div>
         </div>
     );
   }
@@ -132,6 +178,11 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
             <CardHeader>
                 <CardTitle className="font-headline">{campaign.name}</CardTitle>
                 <CardDescription>{getCardDescription()}</CardDescription>
+                 {fileName && !isViewOnly && (
+                    <div className="text-sm text-muted-foreground pt-2">
+                        Прикреплен файл: <span className="font-medium text-primary">{fileName}</span>
+                    </div>
+                )}
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">

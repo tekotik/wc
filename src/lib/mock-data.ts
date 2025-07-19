@@ -7,6 +7,10 @@ export interface Campaign {
     status: CampaignStatus;
     text: string;
     rejectionReason?: string;
+    baseFile?: {
+        name: string;
+        content: string; // base64 encoded content
+    };
     stats?: {
       data: Array<{
         date: string;

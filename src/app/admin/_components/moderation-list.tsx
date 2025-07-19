@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle2, XCircle, ShieldQuestion } from "lucide-react";
+import { FileText, CheckCircle2, XCircle, ShieldQuestion, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +24,16 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
   const [rejectionReason, setRejectionReason] = useState("");
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
   const { toast } = useToast();
+
+  const handleDownloadBase = (campaign: Campaign) => {
+    if (!campaign.baseFile) return;
+    const link = document.createElement("a");
+    link.href = campaign.baseFile.content;
+    link.download = campaign.baseFile.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const handleModerate = async (id: string, newStatus: "Активна" | "Отклонено", reason?: string) => {
     const campaign = campaigns.find(c => c.id === id);
@@ -85,6 +95,14 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
                         <div className="flex-1">
                             <h3 className="font-semibold font-headline">{campaign.name}</h3>
                             <p className="text-sm text-card-foreground mt-2 bg-secondary p-3 rounded-md">{campaign.text}</p>
+                            {campaign.baseFile && (
+                                <div className="mt-3">
+                                    <Button variant="outline" size="sm" onClick={() => handleDownloadBase(campaign)}>
+                                        <Download className="mr-2 h-4 w-4" />
+                                        Скачать базу ({campaign.baseFile.name})
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 mt-4 md:mt-0 w-full md:w-auto">
