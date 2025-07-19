@@ -277,20 +277,36 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-green-500"></div>
+                     <div className="hidden md:block absolute top-1/2 left-0 w-full -translate-y-1/2">
+                        <svg width="100%" height="100%" viewBox="0 0 1000 40" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stopColor="#06b6d4" />
+                                    <stop offset="100%" stopColor="#10b981" />
+                                </linearGradient>
+                            </defs>
+                            <path 
+                                d="M 0 20 C 250 -20, 750 60, 1000 20" 
+                                stroke="url(#curveGradient)" 
+                                strokeWidth="4" 
+                                fill="none"
+                                className="curve-line"
+                            />
+                        </svg>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">1</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">1</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Создайте рассылку</h3>
                             <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
                         </div>
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">2</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">2</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Пройдите модерацию</h3>
                             <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
                         </div>
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">3</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Запустите и анализируйте</h3>
                             <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
                         </div>
