@@ -238,28 +238,28 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <Rocket className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
@@ -277,20 +277,25 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 -translate-y-1/2">
+                    <div className="hidden md:block absolute top-5 left-0 w-full h-0.5 -translate-y-1/2">
                       <svg width="100%" height="100%" viewBox="0 0 1000 60" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full">
                           <defs>
                               <linearGradient id="curve-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
+                              <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                                refX="0" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="url(#curve-gradient)" />
+                              </marker>
                           </defs>
                           <path
-                              d="M 20 30 Q 250 80 500 30 T 980 30"
+                              d="M 20 20 Q 250 60 500 20 T 980 20"
                               stroke="url(#curve-gradient)"
                               strokeWidth="4"
                               fill="none"
                               className="curve-line"
+                              markerEnd="url(#arrowhead)"
                           />
                       </svg>
                     </div>
