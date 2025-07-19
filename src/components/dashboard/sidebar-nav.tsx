@@ -11,7 +11,7 @@ import {
 import {
   LayoutDashboard,
   MessageSquareQuote,
-  Users,
+  LifeBuoy,
   Shield,
   MessagesSquare,
   BarChart3,
@@ -87,11 +87,11 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
       <SidebarMenuItem>
         <SidebarMenuButton
           href="#"
-          isActive={isActive("/contacts")}
-          tooltip="Контакты"
+          isActive={isActive("/support")}
+          tooltip="Тех поддержка"
         >
-          <Users />
-          Контакты
+          <LifeBuoy />
+          Тех поддержка
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
