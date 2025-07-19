@@ -10,7 +10,6 @@ import { ElsenderLogo } from '@/components/icons';
 
 export default function LandingPage() {
   useEffect(() => {
-    // Mobile menu toggle script
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const closeMenuButton = document.getElementById('close-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -27,7 +26,6 @@ export default function LandingPage() {
       });
     }
 
-    // Animated counter script for SVG text
     function animateSVGText(obj: SVGTextElement, start: number, end: number, duration: number, suffix: string, isFloat = false) {
       let startTimestamp: number | null = null;
       const step = (timestamp: number) => {
@@ -80,9 +78,9 @@ export default function LandingPage() {
     <style jsx global>{`
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Dark background */
-            color: #E5E7EB; /* Light gray text */
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            background-color: #111827;
+            color: #E5E7EB;
+            overflow-x: hidden;
         }
         .hero-gradient {
             background: radial-gradient(circle at top, rgba(34, 197, 94, 0.1), transparent 40%);
@@ -96,7 +94,7 @@ export default function LandingPage() {
             box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
         }
         .card {
-            background-color: #1F2937; /* Slightly lighter dark */
+            background-color: #1F2937;
             border: 1px solid #374151;
             border-radius: 1rem;
             transition: all 0.3s ease;
@@ -149,9 +147,8 @@ export default function LandingPage() {
         }
     `}</style>
     <div className="antialiased">
-    {/* Header */}
-    <header className="absolute w-full z-20 py-6 px-4 sm:px-6 lg:px-8">
-        <nav className="container mx-auto flex justify-between items-center">
+    <header className="absolute w-full z-20 py-6">
+        <nav className="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
             <Link href="/dashboard" className="text-2xl font-bold text-white">
                 Elsender
             </Link>
@@ -163,7 +160,6 @@ export default function LandingPage() {
             <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                 Начать рассылку
             </Link>
-            {/* Mobile Menu Button */}
             <div className="md:hidden">
                 <button id="mobile-menu-button" className="text-white focus:outline-none">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -174,7 +170,6 @@ export default function LandingPage() {
         </nav>
     </header>
 
-    {/* Mobile Menu */}
     <div id="mobile-menu" className="mobile-menu fixed top-0 right-0 h-full w-full bg-gray-900/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center">
         <button id="close-menu-button" className="absolute top-7 right-4 text-white">
              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -187,9 +182,7 @@ export default function LandingPage() {
         </Link>
     </div>
 
-
     <main>
-        {/* Hero Section */}
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
@@ -210,14 +203,12 @@ export default function LandingPage() {
             </div>
         </section>
 
-        {/* NEW: Interactive Chart Section */}
         <section id="growth-chart" className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Отправьте сообщения — получите результат</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
                 </div>
-
                 <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
                     <svg className="w-full font-sans" viewBox="0 0 550 300">
                         <defs>
@@ -237,69 +228,22 @@ export default function LandingPage() {
                                 </feMerge>
                             </filter>
                         </defs>
-
-                        {/* Grid lines */}
                         <g className="grid-lines" stroke="#374151" strokeWidth="1">
-                            <line x1="50" y1="50" x2="520" y2="50" />
-                            <line x1="50" y1="100" x2="520" y2="100" />
-                            <line x1="50" y1="150" x2="520" y2="150" />
-                            <line x1="50" y1="200" x2="520" y2="200" />
-                            <line x1="50" y1="250" x2="520" y2="250" />
+                            <line x1="50" y1="50" x2="520" y2="50" /><line x1="50" y1="100" x2="520" y2="100" /><line x1="50" y1="150" x2="520" y2="150" /><line x1="50" y1="200" x2="520" y2="200" /><line x1="50" y1="250" x2="520" y2="250" />
                         </g>
-
-                        {/* Y-axis Labels */}
                         <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
-                            <text x="40" y="255" textAnchor="end">0</text>
-                            <text x="40" y="205" textAnchor="end">25</text>
-                            <text x="40" y="155" textAnchor="end">50</text>
-                            <text x="40" y="105" textAnchor="end">75</text>
-                            <text x="40" y="55" textAnchor="end">100</text>
+                            <text x="40" y="255" textAnchor="end">0</text><text x="40" y="205" textAnchor="end">25</text><text x="40" y="155" textAnchor="end">50</text><text x="40" y="105" textAnchor="end">75</text><text x="40" y="55" textAnchor="end">100</text>
                         </g>
-
-                        {/* Chart Area Fill */}
                         <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
-
-                        {/* Chart Line */}
                         <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
-
-                        {/* Data Points & Tooltips */}
                         <g className="data-points">
-                            <g className="chart-point" transform="translate(50, 220)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text>
-                                </g>
-                            </g>
-                            <g className="chart-point" transform="translate(300, 120)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text>
-                                </g>
-                            </g>
-                            <g className="chart-point" transform="translate(520, 40)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text>
-                                </g>
-                            </g>
+                            <g className="chart-point" transform="translate(50, 220)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text></g></g>
+                            <g className="chart-point" transform="translate(300, 120)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text></g></g>
+                            <g className="chart-point" transform="translate(520, 40)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text></g></g>
                         </g>
-
-                        {/* X-axis Labels */}
                         <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
-                            <text x="50" y="275" textAnchor="middle">День 1</text>
-                            <text x="185" y="275" textAnchor="middle">День 2</text>
-                            <text x="300" y="275" textAnchor="middle">День 3</text>
-                            <text x="415" y="275" textAnchor="middle">День 4</text>
-                            <text x="520" y="275" textAnchor="middle">День 5</text>
+                            <text x="50" y="275" textAnchor="middle">День 1</text><text x="185" y="275" textAnchor="middle">День 2</text><text x="300" y="275" textAnchor="middle">День 3</text><text x="415" y="275" textAnchor="middle">День 4</text><text x="520" y="275" textAnchor="middle">День 5</text>
                         </g>
-
-                        {/* Integrated Stats */}
                         <g className="integrated-stats" transform="translate(60, 30)">
                             <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
                             <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" id="leads-count-text">0 лидов</text>
@@ -314,7 +258,6 @@ export default function LandingPage() {
             </div>
         </section>
 
-        {/* Features Section */}
         <section id="features" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -354,7 +297,6 @@ export default function LandingPage() {
             </div>
         </section>
         
-        {/* How It Works Section */}
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -384,7 +326,6 @@ export default function LandingPage() {
             </div>
         </section>
 
-        {/* Pricing Section */}
         <section id="pricing" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -430,7 +371,6 @@ export default function LandingPage() {
             </div>
         </section>
 
-        {/* Final CTA Section */}
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-white">Готовы увеличить продажи?</h2>
@@ -445,7 +385,6 @@ export default function LandingPage() {
         </section>
     </main>
 
-    {/* Footer */}
     <footer className="bg-gray-900 border-t border-gray-800">
         <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
             <div className="flex justify-center space-x-6 mb-4">
