@@ -31,13 +31,13 @@ body {
     --ring: 142.1 76.2% 36.3%;
     --radius: 0.5rem;
     /* Custom App Colors */
-    --sidebar-background: 224 71.4% 4.1%;
+    --sidebar-background: 221 39.3% 11%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 142.1 76.2% 36.3%;
     --sidebar-primary-foreground: 144.9 80.4% 10%;
-    --sidebar-accent: 142.1 76.2% 36.3%;
-    --sidebar-accent-foreground: 355.7 100% 97.3%;
-    --sidebar-border: 215 27.9% 16.9%;
+    --sidebar-accent: 220 24.1% 25.1%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 217 32.6% 17.5%;
     --sidebar-ring: 142.1 76.2% 36.3%;
     /* Chart colors */
     --chart-1: 12 76% 61%;
@@ -68,13 +68,13 @@ body {
     --input: 215 27.9% 16.9%;
     --ring: 142.1 76.2% 36.3%;
     /* Custom App Colors */
-    --sidebar-background: 224 71.4% 4.1%;
+    --sidebar-background: 221 39.3% 11%;
     --sidebar-foreground: 210 20% 98%;
     --sidebar-primary: 142.1 76.2% 36.3%;
     --sidebar-primary-foreground: 144.9 80.4% 10%;
-    --sidebar-accent: 142.1 76.2% 36.3%;
-    --sidebar-accent-foreground: 355.7 100% 97.3%;
-    --sidebar-border: 215 27.9% 16.9%;
+    --sidebar-accent: 220 24.1% 25.1%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 217 32.6% 17.5%;
     --sidebar-ring: 142.1 76.2% 36.3%;
     /* Chart colors */
     --chart-1: 12 76% 61%;
