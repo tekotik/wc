@@ -3,6 +3,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { ElsenderLogo } from '@/components/icons';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -48,30 +49,30 @@ export default function LandingPage() {
     const leadsCountText = leadsCountRef.current;
     const conversionRateText = conversionRateRef.current;
 
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateSVGText(leadsCountText, 0, 86, 2000, ' лидов');
+                animateSVGText(conversionRateText, 0, 8.6, 2000, '% конверсия', true);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
     if (chartSection) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateSVGText(leadsCountText, 0, 86, 2000, ' лидов');
-                    animateSVGText(conversionRateText, 0, 8.6, 2000, '% конверсия', true);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-
         observer.observe(chartSection);
-
-        return () => {
-             mobileMenuButton?.removeEventListener('click', openMenu);
-             closeMenuButton?.removeEventListener('click', closeMenu);
-             menuLinks?.forEach(link => {
-                link.removeEventListener('click', closeMenu);
-             });
-             observer.disconnect();
-        }
     }
-
-
+    
+    return () => {
+         mobileMenuButton?.removeEventListener('click', openMenu);
+         closeMenuButton?.removeEventListener('click', closeMenu);
+         menuLinks?.forEach(link => {
+            link.removeEventListener('click', closeMenu);
+         });
+         if (chartSection) {
+            observer.unobserve(chartSection);
+         }
+    }
   }, []);
 
 
@@ -79,13 +80,14 @@ export default function LandingPage() {
     <>
       <header className="absolute w-full z-20 py-6 px-4 sm:px-6 lg:px-8">
         <nav className="container mx-auto flex justify-between items-center">
-            <div className="text-2xl font-bold text-white">
-                Elsender
-            </div>
+            <Link href="/" className="flex items-center gap-3 text-white hover:text-green-400 transition-colors">
+                <ElsenderLogo className="w-8 h-8" />
+                <span className="text-2xl font-bold">Elsender</span>
+            </Link>
             <div className="hidden md:flex items-center space-x-8">
                 <Link href="#features" className="text-gray-300 hover:text-white transition">Возможности</Link>
                 <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
-                <Link href="#" className="text-gray-300 hover:text-white transition">Документация</Link>
+                <Link href="/dashboard" className="text-gray-300 hover:text-white transition">Документация</Link>
             </div>
             <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                 Начать работу
@@ -106,7 +108,7 @@ export default function LandingPage() {
         </button>
         <Link href="#features" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Возможности</Link>
         <Link href="#pricing" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Тарифы</Link>
-        <Link href="#" className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 menu-link">Документация</Link>
+        <Link href="/dashboard" className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 menu-link">Документация</Link>
         <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg menu-link">
             Начать работу
         </Link>
@@ -359,7 +361,7 @@ export default function LandingPage() {
             <div className="flex justify-center space-x-6 mb-4">
                 <Link href="#features" className="hover:text-white transition">Возможности</Link>
                 <Link href="#pricing" className="hover:text-white transition">Тарифы</Link>
-                <Link href="#" className="hover:text-white transition">Документация</Link>
+                <Link href="/dashboard" className="hover:text-white transition">Документация</Link>
             </div>
             <p>&copy; 2025 Elsender. Все права защищены.</p>
         </div>
