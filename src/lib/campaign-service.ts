@@ -20,7 +20,8 @@ async function readCampaignsFromFile(): Promise<Campaign[]> {
     return JSON.parse(data);
   } catch (error) {
     if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      // If the file doesn't exist, return the initial mock data.
+      // If the file doesn't exist, create it with the initial mock data.
+      await writeCampaigns(initialMockCampaigns);
       return initialMockCampaigns;
     }
     console.error('Error reading campaigns file:', error);
@@ -30,51 +31,46 @@ async function readCampaignsFromFile(): Promise<Campaign[]> {
 }
 
 async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
-    // This function will not be used in the Vercel environment to avoid write errors.
-    // try {
-    //     await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf-8');
-    // } catch (error) {
-    //     console.error('Error writing to campaigns file (this is expected on Vercel):', error);
-    // }
+    try {
+        await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf-8');
+    } catch (error) {
+        console.error('Error writing to campaigns file:', error);
+        // This might fail on read-only filesystems like Vercel, which is expected.
+        // For this demo, we accept that state might not be persisted in such environments.
+    }
 }
 
 
 export async function getCampaigns(): Promise<Campaign[]> {
-  if (inMemoryCampaigns === null) {
-      inMemoryCampaigns = await readCampaignsFromFile();
-  }
-  return inMemoryCampaigns;
+    // Always read from the file to get the latest state.
+    inMemoryCampaigns = await readCampaignsFromFile();
+    return inMemoryCampaigns;
 }
 
 export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {
     const campaigns = await getCampaigns();
-    // Add to the beginning of the in-memory array for the current serverless function's lifetime
-    campaigns.unshift(newCampaign);
-    // Return the created campaign object so the client can handle it
+    const newCampaigns = [newCampaign, ...campaigns];
+    await writeCampaigns(newCampaigns);
+    inMemoryCampaigns = newCampaigns; // Update in-memory cache
     return newCampaign;
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
     const campaigns = await getCampaigns();
     const campaign = campaigns.find(c => c.id === id);
-
-    // If not found in memory, it won't exist on the next request on Vercel
-    if (!campaign) {
-        console.warn(`Campaign with id ${id} not found in memory.`);
-        return null;
-    }
-    
-    return campaign;
+    return campaign || null;
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     let campaigns = await getCampaigns();
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
-    if (campaignIndex === -1) {
-        console.warn(`Campaign with id ${updatedCampaign.id} not found for update. Adding it to the list.`);
-        // If not found, add it. This can happen if the in-memory store was reset.
-        campaigns.unshift(updatedCampaign);
-    } else {
+
+    if (campaignIndex !== -1) {
         campaigns[campaignIndex] = updatedCampaign;
+    } else {
+        // If for some reason it's not found, add it to the start.
+        campaigns.unshift(updatedCampaign);
     }
+    await writeCampaigns(campaigns);
+    inMemoryCampaigns = campaigns; // Update in-memory cache
 }
