@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { MessageCircleReply, ChevronRight } from "lucide-react"
 import type { Reply } from "@/lib/mock-data";
 import { WhatsAppIcon } from "@/components/icons";
+import Link from "next/link";
 
 interface RecentRepliesProps {
   replies: Reply[];
@@ -20,8 +21,10 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
             <CardTitle className="font-headline">Последние ответы</CardTitle>
             <CardDescription>Ответы клиентов на ваши рассылки.</CardDescription>
         </div>
-        <Button variant="outline" size="sm">
-            Все ответы <ChevronRight className="ml-2 h-4 w-4" />
+        <Button variant="outline" size="sm" asChild>
+            <Link href="/replies">
+              Все ответы <ChevronRight className="ml-2 h-4 w-4" />
+            </Link>
         </Button>
       </CardHeader>
       <CardContent className="grid gap-4">
