@@ -19,6 +19,7 @@ import {
   BarChart3,
   ChevronDown,
   Shield,
+  MessagesSquare,
 } from "lucide-react";
 import * as React from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -74,22 +75,24 @@ export default function SidebarNav() {
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
+          asChild
+          isActive={isActive("/monitoring")}
+          tooltip="Мониторинг"
+        >
+          <Link href="/monitoring">
+            <MessagesSquare />
+            Мониторинг
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton
           href="#"
           isActive={isActive("/contacts")}
           tooltip="Контакты"
         >
           <Users />
           Контакты
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          href="#"
-          isActive={isActive("/settings")}
-          tooltip="Настройки"
-        >
-          <Settings />
-          Настройки
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
