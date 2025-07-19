@@ -125,7 +125,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                    <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-zoomOutRight">
                         Начать работу
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -325,23 +325,29 @@ export default function LandingPage() {
             <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Стоимость рассылки:</h2>
             </div>
-            <div className="max-w-3xl mx-auto space-y-6">
-                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="text-lg md:text-xl font-semibold text-white">300–500 сообщений</div>
-                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">9 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="card p-6 md:p-8 flex flex-col text-center">
+                    <h3 className="text-xl font-bold text-white mb-2 font-headline">300–500 сообщений</h3>
+                    <div className="flex-grow flex items-center justify-center">
+                        <div className="text-4xl font-bold text-primary mt-4 mb-6">9 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+                    </div>
                 </div>
-                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center popular-plan">
+                <div className="card p-6 md:p-8 flex flex-col text-center popular-plan">
                     <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ВЫГОДНО</span></div>
-                    <div className="text-lg md:text-xl font-semibold text-white">501–1000 сообщений</div>
-                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">8 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+                    <h3 className="text-xl font-bold text-white mb-2 font-headline">501–1000 сообщений</h3>
+                    <div className="flex-grow flex items-center justify-center">
+                        <div className="text-4xl font-bold text-primary mt-4 mb-6">8 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+                    </div>
                 </div>
-                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="text-lg md:text-xl font-semibold text-white">1001–2000 сообщений</div>
-                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">7 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+                <div className="card p-6 md:p-8 flex flex-col text-center">
+                    <h3 className="text-xl font-bold text-white mb-2 font-headline">1001–2000 сообщений</h3>
+                    <div className="flex-grow flex items-center justify-center">
+                        <div className="text-4xl font-bold text-primary mt-4 mb-6">7 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
+                    </div>
                 </div>
             </div>
-             <div className="text-center mt-12">
-                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+             <div className="text-center mt-16">
+                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-zoomOutRight">
                     Рассчитать стоимость
                 </Link>
             </div>
@@ -354,7 +360,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl">
+                <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl animate-zoomOutRight">
                     Начать работу
                 </Link>
             </div>
@@ -374,5 +380,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-    
