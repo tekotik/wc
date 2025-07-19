@@ -20,14 +20,14 @@ interface ActiveCampaignsProps {
   campaigns: Campaign[];
   selectedCampaignId: string | null;
   onSelectCampaign: (id: string) => void;
-  unreadReplies: Map<string, number>;
+  totalReplies: Map<string, number>;
 }
 
 export default function ActiveCampaigns({
   campaigns,
   selectedCampaignId,
   onSelectCampaign,
-  unreadReplies,
+  totalReplies,
 }: ActiveCampaignsProps) {
  
   return (
@@ -52,12 +52,12 @@ export default function ActiveCampaigns({
                       <p className="text-xs text-green-500">{campaign.status}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    {unreadReplies.has(campaign.id) && (
+                    {totalReplies.has(campaign.id) && totalReplies.get(campaign.id)! > 0 && (
                          <Badge
                             variant="default"
                             className="h-5 w-5 min-w-5 p-0 flex items-center justify-center rounded-full bg-primary text-primary-foreground"
                         >
-                            {unreadReplies.get(campaign.id)}
+                            {totalReplies.get(campaign.id)}
                         </Badge>
                     )}
                   </div>

@@ -13,7 +13,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ initialCampaigns, allReplies, completedCampaigns }: DashboardProps) {
-    const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(initialCampaigns[0]?.id ?? null);
+    const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(initialCampaigns.find(c => c.id === 'summer_sale_24')?.id ?? initialCampaigns[0]?.id ?? null);
     
     const handleSelectCampaign = (id: string) => {
         setSelectedCampaignId(id);
@@ -37,15 +37,30 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
         });
         return unreadMap;
     }, [allReplies]);
+    
+    const totalRepliesByCampaign = useMemo(() => {
+        if (!Array.isArray(allReplies)) return new Map<string, number>();
+        const totalMap = new Map<string, number>();
+        allReplies.forEach(reply => {
+            totalMap.set(reply.campaignId, (totalMap.get(reply.campaignId) || 0) + 1);
+        });
+        return totalMap;
+    }, [allReplies]);
 
     const sortedCampaigns = useMemo(() => {
         if (!Array.isArray(initialCampaigns)) return [];
         return [...initialCampaigns].sort((a, b) => {
+            // Priority for 'summer_sale_24'
+            if (a.id === 'summer_sale_24') return -1;
+            if (b.id === 'summer_sale_24') return 1;
+            
+            // Then sort by unread status
             const aHasUnread = unreadRepliesByCampaign.has(a.id);
             const bHasUnread = unreadRepliesByCampaign.has(b.id);
             if (aHasUnread && !bHasUnread) return -1;
             if (!aHasUnread && bHasUnread) return 1;
-            return 0;
+            
+            return 0; // Keep original order for the rest
         });
     }, [initialCampaigns, unreadRepliesByCampaign]);
 
@@ -57,7 +72,7 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
                 campaigns={sortedCampaigns}
                 selectedCampaignId={selectedCampaignId}
                 onSelectCampaign={handleSelectCampaign}
-                unreadReplies={unreadRepliesByCampaign}
+                totalReplies={totalRepliesByCampaign}
             />
         </div>
         <div className="lg:col-span-4">
