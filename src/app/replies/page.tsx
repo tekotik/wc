@@ -17,7 +17,7 @@ import RepliesPageClient from './_components/replies-page-client';
 export const dynamic = 'force-dynamic';
 
 export default async function RepliesPage() {
-  const replies = await getAllReplies();
+  const { replies, lastFetched } = await getAllReplies();
   // We'll pass 0 to the Nav components since the client component will handle revalidation
   const unreadCount = 0;
 
@@ -45,7 +45,7 @@ export default async function RepliesPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto w-full max-w-7xl">
-            <RepliesView initialReplies={replies} />
+            <RepliesView initialReplies={replies} lastFetched={lastFetched} />
           </div>
         </main>
       </SidebarInset>

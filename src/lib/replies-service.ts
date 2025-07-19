@@ -19,10 +19,10 @@ interface SheetRow {
 }
 
 
-export async function getAllReplies(): Promise<Reply[]> {
+export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: Date }> {
   try {
     const response = await fetch(GOOGLE_SHEET_CSV_URL, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
+      next: { revalidate: 600 } // Revalidate every 10 minutes
     });
     
     if (!response.ok) {
@@ -40,10 +40,10 @@ export async function getAllReplies(): Promise<Reply[]> {
         console.error("Parsing errors:", parsed.errors);
     }
     
-    const allReplies = parsed.data;
+    const allRepliesData = parsed.data;
 
-    const unreadReplies = allReplies
-      .filter(row => row.unread === 'TRUE')
+    const unreadReplies = allRepliesData
+      .filter(row => row.unread === 'TRUE' && row.reply)
       .map(row => ({
         campaignId: row.campaignId,
         name: row.name,
@@ -57,16 +57,16 @@ export async function getAllReplies(): Promise<Reply[]> {
         unread: true,
       }));
 
-    return unreadReplies;
+    return { replies: unreadReplies, lastFetched: new Date() };
 
   } catch (error) {
     console.error('Error fetching or parsing replies from Google Sheet:', error);
-    return []; // Return empty array on error
+    return { replies: [], lastFetched: new Date() }; // Return empty array on error
   }
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-    const replies = await getAllReplies();
+    const { replies } = await getAllReplies();
     // Since getAllReplies now only returns unread ones, the count is just the length.
     return replies.length;
 }
@@ -77,4 +77,5 @@ export async function markAllRepliesAsRead(): Promise<void> {
     // With Google Sheets as a data source, we can't "write" back to mark them as read.
     // The "unread" status is managed directly in the Google Sheet.
     // We will still revalidate the path to ensure any changes in the sheet are fetched.
+     revalidatePath('/replies');
 }

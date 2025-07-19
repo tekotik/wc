@@ -19,14 +19,17 @@ import { cn } from '@/lib/utils';
 
 interface RepliesViewProps {
   initialReplies: Reply[];
+  lastFetched: Date;
 }
 
-export default function RepliesView({ initialReplies }: RepliesViewProps) {
+export default function RepliesView({ initialReplies, lastFetched }: RepliesViewProps) {
   const [replies, setReplies] = React.useState(initialReplies);
+  const [time, setTime] = React.useState(new Date(lastFetched));
 
-  // Here you could set up a subscription to a real-time service
-  // to get new replies as they come in.
-  // For this demo, we'll just display the initial static data.
+  React.useEffect(() => {
+    setReplies(initialReplies);
+    setTime(new Date(lastFetched));
+  }, [initialReplies, lastFetched]);
 
   return (
     <Card>
@@ -37,6 +40,8 @@ export default function RepliesView({ initialReplies }: RepliesViewProps) {
             <CardTitle className="font-headline">Все ответы</CardTitle>
             <CardDescription>
               Все ответы от клиентов в реальном времени. Новые ответы подсвечены.
+              <br/>
+              <span className="text-xs text-muted-foreground">Последнее обновление: {time.toLocaleTimeString()}</span>
             </CardDescription>
           </div>
         </div>
