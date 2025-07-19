@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 
 // export const metadata: Metadata = {
-//   title: 'Elsender — Профессиональные WhatsApp рассылки',
-//   description: 'Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.',
+//   title: 'L-Sender — Профессиональные WhatsApp рассылки',
+//   description: 'L-Sender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.',
 // };
 
 export default function RootLayout({
@@ -51,8 +51,8 @@ export default function RootLayout({
   return (
     <html lang="ru" className={isDashboard ? '' : 'dark'} suppressHydrationWarning>
       <head>
-        <title>Elsender — Профессиональные WhatsApp рассылки</title>
-        <meta name="description" content="Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты." />
+        <title>L-Sender — Профессиональные WhatsApp рассылки</title>
+        <meta name="description" content="L-Sender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты." />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
