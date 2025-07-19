@@ -278,15 +278,15 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                     <div className="hidden md:block absolute top-1 left-0 w-full h-auto -translate-y-1/2">
+                     <div className="hidden md:block absolute top-12 left-0 w-full h-auto">
                       <svg width="100%" height="60" viewBox="0 0 1000 60" preserveAspectRatio="none" >
                           <defs>
                               <linearGradient id="curve-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="5" markerHeight="3.5" refX="0" refY="1.75" orient="auto">
-                                <polygon points="0 0, 5 1.75, 0 3.5" fill="url(#curve-gradient)" />
+                               <marker id="arrowhead" markerWidth="3" markerHeight="2.1" refX="0" refY="1.05" orient="auto">
+                                <polygon points="0 0, 3 1.05, 0 2.1" fill="url(#curve-gradient)" />
                               </marker>
                           </defs>
                           <path
