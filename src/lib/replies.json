@@ -1,5 +1,41 @@
 [
   {
+    "campaignId": "Testo",
+    "name": "Екатерина Иванова",
+    "reply": "Здравствуйте! Интересует стоимость ваших услуг.",
+    "time": "1 мин назад",
+    "avatar": {
+      "src": "https://placehold.co/40x40.png",
+      "fallback": "ЕИ",
+      "hint": "woman professional"
+    },
+    "unread": true
+  },
+  {
+    "campaignId": "Testo",
+    "name": "Алексей Смирнов",
+    "reply": "Добрый день, можно подробнее о летней распродаже?",
+    "time": "3 мин назад",
+    "avatar": {
+      "src": "https://placehold.co/40x40.png",
+      "fallback": "АС",
+      "hint": "man thoughtful"
+    },
+    "unread": true
+  },
+  {
+    "campaignId": "Testo",
+    "name": "Ирина Кузнецова",
+    "reply": "Спасибо, получил. А как отписаться от рассылки?",
+    "time": "5 мин назад",
+    "avatar": {
+      "src": "https://placehold.co/40x40.png",
+      "fallback": "ИК",
+      "hint": "woman thinking"
+    },
+    "unread": true
+  },
+  {
     "campaignId": "summer_sale_24",
     "name": "Елена Воронова",
     "reply": "Спасибо, очень актуально! А есть ли размеры побольше?",
