@@ -149,7 +149,8 @@ export default function LandingPage() {
     <div className="antialiased">
     <header className="absolute w-full z-20 py-6">
         <nav className="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
-            <Link href="/dashboard" className="text-2xl font-bold text-white">
+            <Link href="/dashboard" className="text-2xl font-bold text-white flex items-center gap-2">
+                <ElsenderLogo className="w-7 h-7" />
                 Elsender
             </Link>
             <div className="hidden md:flex items-center space-x-8">
@@ -210,15 +211,15 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
                 </div>
                 <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
-                    <svg className="w-full font-sans" viewBox="0 0 550 300">
+                    <svg className="w-full font-sans" viewBox="0 0 600 320">
                         <defs>
                             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style={{stopColor:'#22C55E'}} />
-                                <stop offset="100%" style={{stopColor:'#4ADE80'}} />
+                                <stop offset="0%" style={{stopColor: '#22C55E'}} />
+                                <stop offset="100%" style={{stopColor: '#06b6d4'}} />
                             </linearGradient>
                             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" style={{stopColor:'#22C55E', stopOpacity:0.3}} />
-                                <stop offset="100%" style={{stopColor:'#111827', stopOpacity:0}} />
+                                <stop offset="0%" style={{stopColor: '#06b6d4', stopOpacity: 0.3}} />
+                                <stop offset="100%" style={{stopColor: '#111827', stopOpacity: 0}} />
                             </linearGradient>
                              <filter id="glow">
                                 <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
@@ -229,27 +230,27 @@ export default function LandingPage() {
                             </filter>
                         </defs>
                         <g className="grid-lines" stroke="#374151" strokeWidth="1">
-                            <line x1="50" y1="50" x2="520" y2="50" /><line x1="50" y1="100" x2="520" y2="100" /><line x1="50" y1="150" x2="520" y2="150" /><line x1="50" y1="200" x2="520" y2="200" /><line x1="50" y1="250" x2="520" y2="250" />
+                            <line x1="50" y1="50" x2="570" y2="50" /><line x1="50" y1="100" x2="570" y2="100" /><line x1="50" y1="150" x2="570" y2="150" /><line x1="50" y1="200" x2="570" y2="200" /><line x1="50" y1="250" x2="570" y2="250" />
                         </g>
                         <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
                             <text x="40" y="255" textAnchor="end">0</text><text x="40" y="205" textAnchor="end">25</text><text x="40" y="155" textAnchor="end">50</text><text x="40" y="105" textAnchor="end">75</text><text x="40" y="55" textAnchor="end">100</text>
                         </g>
-                        <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
-                        <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
+                        <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 320 120 S 470 20, 570 40 L 570 250 Z" fill="url(#areaGradient)" />
+                        <path className="chart-line" d="M 50 220 C 150 200, 200 100, 320 120 S 470 20, 570 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
                         <g className="data-points">
                             <g className="chart-point" transform="translate(50, 220)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text></g></g>
-                            <g className="chart-point" transform="translate(300, 120)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text></g></g>
-                            <g className="chart-point" transform="translate(520, 40)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text></g></g>
+                            <g className="chart-point" transform="translate(320, 120)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text></g></g>
+                            <g className="chart-point" transform="translate(570, 40)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text></g></g>
                         </g>
                         <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
-                            <text x="50" y="275" textAnchor="middle">День 1</text><text x="185" y="275" textAnchor="middle">День 2</text><text x="300" y="275" textAnchor="middle">День 3</text><text x="415" y="275" textAnchor="middle">День 4</text><text x="520" y="275" textAnchor="middle">День 5</text>
+                            <text x="50" y="275" textAnchor="middle">День 1</text><text x="185" y="275" textAnchor="middle">День 2</text><text x="320" y="275" textAnchor="middle">День 3</text><text x="445" y="275" textAnchor="middle">День 4</text><text x="570" y="275" textAnchor="middle">День 5</text>
                         </g>
-                        <g className="integrated-stats" transform="translate(60, 30)">
+                         <g className="integrated-stats" transform="translate(55, 30)">
                             <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
                             <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" id="leads-count-text">0 лидов</text>
                             <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB" id="conversion-rate-text">0.0% конверсия</text>
                         </g>
-                        <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
+                        <g className="integrated-stats-sent" transform="translate(565, 30)" textAnchor="end">
                             <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
                              <text y="30" fontSize="24" fontWeight="bold" fill="#E5E7EB">1000 сообщ.</text>
                         </g>
