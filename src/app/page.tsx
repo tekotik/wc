@@ -136,99 +136,99 @@ export default function LandingPage() {
         </section>
 
         <section id="growth-chart" ref={chartSectionRef} className="py-20 lg:py-24 bg-gray-900">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
-                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
-                </div>
-
-                <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
-                    <svg className="w-full font-sans" viewBox="0 0 550 300">
-                        <defs>
-                            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style={{stopColor: '#22C55E'}} />
-                                <stop offset="100%" style={{stopColor: '#4ADE80'}} />
-                            </linearGradient>
-                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" style={{stopColor: '#22C55E', stopOpacity: 0.3}} />
-                                <stop offset="100%" style={{stopColor: '#111827', stopOpacity: 0}} />
-                            </linearGradient>
-                             <filter id="glow">
-                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-
-                        <g className="grid-lines" stroke="#374151" strokeWidth="1">
-                            <line x1="50" y1="50" x2="520" y2="50" />
-                            <line x1="50" y1="100" x2="520" y2="100" />
-                            <line x1="50" y1="150" x2="520" y2="150" />
-                            <line x1="50" y1="200" x2="520" y2="200" />
-                            <line x1="50" y1="250" x2="520" y2="250" />
-                        </g>
-
-                        <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
-                            <text x="40" y="255" textAnchor="end">0</text>
-                            <text x="40" y="205" textAnchor="end">25</text>
-                            <text x="40" y="155" textAnchor="end">50</text>
-                            <text x="40" y="105" textAnchor="end">75</text>
-                            <text x="40" y="55" textAnchor="end">100</text>
-                        </g>
-
-                        <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
-
-                        <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter: 'url(#glow)'}} />
-
-                        <g className="data-points">
-                            <g className="chart-point" transform="translate(50, 220)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text>
-                                </g>
-                            </g>
-                            <g className="chart-point" transform="translate(300, 120)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text>
-                                </g>
-                            </g>
-                            <g className="chart-point" transform="translate(520, 40)">
-                                <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                                <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                                <g className="chart-tooltip" transform="translate(0, -35)">
-                                    <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                    <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text>
-                                </g>
-                            </g>
-                        </g>
-
-                        <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
-                            <text x="50" y="275" textAnchor="middle">День 1</text>
-                            <text x="185" y="275" textAnchor="middle">День 2</text>
-                            <text x="300" y="275" textAnchor="middle">День 3</text>
-                            <text x="415" y="275" textAnchor="middle">День 4</text>
-                            <text x="520" y="275" textAnchor="middle">День 5</text>
-                        </g>
-
-                        <g className="integrated-stats" transform="translate(60, 30)">
-                            <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
-                            <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" id="leads-count-text" ref={leadsCountRef}>0 лидов</text>
-                            <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB" id="conversion-rate-text" ref={conversionRateRef}>0.0% конверсия</text>
-                        </g>
-                        <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
-                            <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
-                             <text y="30" fontSize="24" fontWeight="bold" fill="#E5E7EB">1000 сообщ.</text>
-                        </g>
-                    </svg>
-                </div>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
+                <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
             </div>
+
+            <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
+                <svg className="w-full font-sans" viewBox="0 0 550 300">
+                    <defs>
+                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style={{stopColor: '#22C55E'}} />
+                            <stop offset="100%" style={{stopColor: '#4ADE80'}} />
+                        </linearGradient>
+                        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" style={{stopColor: '#22C55E', stopOpacity: 0.3}} />
+                            <stop offset="100%" style={{stopColor: '#111827', stopOpacity: 0}} />
+                        </linearGradient>
+                         <filter id="glow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <g className="grid-lines" stroke="#374151" strokeWidth="1">
+                        <line x1="50" y1="50" x2="520" y2="50" />
+                        <line x1="50" y1="100" x2="520" y2="100" />
+                        <line x1="50" y1="150" x2="520" y2="150" />
+                        <line x1="50" y1="200" x2="520" y2="200" />
+                        <line x1="50" y1="250" x2="520" y2="250" />
+                    </g>
+
+                    <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
+                        <text x="40" y="255" textAnchor="end">0</text>
+                        <text x="40" y="205" textAnchor="end">25</text>
+                        <text x="40" y="155" textAnchor="end">50</text>
+                        <text x="40" y="105" textAnchor="end">75</text>
+                        <text x="40" y="55" textAnchor="end">100</text>
+                    </g>
+
+                    <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
+
+                    <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter: 'url(#glow)'}} />
+
+                    <g className="data-points">
+                        <g className="chart-point" transform="translate(50, 220)">
+                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
+                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
+                            <g className="chart-tooltip" transform="translate(0, -35)">
+                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
+                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text>
+                            </g>
+                        </g>
+                        <g className="chart-point" transform="translate(300, 120)">
+                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
+                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
+                            <g className="chart-tooltip" transform="translate(0, -35)">
+                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
+                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text>
+                            </g>
+                        </g>
+                        <g className="chart-point" transform="translate(520, 40)">
+                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
+                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
+                            <g className="chart-tooltip" transform="translate(0, -35)">
+                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
+                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
+                        <text x="50" y="275" textAnchor="middle">День 1</text>
+                        <text x="185" y="275" textAnchor="middle">День 2</text>
+                        <text x="300" y="275" textAnchor="middle">День 3</text>
+                        <text x="415" y="275" textAnchor="middle">День 4</text>
+                        <text x="520" y="275" textAnchor="middle">День 5</text>
+                    </g>
+
+                    <g className="integrated-stats" transform="translate(60, 30)">
+                        <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
+                        <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" id="leads-count-text" ref={leadsCountRef}>0 лидов</text>
+                        <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB" id="conversion-rate-text" ref={conversionRateRef}>0.0% конверсия</text>
+                    </g>
+                    <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
+                        <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
+                         <text y="30" fontSize="24" fontWeight="bold" fill="#E5E7EB">1000 сообщ.</text>
+                    </g>
+                </svg>
+            </div>
+           </div>
         </section>
         
         <section id="features" className="py-20 lg:py-24">
@@ -238,28 +238,28 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <Rocket className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
@@ -292,7 +292,7 @@ export default function LandingPage() {
                           <path
                               d="M 20 20 Q 250 60 500 20 T 980 20"
                               stroke="url(#curve-gradient)"
-                              strokeWidth="4"
+                              strokeWidth="6"
                               fill="none"
                               className="curve-line"
                               markerEnd="url(#arrowhead)"
@@ -321,48 +321,48 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Прозрачные тарифы</h2>
-                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Выберите план, который идеально подходит для ваших задач. Никаких скрытых платежей.</p>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Прозрачные тарифы</h2>
+                <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Выберите план, который идеально подходит для ваших задач. Никаких скрытых платежей.</p>
+            </div>
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="card p-8 flex flex-col">
+                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
+                    <p className="text-gray-400 mb-6">Для быстрого начала</p>
+                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
+                    <p className="text-green-400 font-semibold text-lg mb-8">1 000 сообщений</p>
+                    <div className="flex-grow"></div>
+                    <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
                 </div>
-                <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div className="card p-8 flex flex-col">
-                        <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
-                        <p className="text-gray-400 mb-6">Для быстрого начала</p>
-                        <div className="mb-6"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                        <p className="text-green-400 font-semibold text-lg mb-8">1 000 сообщений</p>
-                        <div className="flex-grow"></div>
-                        <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
-                    </div>
-                    <div className="card p-8 flex flex-col relative popular-plan">
-                         <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div>
-                        <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
-                        <p className="text-gray-400 mb-6">Для активного роста</p>
-                        <div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                        <p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p>
-                        <div className="flex-grow"></div>
-                        <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
-                    </div>
-                    <div className="card p-8 flex flex-col">
-                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Бизнес</h3>
-                        <p className="text-gray-400 mb-6">Для крупных компаний</p>
-                        <div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                        <p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p>
-                        <div className="flex-grow"></div>
-                        <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
-                    </div>
+                <div className="card p-8 flex flex-col relative popular-plan">
+                     <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div>
+                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
+                    <p className="text-gray-400 mb-6">Для активного роста</p>
+                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
+                    <p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p>
+                    <div className="flex-grow"></div>
+                    <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
                 </div>
-                <div className="text-center mt-12">
-                    <p className="text-lg text-white font-semibold">Все тарифы включают:</p>
-                    <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-400">
-                        <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>ИИ-генератор текстов</span>
-                        <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Подробная аналитика</span>
-                        <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Поддержка 24/7</span>
-                        <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>API для интеграций</span>
-                    </div>
+                <div className="card p-8 flex flex-col">
+                    <h3 className="text-xl font-bold text-white mb-2 font-headline">Бизнес</h3>
+                    <p className="text-gray-400 mb-6">Для крупных компаний</p>
+                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
+                    <p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p>
+                    <div className="flex-grow"></div>
+                    <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
                 </div>
             </div>
+            <div className="text-center mt-12">
+                <p className="text-lg text-white font-semibold">Все тарифы включают:</p>
+                <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-400">
+                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>ИИ-генератор текстов</span>
+                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Подробная аналитика</span>
+                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Поддержка 24/7</span>
+                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>API для интеграций</span>
+                </div>
+            </div>
+           </div>
         </section>
 
         <section className="py-20 lg:py-24 bg-gray-900">
