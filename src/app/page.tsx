@@ -47,20 +47,29 @@ export default function LandingPage() {
     const chartSection = document.getElementById('growth-chart');
     const leadsCountText = document.getElementById('leads-count-text');
     const conversionRateText = document.getElementById('conversion-rate-text');
-
-    if (chartSection && leadsCountText && conversionRateText) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
+    const path = document.querySelector('.progress-arrow-path');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (entry.target.id === 'growth-chart' && leadsCountText && conversionRateText) {
             animateSVGText(leadsCountText as SVGTextElement, 0, 86, 2000, ' лидов');
             animateSVGText(conversionRateText as SVGTextElement, 0, 8.6, 2000, '% конверсия', true);
             observer.unobserve(entry.target);
           }
-        });
-      }, { threshold: 0.5 });
+          if (entry.target.id === 'how-it-works' && path) {
+            path.classList.add('animate');
+            observer.unobserve(entry.target);
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    if (chartSection) observer.observe(chartSection);
 
-      observer.observe(chartSection);
-    }
+    const howItWorksSection = document.getElementById('how-it-works');
+    if (howItWorksSection) observer.observe(howItWorksSection);
+
     
     return () => {
         if (mobileMenuButton && mobileMenu && closeMenuButton && menuLinks) {
@@ -70,6 +79,8 @@ export default function LandingPage() {
                 link.removeEventListener('click', closeMenu);
             });
         }
+        if(chartSection) observer.unobserve(chartSection);
+        if(howItWorksSection) observer.unobserve(howItWorksSection);
     }
   }, []);
 
@@ -144,6 +155,13 @@ export default function LandingPage() {
         }
         .mobile-menu.active {
             transform: translateX(0);
+        }
+        .progress-arrow-path {
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+        }
+        .progress-arrow-path.animate {
+            animation: draw 2.5s 0.5s ease-in-out forwards;
         }
     `}</style>
     <div className="antialiased">
@@ -299,27 +317,56 @@ export default function LandingPage() {
             </section>
         </div>
         
-        <section className="py-20 lg:py-24 bg-gray-900">
+        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Начать работу — это просто</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-700 -translate-y-1/2"></div>
+                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-px -translate-y-1/2">
+                        <svg width="100%" height="100%" viewBox="0 0 1200 80" preserveAspectRatio="none" className="absolute top-1/2 left-0 -translate-y-1/2">
+                            <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="url(#lineGradient)" />
+                                </marker>
+                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style={{stopColor: '#374151'}} />
+                                    <stop offset="25%" style={{stopColor: '#22C55E'}} />
+                                    <stop offset="100%" style={{stopColor: '#06b6d4'}} />
+                                </linearGradient>
+                                <filter id="glow-arrow">
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <path 
+                                className="progress-arrow-path"
+                                d="M 50,40 C 300,-20 900,100 1150,40" 
+                                stroke="url(#lineGradient)" 
+                                strokeWidth="3" 
+                                fill="none" 
+                                markerEnd="url(#arrowhead)"
+                                style={{filter:'url(#glow-arrow)'}}
+                            />
+                        </svg>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">1</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">1</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Создайте рассылку</h3>
                             <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
                         </div>
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">2</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">2</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Пройдите модерацию</h3>
                             <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
                         </div>
                         <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">3</div></div>
                             <h3 className="text-xl font-bold text-white mb-2">Запустите и анализируйте</h3>
                             <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
                         </div>
