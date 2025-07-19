@@ -233,7 +233,7 @@ export default function LandingPage() {
                 <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
                     <svg className="w-full font-sans" viewBox="0 0 600 320">
                         <defs>
-                            <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <linearGradient id="lineGradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" style={{stopColor: '#22C55E'}} />
                                 <stop offset="100%" style={{stopColor: '#06b6d4'}} />
                             </linearGradient>
@@ -256,7 +256,7 @@ export default function LandingPage() {
                             <text x="40" y="255" textAnchor="end">0</text><text x="40" y="205" textAnchor="end">25</text><text x="40" y="155" textAnchor="end">50</text><text x="40" y="105" textAnchor="end">75</text><text x="40" y="55" textAnchor="end">100</text>
                         </g>
                         <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 320 120 S 470 20, 570 40 L 570 250 Z" fill="url(#areaGradient)" />
-                        <path className="chart-line" d="M 50 220 C 150 200, 200 100, 320 120 S 470 20, 570 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
+                        <path className="chart-line" d="M 50 220 C 150 200, 200 100, 320 120 S 470 20, 570 40" stroke="url(#lineGradientChart)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter:'url(#glow)'}} />
                         <g className="data-points">
                             <g className="chart-point" transform="translate(50, 220)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text></g></g>
                             <g className="chart-point" transform="translate(320, 120)"><circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" /><circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" /><g className="chart-tooltip" transform="translate(0, -35)"><rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" /><text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text></g></g>
@@ -325,12 +325,12 @@ export default function LandingPage() {
                 </div>
                 <div className="relative">
                     <div className="hidden md:block absolute top-1/2 left-0 w-full h-px -translate-y-1/2">
-                        <svg width="100%" height="100%" viewBox="0 0 1200 80" preserveAspectRatio="none" className="absolute top-1/2 left-0 -translate-y-1/2">
+                         <svg width="100%" height="100%" viewBox="0 0 1200 80" preserveAspectRatio="none" className="absolute top-1/2 left-0 -translate-y-1/2">
                             <defs>
                                 <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="url(#lineGradient)" />
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="url(#lineGradientProgress)" />
                                 </marker>
-                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <linearGradient id="lineGradientProgress" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" style={{stopColor: '#374151'}} />
                                     <stop offset="25%" style={{stopColor: '#22C55E'}} />
                                     <stop offset="100%" style={{stopColor: '#06b6d4'}} />
@@ -346,7 +346,7 @@ export default function LandingPage() {
                             <path 
                                 className="progress-arrow-path"
                                 d="M 50,40 C 300,-20 900,100 1150,40" 
-                                stroke="url(#lineGradient)" 
+                                stroke="url(#lineGradientProgress)" 
                                 strokeWidth="3" 
                                 fill="none" 
                                 markerEnd="url(#arrowhead)"
