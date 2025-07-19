@@ -159,37 +159,6 @@ body {
         transform: translateX(0);
     }
 
-    .btn-glitch {
-        @apply relative inline-block text-lg no-underline z-10;
-        color: #fff;
-    }
-    .btn-glitch:before,
-    .btn-glitch:after {
-        content:'';
-        @apply absolute top-0 left-0 right-0 bottom-0;
-    }
-    .btn-glitch:before {
-        background-color: #00ffff;
-        z-index: -1;
-    }
-    .btn-glitch:after {
-        background-color: #ff00ff;
-        z-index: -2;
-    }
-    .btn-glitch:hover .link-inner {
-        animation: glitchy 0.3s ease 1;
-    }
-    .btn-glitch:hover:before {
-        animation: glitchy 0.3s ease 0.3s infinite;
-    }
-    .btn-glitch:hover:after {
-        animation: glitchy 0.3s ease infinite reverse;
-    }
-    .link-inner {
-        @apply block h-full text-white font-bold py-3 px-8 rounded-lg text-lg;
-        background-color: #111827; /* Match bg-gray-900 */
-    }
-
 
     @keyframes draw {
         to {
@@ -201,12 +170,4 @@ body {
             opacity: 1;
         }
     }
-    @keyframes glitchy {
-      0%   {transform: translate(-2px, 2px);}
-      25%  {transform: translate(-2px, -2px);}
-      50%  {transform: translate(2px, 2px);}
-      75%  {transform: translate(2px, -2px);}
-      100% {transform: translate(-2px, 2px);}
-    }
-
 }

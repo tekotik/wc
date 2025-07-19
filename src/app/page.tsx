@@ -126,8 +126,8 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="btn-glitch">
-                        <span className="link-inner">Начать работу</span>
+                     <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                        Начать работу
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
                         Смотреть тарифы
@@ -285,8 +285,8 @@ export default function LandingPage() {
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
-                                <polygon points="0 0, 6 2, 0 4" fill="url(#curve-gradient)" />
+                               <marker id="arrowhead" markerWidth="5" markerHeight="3.5" refX="0" refY="1.75" orient="auto">
+                                <polygon points="0 0, 5 1.75, 0 3.5" fill="url(#curve-gradient)" />
                               </marker>
                           </defs>
                           <path
@@ -404,8 +404,8 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="btn-glitch">
-                    <span className="link-inner">Начать работу</span>
+                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                    Начать работу
                 </Link>
             </div>
         </section>
