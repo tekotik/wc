@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import Link from 'next/link';
 import type { Campaign } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
@@ -59,9 +59,6 @@ export default function ActiveCampaigns({
                         >
                             {unreadReplies.get(campaign.id)}
                         </Badge>
-                    )}
-                    {selectedCampaignId === campaign.id && (
-                        <CheckCircle className="h-5 w-5 text-primary" />
                     )}
                   </div>
               </div>
