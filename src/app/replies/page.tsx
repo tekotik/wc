@@ -10,22 +10,21 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/lib/replies-service';
+import { getAllReplies } from '@/lib/replies-service';
 import RepliesView from './_components/replies-view';
-import { revalidatePath } from 'next/cache';
+import RepliesPageClient from './_components/replies-page-client';
+
+export const dynamic = 'force-dynamic';
 
 export default async function RepliesPage() {
-  // Mark all as read when the page is visited
-  await markAllRepliesAsRead();
-  revalidatePath('/', 'layout'); // Revalidate all pages to update the badge
-
-  const replies = await getAllReplies(); 
-  // After visiting this page, the unread count for the nav should be considered 0.
+  const replies = await getAllReplies();
+  // We'll pass 0 to the Nav components since the client component will handle revalidation
   const unreadCount = 0;
-
 
   return (
     <SidebarProvider>
+      {/* This client component will trigger the action to mark replies as read */}
+      <RepliesPageClient />
       <Sidebar>
         <SidebarHeader>
           <Link
@@ -38,11 +37,11 @@ export default async function RepliesPage() {
             </span>
           </Link>
         </SidebarHeader>
-        {/* Pass 0 directly as unread count is reset on this page */}
+        {/* Pass 0 directly as unread count will be reset by the client component action */}
         <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
-        {/* Pass 0 directly as unread count is reset on this page */}
+        {/* Pass 0 directly */}
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto w-full max-w-7xl">

@@ -51,11 +51,18 @@ export async function getUnreadRepliesCount(): Promise<number> {
 export async function markAllRepliesAsRead(): Promise<void> {
     // This function simulates marking all replies as read by updating the JSON file.
     let replies = await readRepliesFromFile();
+    let changed = false;
     replies.forEach(reply => {
         if (reply.unread) {
             reply.unread = false;
+            changed = true;
         }
     });
-    await writeRepliesToFile(replies);
-    inMemoryReplies = replies;
+
+    if (changed) {
+        await writeRepliesToFile(replies);
+        inMemoryReplies = replies;
+        // Revalidate all paths that show the unread count
+        revalidatePath('/', 'layout');
+    }
 }

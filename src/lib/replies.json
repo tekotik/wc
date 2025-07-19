@@ -1,4 +1,3 @@
-
 [
   {
     "campaignId": "Testo",
@@ -10,7 +9,7 @@
       "fallback": "ЕИ",
       "hint": "woman professional"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "Testo",
@@ -22,7 +21,7 @@
       "fallback": "АС",
       "hint": "man thoughtful"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "Testo",
@@ -34,7 +33,7 @@
       "fallback": "ИК",
       "hint": "woman thinking"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -46,7 +45,7 @@
       "fallback": "ЕВ",
       "hint": "woman thinking"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -91,7 +90,7 @@
       "fallback": "АС",
       "hint": "woman casual"
     },
-    "unread": true
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
