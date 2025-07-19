@@ -125,7 +125,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-lg text-lg hover:bg-primary/90 transition">
+                    <Link href="/dashboard" className="btn-glitch">
                         <span className="link-inner">Начать работу</span>
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -277,13 +277,16 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-5 left-0 w-full h-0.5 -translate-y-1/2">
-                      <svg width="100%" height="100%" viewBox="0 0 1000 60" preserveAspectRatio="none" className="absolute top-0 left-0 w-full h-full">
+                     <div className="hidden md:block absolute top-1 left-0 w-full h-auto -translate-y-1/2">
+                      <svg width="100%" height="60" viewBox="0 0 1000 60" preserveAspectRatio="none" >
                           <defs>
                               <linearGradient id="curve-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
+                               <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="url(#curve-gradient)" />
+                              </marker>
                           </defs>
                           <path
                               d="M 20 30 Q 250 50 500 30 T 980 30"
@@ -291,24 +294,25 @@ export default function LandingPage() {
                               strokeWidth="8"
                               fill="none"
                               className="curve-line"
+                              markerEnd="url(#arrowhead)"
                           />
                       </svg>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
-                            <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Загрузите базу номеров</h3>
+                            <p className="text-gray-400">Мы бесплатно проверим её на наличие аккаунтов WhatsApp, чтобы исключить "пустые" отправки.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
-                            <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Отправьте текст сообщения</h3>
+                            <p className="text-gray-400">Можно обычный или уже рандомизированный.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
-                            <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
+                           <h3 className="text-xl font-bold text-white mb-2 font-headline">Укажите желаемую дату</h3>
+                            <p className="text-gray-400">И выберите удобное время для отправки.</p>
                         </div>
                     </div>
                 </div>
@@ -364,7 +368,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-lg text-lg hover:bg-primary/90 transition">
+                <Link href="/dashboard" className="btn-glitch">
                     <span className="link-inner">Начать работу</span>
                 </Link>
             </div>
@@ -384,3 +388,5 @@ export default function LandingPage() {
     </>
   );
 }
+
+    
