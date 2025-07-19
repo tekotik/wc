@@ -10,15 +10,14 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { getAllReplies, markAllRepliesAsRead } from '@/lib/replies-service';
+import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/lib/replies-service';
 import RepliesView from './_components/replies-view';
+import { revalidatePath } from 'next/cache';
 
 export default async function RepliesPage() {
-  // NOTE: Calling this function marks all replies as "read" conceptually
-  // for this page load, but we cannot write this change back to the data source (Google Sheet).
-  // The unread status is managed in the sheet itself. We call the function
-  // in case write-back functionality is added in the future.
+  // Mark all as read when the page is visited
   await markAllRepliesAsRead();
+  revalidatePath('/', 'layout'); // Revalidate all pages to update the badge
 
   const replies = await getAllReplies(); 
   // After visiting this page, the unread count for the nav should be considered 0.

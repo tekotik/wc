@@ -4,83 +4,58 @@
 import fs from 'fs/promises';
 import path from 'path';
 import type { Reply } from './mock-data';
-import Papa from 'papaparse';
+import { revalidatePath } from 'next/cache';
 
-const REPLIES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv&gid=0';
+// Path to the local JSON file
+const repliesFilePath = path.join(process.cwd(), 'src', 'lib', 'replies.json');
 
+// In-memory store for replies to avoid reading the file on every call within a single request.
 let inMemoryReplies: Reply[] | null = null;
 
-async function fetchRepliesFromSheet(): Promise<Reply[]> {
+async function readRepliesFromFile(): Promise<Reply[]> {
     try {
-        const response = await fetch(REPLIES_SHEET_URL, {
-            // Revalidate every 60 seconds
-            next: { revalidate: 60 },
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch spreadsheet: ${response.statusText}`);
-        }
-
-        const csvText = await response.text();
-        
-        return new Promise((resolve, reject) => {
-            Papa.parse<any>(csvText, {
-                header: true,
-                skipEmptyLines: true,
-                complete: (results) => {
-                    const replies: Reply[] = results.data
-                        .filter(row => row.reply && row.reply.trim() !== '') // Filter out rows with no reply text
-                        .map((row, index) => ({
-                            campaignId: row.campaignId || `unknown_campaign_${index}`,
-                            name: row.name || `Unknown User ${index + 1}`,
-                            reply: row.reply || '',
-                            time: row.time || 'just now',
-                            // Handle boolean values from CSV (which are strings "TRUE"/"FALSE")
-                            unread: row.unread?.toString().toUpperCase() === 'TRUE',
-                            // Mock avatar data as it's not in the sheet
-                            avatar: {
-                                src: `https://placehold.co/40x40.png`,
-                                fallback: (row.name || 'U').substring(0, 2).toUpperCase(),
-                                hint: 'person portrait',
-                            },
-                        }));
-                    resolve(replies);
-                },
-                error: (error: Error) => {
-                    reject(error);
-                },
-            });
-        });
+        const data = await fs.readFile(repliesFilePath, 'utf-8');
+        return JSON.parse(data);
     } catch (error) {
-        console.error('Error fetching or parsing replies from Google Sheet:', error);
-        // Fallback to an empty array or cached data if fetching fails
-        return inMemoryReplies || [];
+        console.error('Error reading replies file:', error);
+        return [];
+    }
+}
+
+async function writeRepliesToFile(replies: Reply[]): Promise<void> {
+    try {
+        await fs.writeFile(repliesFilePath, JSON.stringify(replies, null, 2), 'utf-8');
+    } catch (error) {
+        console.error('Error writing to replies file:', error);
     }
 }
 
 
 export async function getAllReplies(): Promise<Reply[]> {
-    const freshReplies = await fetchRepliesFromSheet();
-    inMemoryReplies = freshReplies;
-    return freshReplies.sort((a, b) => {
+    // In a real app, you might fetch from a DB here.
+    // For this demo, we read from a local JSON file.
+    inMemoryReplies = await readRepliesFromFile();
+    return inMemoryReplies.sort((a, b) => {
          if (a.unread && !b.unread) return -1;
          if (!a.unread && b.unread) return 1;
-         // Keep original order for items with same read status, but sort by time conceptually if available
-         // This part is simplified as time is a string like "2 min ago"
          return 0;
     });
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-    // Prevent fetching again if we just did it.
     const replies = inMemoryReplies || await getAllReplies();
     return replies.filter(r => r.unread).length;
 }
 
 
 export async function markAllRepliesAsRead(): Promise<void> {
-    // NOTE: This function is now a no-op because we cannot write back to the Google Sheet.
-    // The "unread" status is now managed directly in the Google Sheet.
-    // Calling revalidatePath() here is not allowed during page render,
-    // so we rely on the timed revalidation in fetch.
+    // This function simulates marking all replies as read by updating the JSON file.
+    let replies = await readRepliesFromFile();
+    replies.forEach(reply => {
+        if (reply.unread) {
+            reply.unread = false;
+        }
+    });
+    await writeRepliesToFile(replies);
+    inMemoryReplies = replies;
 }
