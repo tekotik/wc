@@ -129,7 +129,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
                 <Paperclip className="mr-2 h-4 w-4" />
                 Прикрепить базу
             </Button>
-            <Button onClick={handleCreateCampaign}>
+            <Button onClick={handleCreateCampaign} className="btn-gradient">
                 Создать рассылку
             </Button>
           </div>
