@@ -181,7 +181,7 @@ export default function LandingPage() {
 
                     <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
 
-                    <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="4" fill="none" strokeLinecap="round" style={{filter: 'url(#glow)'}} />
+                    <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="8" fill="none" strokeLinecap="round" style={{filter: 'url(#glow)'}} />
 
                     <g className="data-points">
                         <g className="chart-point" transform="translate(50, 220)">
@@ -285,8 +285,8 @@ export default function LandingPage() {
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="3" markerHeight="2.1" refX="0" refY="1.05" orient="auto">
-                                <polygon points="0 0, 3 1.05, 0 2.1" fill="url(#curve-gradient)" />
+                               <marker id="arrowhead" markerWidth="2" markerHeight="1.4" refX="0" refY="0.7" orient="auto">
+                                <polygon points="0 0, 2 0.7, 0 1.4" fill="url(#curve-gradient)" />
                               </marker>
                           </defs>
                           <path
