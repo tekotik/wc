@@ -125,8 +125,8 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-scifiFlickerIn">
-                        Начать работу
+                    <Link href="/dashboard" className="btn-glitch">
+                        <span className="link-inner">Начать работу</span>
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
                         Смотреть тарифы
@@ -237,29 +237,29 @@ export default function LandingPage() {
                     <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
-                <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <Rocket className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
-                    <div className="card p-8 text-center flex flex-col justify-center">
+                    <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
@@ -395,8 +395,8 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl animate-scifiFlickerIn">
-                    Начать работу
+                <Link href="/dashboard" className="btn-glitch">
+                    <span className="link-inner">Начать работу</span>
                 </Link>
             </div>
         </section>
