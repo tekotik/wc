@@ -15,7 +15,7 @@ import {
     CheckCircle2,
     Send
 } from 'lucide-react';
-import { ElsenderLogo } from '@/components/icons';
+import LandingHeader from '@/components/landing/header';
 import { Button } from '@/components/ui/button';
 
 const FeatureCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
@@ -46,22 +46,11 @@ const StepCard = ({ number, icon, title, children }: { number: string, icon: Rea
 export default function LandingPageV2() {
   return (
     <div className="antialiased bg-gray-900 text-gray-200 font-body">
-        <header className="py-6 container mx-auto px-6 flex justify-between items-center">
-             <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2 font-headline">
-                <Send className="w-7 h-7 text-primary" />
-                L-Sender
-            </Link>
-            <Button asChild>
-                <Link href="/dashboard">
-                    Войти
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-            </Button>
-        </header>
+        <LandingHeader />
 
         <main className="container mx-auto px-6">
             {/* --- Welcome Section --- */}
-            <section className="text-center py-20 md:py-32">
+            <section className="text-center pt-32 pb-20 md:pt-40 md:pb-32">
                 <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
                     Добро пожаловать в <span className="text-primary">L-Sender</span>
                 </h1>
@@ -160,7 +149,7 @@ export default function LandingPageV2() {
                         <li>Скам-проекты и любые сомнительные схемы</li>
                     </ul>
                 </div>
-                <div className="lg:col-span-3 bg-gray-800/50 p-8 rounded-2xl border border-gray-700/80">
+                <div id="features" className="lg:col-span-3 bg-gray-800/50 p-8 rounded-2xl border border-gray-700/80">
                      <div className="flex items-center gap-3 mb-4">
                         <CheckCircle2 className="h-8 w-8 text-primary" />
                         <h3 className="text-2xl font-bold text-white font-headline">Почему L-Sender</h3>

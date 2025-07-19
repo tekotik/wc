@@ -27,24 +27,22 @@ export default function RootLayout({
     if (isDashboard) {
       document.documentElement.classList.remove('dark');
       document.body.classList.add('dashboard');
+       // Reset styles for dashboard pages
+       document.body.style.backgroundColor = '';
+       document.body.style.color = '';
     } else {
       document.documentElement.classList.add('dark');
       document.body.classList.remove('dashboard');
+       // Apply styles for landing page
+       if (pathname === '/') {
+        document.body.style.backgroundColor = '#030712'; // a dark gray, close to gray-950
+        document.body.style.color = '#E5E7EB';
+       } else {
+        // for /login or other non-dashboard pages
+        document.body.style.backgroundColor = '';
+        document.body.style.color = '';
+       }
     }
-    
-    // Override body style for the new landing page
-    if (pathname === '/') {
-       document.body.style.backgroundColor = '#111827';
-       document.body.style.color = '#E5E7EB';
-       document.body.style.fontFamily = "'Inter', sans-serif";
-    } else {
-       // Reset styles for other pages
-       document.body.style.backgroundColor = '';
-       document.body.style.color = '';
-       document.body.style.fontFamily = "";
-    }
-
-
   }, [pathname, isDashboard]);
 
 
@@ -59,9 +57,8 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet" />
-        <script src="https://cdn.tailwindcss.com" async></script>
       </head>
-      <body className={cn(isDashboard && 'dashboard')}>
+      <body className={cn('antialiased', isDashboard ? 'dashboard' : 'bg-gray-950')}>
         {children}
         <Toaster />
       </body>
