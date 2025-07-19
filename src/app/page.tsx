@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
 import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -284,8 +285,8 @@ export default function LandingPage() {
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="0" refY="2.5" orient="auto">
-                                <polygon points="0 0, 8 2.5, 0 5" fill="url(#curve-gradient)" />
+                               <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="0" refY="2" orient="auto">
+                                <polygon points="0 0, 6 2, 0 4" fill="url(#curve-gradient)" />
                               </marker>
                           </defs>
                           <path
@@ -320,46 +321,81 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
-            </div>
-            <div className="max-w-4xl mx-auto space-y-8">
-                <div className="card p-6 md:p-8">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
-                    <p className="text-gray-300 text-lg">300–500 сообщений — <span className="text-primary font-semibold">9 ₽</span> за сообщение</p>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
                 </div>
-                <div className="card p-6 md:p-8">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
-                    <p className="text-gray-300 text-lg">501–1000 сообщений — <span className="text-primary font-semibold">8 ₽</span> за сообщение</p>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+                    {/* <!-- Start Plan --> */}
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
+                        <p className="text-gray-400 mt-2">Для быстрого начала</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">1000</span>
+                            <span className="text-xl font-medium text-gray-300">₽</span>
+                        </div>
+                        <p className="text-gray-400 text-lg">1 000 сообщений</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+
+                    {/* <!-- Pro Plan (Popular) --> */}
+                    <div className="card popular-plan p-8 flex flex-col h-full relative">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Популярный выбор</div>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
+                        <p className="text-gray-400 mt-2">Для активного роста</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">4500</span>
+                            <span className="text-xl font-medium text-gray-300">₽</span>
+                        </div>
+                        <p className="text-green-400 text-lg">5 000 сообщений</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+
+                    {/* <!-- Business Plan --> */}
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
+                        <p className="text-gray-400 mt-2">Для крупных компаний</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">8000</span>
+                            <span className="text-xl font-medium text-gray-300">₽</span>
+                        </div>
+                         <p className="text-gray-400 text-lg">10 000 сообщений</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
                 </div>
-                <div className="card p-6 md:p-8">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Бизнес</h3>
-                    <p className="text-gray-300 text-lg">1001–2000 сообщений — <span className="text-primary font-semibold">7 ₽</span> за сообщение</p>
+                <div className="text-center mt-16">
+                    <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
+                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>ИИ-генератор текстов</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Подробная аналитика</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Поддержка 24/7</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>API для интеграций</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-             <div className="text-center mt-16">
-                 <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
-                 <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span>ИИ-генератор текстов</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span>Подробная аналитика</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span>Поддержка 24/7</span>
-                    </div>
-                     <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span>API для интеграций</span>
-                    </div>
-                 </div>
-            </div>
-           </div>
         </section>
 
         <section className="py-20 lg:py-24 bg-gray-900">
