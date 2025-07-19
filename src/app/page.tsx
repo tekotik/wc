@@ -237,36 +237,34 @@ export default function LandingPage() {
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
-                <div className="max-w-3xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-                        <div className="card p-8 text-center flex flex-col justify-center aspect-square">
-                            <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                               <Sparkles className="w-8 h-8 text-green-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2">ИИ-генерация текстов</h3>
-                            <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="card p-8 text-center">
+                        <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
+                           <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
-                        <div className="card p-8 text-center flex flex-col justify-center aspect-square">
-                            <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                                <ShieldCheck className="w-8 h-8 text-green-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Модерация и безопасность</h3>
-                            <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
+                        <h3 className="text-xl font-bold text-white mb-2">ИИ-генерация текстов</h3>
+                        <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
+                    </div>
+                    <div className="card p-8 text-center">
+                        <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
+                            <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
-                        <div className="card p-8 text-center flex flex-col justify-center aspect-square">
-                            <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                                <Rocket className="w-8 h-8 text-green-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Мгновенный запуск</h3>
-                            <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
+                        <h3 className="text-xl font-bold text-white mb-2">Модерация и безопасность</h3>
+                        <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
+                    </div>
+                    <div className="card p-8 text-center">
+                        <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
+                            <Rocket className="w-8 h-8 text-green-400" />
                         </div>
-                        <div className="card p-8 text-center flex flex-col justify-center aspect-square">
-                            <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                               <BarChart2 className="w-8 h-8 text-green-400" />
-                            </div>
-                            <h3 className="text-xl font-bold text-white mb-2">Подробная аналитика</h3>
-                            <p className="text-gray-400">Отслеживайте ключевые метрики: доставку, прочтения и ответы. Принимайте решения на основе данных.</p>
+                        <h3 className="text-xl font-bold text-white mb-2">Мгновенный запуск</h3>
+                        <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
+                    </div>
+                    <div className="card p-8 text-center">
+                        <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
+                           <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
+                        <h3 className="text-xl font-bold text-white mb-2">Подробная аналитика</h3>
+                        <p className="text-gray-400">Отслеживайте ключевые метрики: доставку, прочтения и ответы. Принимайте решения на основе данных.</p>
                     </div>
                 </div>
             </div>
