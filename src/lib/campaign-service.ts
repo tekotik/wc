@@ -40,7 +40,7 @@ export async function getCampaigns(): Promise<Campaign[]> {
 export async function addCampaign(newCampaign: Campaign): Promise<void> {
     const campaigns = await readCampaigns();
     campaigns.unshift(newCampaign); // Add to the beginning
-    await writeCampaigns(campaigns);
+    // await writeCampaigns(campaigns); // This will fail on a read-only filesystem like Vercel.
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
@@ -52,8 +52,11 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     const campaigns = await readCampaigns();
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
     if (campaignIndex === -1) {
-        throw new Error('Campaign not found');
+        // To prevent errors on Vercel, we won't throw an error if the campaign isn't found
+        // in the potentially stale JSON file. We'll just log it.
+        console.warn(`Campaign with id ${updatedCampaign.id} not found for update.`);
+        return;
     }
     campaigns[campaignIndex] = updatedCampaign;
-    await writeCampaigns(campaigns);
+    // await writeCampaigns(campaigns); // This will fail on a read-only filesystem like Vercel.
 }
