@@ -125,7 +125,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                    <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-zoomOutRight">
+                    <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-scifiFlickerIn">
                         Начать работу
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -323,33 +323,68 @@ export default function LandingPage() {
         <section id="pricing" className="py-20 lg:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Стоимость рассылки:</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
             </div>
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="card p-6 md:p-8 flex flex-col text-center">
-                    <h3 className="text-xl font-bold text-white mb-2 font-headline">300–500 сообщений</h3>
-                    <div className="flex-grow flex items-center justify-center">
-                        <div className="text-4xl font-bold text-primary mt-4 mb-6">9 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
-                    </div>
-                </div>
-                <div className="card p-6 md:p-8 flex flex-col text-center popular-plan">
-                    <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ВЫГОДНО</span></div>
-                    <h3 className="text-xl font-bold text-white mb-2 font-headline">501–1000 сообщений</h3>
-                    <div className="flex-grow flex items-center justify-center">
-                        <div className="text-4xl font-bold text-primary mt-4 mb-6">8 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
-                    </div>
-                </div>
-                <div className="card p-6 md:p-8 flex flex-col text-center">
-                    <h3 className="text-xl font-bold text-white mb-2 font-headline">1001–2000 сообщений</h3>
-                    <div className="flex-grow flex items-center justify-center">
-                        <div className="text-4xl font-bold text-primary mt-4 mb-6">7 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
-                    </div>
-                </div>
+            <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Plan 1: Start */}
+              <div className="card p-8 flex flex-col text-center">
+                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
+                  <p className="text-gray-400 mb-6">Для быстрого начала</p>
+                  <div className="text-5xl font-bold text-white my-4">1000<span className="text-2xl text-gray-400">₽</span></div>
+                  <p className="text-primary font-semibold mb-8">1 000 сообщений</p>
+                  <div className="flex-grow"></div>
+                  <Link href="/dashboard" className="mt-auto bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition w-full">
+                      Выбрать тариф
+                  </Link>
+              </div>
+
+              {/* Plan 2: Pro (Popular) */}
+              <div className="card p-8 flex flex-col text-center popular-plan relative">
+                  <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center">
+                    <span className="bg-green-500 text-gray-900 text-sm font-bold px-4 py-1 rounded-full uppercase">Популярный выбор</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
+                  <p className="text-gray-400 mb-6">Для активного роста</p>
+                  <div className="text-5xl font-bold text-white my-4">4500<span className="text-2xl text-gray-400">₽</span></div>
+                  <p className="text-primary font-semibold mb-8">5 000 сообщений</p>
+                  <div className="flex-grow"></div>
+                  <Link href="/dashboard" className="mt-auto btn-gradient text-white font-semibold py-3 px-6 rounded-lg w-full">
+                      Выбрать тариф
+                  </Link>
+              </div>
+
+              {/* Plan 3: Business */}
+              <div className="card p-8 flex flex-col text-center">
+                  <h3 className="text-2xl font-bold text-white mb-2 font-headline">Бизнес</h3>
+                  <p className="text-gray-400 mb-6">Для крупных компаний</p>
+                  <div className="text-5xl font-bold text-white my-4">8000<span className="text-2xl text-gray-400">₽</span></div>
+                  <p className="text-primary font-semibold mb-8">10 000 сообщений</p>
+                  <div className="flex-grow"></div>
+                  <Link href="/dashboard" className="mt-auto bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition w-full">
+                      Выбрать тариф
+                  </Link>
+              </div>
             </div>
              <div className="text-center mt-16">
-                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg animate-zoomOutRight">
-                    Рассчитать стоимость
-                </Link>
+                 <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
+                 <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
+                    <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <span>ИИ-генератор текстов</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <span>Подробная аналитика</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <span>Поддержка 24/7</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <span>API для интеграций</span>
+                    </div>
+                 </div>
             </div>
            </div>
         </section>
@@ -360,7 +395,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl animate-zoomOutRight">
+                <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl animate-scifiFlickerIn">
                     Начать работу
                 </Link>
             </div>

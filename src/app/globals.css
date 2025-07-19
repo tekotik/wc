@@ -170,19 +170,34 @@ body {
             opacity: 1;
         }
     }
-     @keyframes zoomOutRight {
-        40% {
-            opacity: 1;
-            transform: scale3d(0.475, 0.475, 0.475) translate3d(-42px, 0, 0);
-        }
-        to {
+    @keyframes scifiFlickerIn {
+        0% {
             opacity: 0;
-            transform: scale(0.1) translate3d(2000px, 0, 0);
-            transform-origin: right center;
+            transform: scale(1.5)
+        }
+        2% {
+            opacity: 1
+        }
+        8% {
+            opacity: .5
+        }
+        9% {
+            opacity: 1
+        }
+        12% {
+            opacity: .3
+        }
+        20% {
+            opacity: 1;
+            transform: scale(1)
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1)
         }
     }
 
-    .animate-zoomOutRight:hover {
-        animation: zoomOutRight 1s;
+    .animate-scifiFlickerIn:hover {
+        animation: scifiFlickerIn 1s;
     }
 }
