@@ -7,7 +7,7 @@ import {
   PlusCircle,
   User,
 } from "lucide-react";
-
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -39,7 +39,7 @@ export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies
           balance={balance} 
           setBalance={setBalance}
         >
-          <Button>
+          <Button className="btn-gradient">
             <PlusCircle className="mr-2 h-4 w-4" />
             Создать рассылку
           </Button>

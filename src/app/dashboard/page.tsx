@@ -13,6 +13,7 @@ import { allReplies } from "@/lib/mock-data";
 import Dashboard from "@/components/dashboard/dashboard";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
+import React from 'react';
 
 export default async function DashboardPage() {
   const campaigns = await getCampaigns();

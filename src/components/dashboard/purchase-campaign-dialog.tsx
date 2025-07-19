@@ -87,7 +87,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[650px] light p-8">
+      <DialogContent className="sm:max-w-[650px] p-8">
         <DialogHeader className="text-left">
           <DialogTitle className="font-headline text-2xl text-card-foreground">Создать новую рассылку</DialogTitle>
           <DialogDescription className="text-muted-foreground">

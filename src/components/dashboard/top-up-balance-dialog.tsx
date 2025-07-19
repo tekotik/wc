@@ -63,7 +63,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] light">
+      <DialogContent>
         <DialogHeader className="text-left">
           <div className="flex items-center gap-2">
             <Wallet className="h-6 w-6 text-muted-foreground" />
@@ -98,18 +98,18 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                className="pl-8 h-12 text-base text-center text-muted-foreground"
+                className="pl-8 h-12 text-base text-center text-card-foreground"
                 min="1000"
                 step="100"
                 placeholder="1000"
               />
           </div>
         </div>
-        <DialogFooter className="flex-col !space-y-2">
-           <Button onClick={handleTopUp} disabled={amount < 1000} className="w-full">Пополнить на {amount} ₽</Button>
-            <DialogClose asChild>
-                <Button variant="ghost" className="w-full">Отмена</Button>
+        <DialogFooter className="flex-col !space-y-2 sm:flex-row sm:justify-end sm:space-x-2 sm:space-y-0">
+           <DialogClose asChild>
+                <Button variant="ghost">Отмена</Button>
             </DialogClose>
+           <Button onClick={handleTopUp} disabled={amount < 1000}>Пополнить на {amount} ₽</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
