@@ -78,7 +78,7 @@ export default function LandingPage() {
                         <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
                         <Link href="#how-it-works" className="text-gray-300 hover:text-white transition">Документация</Link>
                     </div>
-                    <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
+                    <Link href="/dashboard" className="hidden md:block bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg transition-colors">
                         Начать работу
                     </Link>
                     <div className="md:hidden">
@@ -99,7 +99,7 @@ export default function LandingPage() {
                 <Link href="#features" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 font-headline">Возможности</Link>
                 <Link href="#pricing" onClick={closeMenu} className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 font-headline">Тарифы</Link>
                 <Link href="#how-it-works" onClick={closeMenu} className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 font-headline">Документация</Link>
-                <Link href="/dashboard" onClick={closeMenu} className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                <Link href="/dashboard" onClick={closeMenu} className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors">
                     Начать работу
                 </Link>
             </div>
@@ -114,12 +114,12 @@ export default function LandingPage() {
                         <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
                             Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
                         </p>
-                        <div className="flex justify-center items-center space-x-4">
-                            <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
-                                Начать работу
+                        <div className="flex justify-center items-center gap-4">
+                            <Link href="/dashboard" className="flex items-center justify-center text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl text-lg transition-colors w-44 h-16">
+                                Начать<br/>работу
                             </Link>
-                            <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
-                                Смотреть тарифы
+                            <Link href="#pricing" className="flex items-center justify-center text-center bg-gray-700 text-white font-semibold py-3 px-8 rounded-xl text-lg hover:bg-gray-600 transition-colors w-44 h-16">
+                                Смотреть<br/>тарифы
                             </Link>
                         </div>
                     </div>
@@ -281,7 +281,7 @@ export default function LandingPage() {
                         </div>
                         <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="custom-card p-8 flex flex-col"><h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3><p className="text-gray-400 mb-6">Для быстрого начала</p><div className="mb-6"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium"> ₽</span></div><p className="text-green-400 font-semibold text-lg mb-8">1 000 сообщений</p><div className="flex-grow"></div><Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link></div>
-                            <div className="custom-card p-8 flex flex-col relative popular-plan"><div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div><h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3><p className="text-gray-400 mb-6">Для активного роста</p><div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium"> ₽</span></div><p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p><div className="flex-grow"></div><Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link></div>
+                            <div className="custom-card p-8 flex flex-col relative popular-plan"><div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div><h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3><p className="text-gray-400 mb-6">Для активного роста</p><div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium"> ₽</span></div><p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p><div className="flex-grow"></div><Link href="/dashboard" className="w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">Выбрать тариф</Link></div>
                             <div className="custom-card p-8 flex flex-col"><h3 className="text-2xl font-bold text-white mb-2 font-headline">Бизнес</h3><p className="text-gray-400 mb-6">Для крупных компаний</p><div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium"> ₽</span></div><p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p><div className="flex-grow"></div><Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link></div>
                         </div>
                         <div className="text-center mt-12">
@@ -303,7 +303,7 @@ export default function LandingPage() {
                         <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                             Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                         </p>
-                        <Link href="/dashboard" className="btn-gradient text-white font-bold py-4 px-10 rounded-lg text-xl">
+                        <Link href="/dashboard" className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-lg text-xl transition-colors">
                             Начать работу
                         </Link>
                     </div>
