@@ -1,3 +1,4 @@
+
 [
   {
     "campaignId": "Testo",
@@ -9,7 +10,7 @@
       "fallback": "ЕИ",
       "hint": "woman professional"
     },
-    "unread": false
+    "unread": true
   },
   {
     "campaignId": "Testo",
@@ -21,7 +22,7 @@
       "fallback": "АС",
       "hint": "man thoughtful"
     },
-    "unread": false
+    "unread": true
   },
   {
     "campaignId": "Testo",
@@ -33,7 +34,7 @@
       "fallback": "ИК",
       "hint": "woman thinking"
     },
-    "unread": false
+    "unread": true
   },
   {
     "campaignId": "summer_sale_24",
@@ -45,7 +46,7 @@
       "fallback": "ЕВ",
       "hint": "woman thinking"
     },
-    "unread": false
+    "unread": true
   },
   {
     "campaignId": "summer_sale_24",
@@ -56,7 +57,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "МП",
       "hint": "man smiling"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -67,7 +69,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "СК",
       "hint": "woman glasses"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "summer_sale_24",
@@ -78,7 +81,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "АП",
       "hint": "man handsome"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -90,7 +94,7 @@
       "fallback": "АС",
       "hint": "woman casual"
     },
-    "unread": false
+    "unread": true
   },
   {
     "campaignId": "new_collection_24",
@@ -101,7 +105,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "ИК",
       "hint": "man thoughtful"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -112,7 +117,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "ДИ",
       "hint": "man professional"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "new_collection_24",
@@ -123,7 +129,8 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "МН",
       "hint": "woman elegant"
-    }
+    },
+    "unread": false
   },
   {
     "campaignId": "loyalty_program",
@@ -134,6 +141,7 @@
       "src": "https://placehold.co/40x40.png",
       "fallback": "ОБ",
       "hint": "woman happy"
-    }
+    },
+    "unread": false
   }
 ]
