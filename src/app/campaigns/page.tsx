@@ -12,10 +12,12 @@ import { getCampaigns } from "@/lib/campaign-service";
 import CampaignsList from "./_components/campaigns-list";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
+import { getUnreadRepliesCount } from "@/lib/replies-service";
 
 
 export default async function CampaignsPage() {
   const campaigns = await getCampaigns();
+  const unreadCount = await getUnreadRepliesCount();
 
   return (
     <SidebarProvider>
@@ -26,10 +28,10 @@ export default async function CampaignsPage() {
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>
         </SidebarHeader>
-        <SidebarNav />
+        <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full">
             <CampaignsList initialCampaigns={campaigns} />

@@ -12,11 +12,13 @@ import { getCampaigns } from "@/lib/campaign-service";
 import ModerationList from "./_components/moderation-list";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
+import { getUnreadRepliesCount } from "@/lib/replies-service";
 
 
 export default async function AdminPage() {
   const allCampaigns = await getCampaigns();
   const moderationCampaigns = allCampaigns.filter(c => c.status === "На модерации");
+  const unreadCount = await getUnreadRepliesCount();
 
   return (
     <SidebarProvider>
@@ -27,10 +29,10 @@ export default async function AdminPage() {
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>
         </SidebarHeader>
-        <SidebarNav />
+        <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full">
             <ModerationList initialCampaigns={moderationCampaigns} />

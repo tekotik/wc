@@ -3,32 +3,30 @@
 
 import { usePathname } from "next/navigation";
 import {
-  Sidebar,
-  SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
+  SidebarMenu,
+  SidebarMenuBadge,
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard,
   MessageSquareQuote,
   Users,
-  Settings,
-  BarChart3,
-  ChevronDown,
   Shield,
   MessagesSquare,
+  BarChart3,
 } from "lucide-react";
-import * as React from "react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
-export default function SidebarNav() {
+interface SidebarNavProps {
+  unreadCount?: number;
+}
+
+export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const pathname = usePathname();
   const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard');
-
+  const hasUnread = unreadCount > 0;
 
   return (
     <SidebarMenu>
@@ -76,12 +74,13 @@ export default function SidebarNav() {
       <SidebarMenuItem>
         <SidebarMenuButton
           asChild
-          isActive={isActive("/monitoring")}
-          tooltip="Мониторинг"
+          isActive={isActive("/replies")}
+          tooltip="Ответы"
         >
-          <Link href="/monitoring">
+          <Link href="/replies">
             <MessagesSquare />
-            Мониторинг
+            Ответы
+            {hasUnread && <SidebarMenuBadge>{unreadCount}</SidebarMenuBadge>}
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>

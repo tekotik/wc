@@ -10,11 +10,17 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { allReplies } from '@/lib/mock-data';
-import MonitoringView from './_components/monitoring-view';
+import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/lib/replies-service';
+import RepliesView from './_components/replies-view';
+import { revalidatePath } from 'next/cache';
 
-export default async function MonitoringPage() {
-  const replies = allReplies; // In a real app, you'd fetch this data
+export default async function RepliesPage() {
+  const replies = await getAllReplies(); 
+  const unreadCount = await getUnreadRepliesCount();
+
+  // Mark all as read when the page is visited
+  await markAllRepliesAsRead();
+  revalidatePath('/', 'layout'); // Revalidate all pages to update the badge
 
   return (
     <SidebarProvider>
@@ -30,13 +36,13 @@ export default async function MonitoringPage() {
             </span>
           </Link>
         </SidebarHeader>
-        <SidebarNav />
+        <SidebarNav unreadCount={0} />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader unreadCount={0} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto w-full max-w-7xl">
-            <MonitoringView initialReplies={replies} />
+            <RepliesView initialReplies={replies} />
           </div>
         </main>
       </SidebarInset>

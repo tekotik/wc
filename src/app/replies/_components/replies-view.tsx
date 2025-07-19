@@ -15,12 +15,13 @@ import { Button } from '@/components/ui/button';
 import { MessageCircleReply, MessagesSquare } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/icons';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
-interface MonitoringViewProps {
+interface RepliesViewProps {
   initialReplies: Reply[];
 }
 
-export default function MonitoringView({ initialReplies }: MonitoringViewProps) {
+export default function RepliesView({ initialReplies }: RepliesViewProps) {
   const [replies, setReplies] = React.useState(initialReplies);
 
   // Here you could set up a subscription to a real-time service
@@ -33,9 +34,9 @@ export default function MonitoringView({ initialReplies }: MonitoringViewProps) 
         <div className="flex items-center gap-3">
           <MessagesSquare className="h-8 w-8 text-primary" />
           <div>
-            <CardTitle className="font-headline">Мониторинг ответов</CardTitle>
+            <CardTitle className="font-headline">Все ответы</CardTitle>
             <CardDescription>
-              Все ответы от клиентов в реальном времени.
+              Все ответы от клиентов в реальном времени. Новые ответы подсвечены.
             </CardDescription>
           </div>
         </div>
@@ -45,7 +46,13 @@ export default function MonitoringView({ initialReplies }: MonitoringViewProps) 
           <div className="space-y-6 pr-4">
             {replies.length > 0 ? (
               replies.map((reply, index) => (
-                <div className="flex items-start gap-4" key={index}>
+                <div 
+                    className={cn(
+                        "flex items-start gap-4 p-3 rounded-lg transition-colors",
+                        reply.unread && "bg-primary/10"
+                    )} 
+                    key={index}
+                >
                   <Avatar className="flex h-10 w-10 items-center justify-center border bg-green-100">
                     <WhatsAppIcon className="h-5 w-5 text-green-600" />
                   </Avatar>
@@ -76,7 +83,9 @@ export default function MonitoringView({ initialReplies }: MonitoringViewProps) 
               ))
             ) : (
               <div className="py-12 text-center text-muted-foreground">
-                <p>Ответов пока нет.</p>
+                 <MessagesSquare className="mx-auto h-12 w-12" />
+                  <h3 className="mt-2 text-lg font-semibold">Ответов пока нет</h3>
+                  <p className="mt-1 text-sm">Когда клиенты начнут отвечать, вы увидите их сообщения здесь.</p>
               </div>
             )}
           </div>

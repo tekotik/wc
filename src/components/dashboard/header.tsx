@@ -23,11 +23,11 @@ import PurchaseCampaignDialog from "./purchase-campaign-dialog";
 import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
 import Link from "next/link";
-import { ElsenderLogo } from "../icons";
 
 
-export default function DashboardHeader({ hasUnreadReplies }: { hasUnreadReplies?: boolean }) {
+export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
   const [balance, setBalance] = React.useState(1000);
+  const hasUnreadReplies = (unreadCount ?? 0) > 0;
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">

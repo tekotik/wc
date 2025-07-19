@@ -8,15 +8,16 @@ import {
 } from '@/components/ui/sidebar';
 import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
-import { notFound } from 'next/navigation';
 import { getCampaignById } from '@/lib/campaign-service';
 import EditCampaignForm from './_components/edit-campaign-form';
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import EditCampaignFormLoader from './_components/edit-campaign-form-loader';
+import { getUnreadRepliesCount } from '@/lib/replies-service';
 
 export default async function EditCampaignPage({ params }: { params: { id: string } }) {
   const campaign = await getCampaignById(params.id);
+  const unreadCount = await getUnreadRepliesCount();
 
   // If the campaign is not found on the server,
   // the loader component will try to find it in localStorage on the client.
@@ -30,10 +31,10 @@ export default async function EditCampaignPage({ params }: { params: { id: strin
               <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
             </Link>
           </SidebarHeader>
-          <SidebarNav />
+          <SidebarNav unreadCount={unreadCount} />
         </Sidebar>
         <SidebarInset>
-          <DashboardHeader />
+          <DashboardHeader unreadCount={unreadCount} />
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
             <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
                <EditCampaignFormLoader campaignId={params.id} />
@@ -53,10 +54,10 @@ export default async function EditCampaignPage({ params }: { params: { id: strin
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>
         </SidebarHeader>
-        <SidebarNav />
+        <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
             <EditCampaignForm campaign={campaign} />

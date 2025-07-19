@@ -10,13 +10,14 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
 import AnalyticsOverview from '@/components/dashboard/analytics-overview';
 import { getCampaigns } from '@/lib/campaign-service';
-import type { Campaign } from '@/lib/mock-data';
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
+import { getUnreadRepliesCount } from '@/lib/replies-service';
 
 export default async function AnalyticsPage() {
   const campaigns = await getCampaigns();
   const completedCampaigns = campaigns.filter(c => c.status === 'Завершена' && c.stats);
+  const unreadCount = await getUnreadRepliesCount();
 
   return (
     <SidebarProvider>
@@ -27,10 +28,10 @@ export default async function AnalyticsPage() {
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>
         </SidebarHeader>
-        <SidebarNav />
+        <SidebarNav unreadCount={unreadCount} />
       </Sidebar>
       <SidebarInset>
-        <DashboardHeader />
+        <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
            <div className="max-w-7xl mx-auto w-full">
             <AnalyticsOverview campaigns={completedCampaigns} />
