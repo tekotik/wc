@@ -284,8 +284,8 @@ export default function LandingPage() {
                                   <stop offset="0%" stopColor="#06b6d4" /> 
                                   <stop offset="100%" stopColor="#22c55e" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-                                <polygon points="0 0, 10 3.5, 0 7" fill="url(#curve-gradient)" />
+                               <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="0" refY="2.5" orient="auto">
+                                <polygon points="0 0, 8 2.5, 0 5" fill="url(#curve-gradient)" />
                               </marker>
                           </defs>
                           <path
@@ -388,5 +388,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-    
