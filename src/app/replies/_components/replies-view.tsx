@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { Reply } from '@/lib/mock-data';
 import {
   Card,
@@ -24,11 +24,12 @@ interface RepliesViewProps {
 
 export default function RepliesView({ initialReplies, lastFetched }: RepliesViewProps) {
   const [replies, setReplies] = React.useState(initialReplies);
-  const [time, setTime] = React.useState(new Date(lastFetched));
+  const [displayTime, setDisplayTime] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setReplies(initialReplies);
-    setTime(new Date(lastFetched));
+    // Set time string only on the client to avoid hydration mismatch
+    setDisplayTime(new Date(lastFetched).toLocaleTimeString());
   }, [initialReplies, lastFetched]);
 
   return (
@@ -41,7 +42,7 @@ export default function RepliesView({ initialReplies, lastFetched }: RepliesView
             <CardDescription>
               Все ответы от клиентов в реальном времени. Новые ответы подсвечены.
               <br/>
-              <span className="text-xs text-muted-foreground">Последнее обновление: {time.toLocaleTimeString()}</span>
+              <span className="text-xs text-muted-foreground">Последнее обновление: {displayTime || '...'}</span>
             </CardDescription>
           </div>
         </div>
