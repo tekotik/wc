@@ -5,7 +5,7 @@ import type { Reply } from './mock-data';
 import Papa from 'papaparse';
 import { revalidatePath } from 'next/cache';
 
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRCIk21GMmDt1nJnoos5Qv5B3h5TKVf2VauoBqysCEvXz_wH6p1na-1-aV9f9y_QYI6yiu_1B-w4PAn/pub?gid=0&single=true&output=csv';
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSgO3kThAbTq2yYVvQMrHfa-4-ISpB1HQyTEP-hAsoVpM_f_5rVT5yQk52eI84K9u25sQeysANtLgL2/pub?gid=0&single=true&output=csv';
 
 interface SheetRow {
   campaignId: string;
