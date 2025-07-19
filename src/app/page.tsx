@@ -329,27 +329,18 @@ export default function LandingPage() {
             <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="card p-8 flex flex-col">
                     <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
-                    <p className="text-gray-400 mb-6">Для быстрого начала</p>
-                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                    <p className="text-green-400 font-semibold text-lg mb-8">1 000 сообщений</p>
-                    <div className="flex-grow"></div>
+                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
                     <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
                 </div>
                 <div className="card p-8 flex flex-col relative popular-plan">
                      <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div>
                     <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
-                    <p className="text-gray-400 mb-6">Для активного роста</p>
-                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                    <p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p>
-                    <div className="flex-grow"></div>
+                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
                     <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
                 </div>
                 <div className="card p-8 flex flex-col">
                     <h3 className="text-xl font-bold text-white mb-2 font-headline">Бизнес</h3>
-                    <p className="text-gray-400 mb-6">Для крупных компаний</p>
-                    <div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
-                    <p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p>
-                    <div className="flex-grow"></div>
+                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
                     <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
                 </div>
             </div>
