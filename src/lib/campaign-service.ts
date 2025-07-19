@@ -4,7 +4,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import type { Campaign } from './mock-data';
-import { mockCampaigns as initialMockCampaigns } from './mock-data'; // Import initial mock data
 
 // Note: In a real-world application, you would use a proper database.
 // Using a JSON file for simplicity and an in-memory array for Vercel compatibility.
@@ -13,20 +12,19 @@ const campaignsFilePath = path.join(process.cwd(), 'src', 'lib', 'campaigns.json
 // In-memory store for campaigns, primarily for Vercel's read-only filesystem.
 let inMemoryCampaigns: Campaign[] | null = null;
 
-
 async function readCampaignsFromFile(): Promise<Campaign[]> {
   try {
     const data = await fs.readFile(campaignsFilePath, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
     if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      // If the file doesn't exist, create it with the initial mock data.
-      await writeCampaigns(initialMockCampaigns);
-      return initialMockCampaigns;
+      // If the file doesn't exist, create it with empty array
+      await writeCampaigns([]);
+      return [];
     }
     console.error('Error reading campaigns file:', error);
-    // Fallback to initial mock data on other errors
-    return initialMockCampaigns;
+    // Fallback to empty array on other errors
+    return [];
   }
 }
 
@@ -36,7 +34,6 @@ async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
     } catch (error) {
         console.error('Error writing to campaigns file:', error);
         // This might fail on read-only filesystems like Vercel, which is expected.
-        // For this demo, we accept that state might not be persisted in such environments.
     }
 }
 
@@ -68,9 +65,8 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     if (campaignIndex !== -1) {
         campaigns[campaignIndex] = updatedCampaign;
     } else {
-        // If for some reason it's not found, add it to the start.
         campaigns.unshift(updatedCampaign);
     }
     await writeCampaigns(campaigns);
-    inMemoryCampaigns = campaigns; // Update in-memory cache
+    inMemoryCampaigns = campaigns;
 }

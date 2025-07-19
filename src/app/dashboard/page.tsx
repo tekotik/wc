@@ -16,6 +16,9 @@ import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import React from 'react';
 
+// Force dynamic rendering to ensure fresh data on each request.
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const campaigns = await getCampaigns();
   const allReplies = await getAllReplies();

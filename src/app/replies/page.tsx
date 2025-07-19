@@ -19,6 +19,7 @@ export default async function RepliesPage() {
   await markAllRepliesAsRead();
 
   const replies = await getAllReplies(); 
+  // Get the count AFTER marking them as read for the current view, but before revalidation happens
   const unreadCount = await getUnreadRepliesCount();
 
 
