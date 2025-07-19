@@ -274,7 +274,7 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2" style={{ background: 'linear-gradient(to right, #22C55E, #4ADE80)' }}></div>
+                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 step-gradient-line"></div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">1</div></div>

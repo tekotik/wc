@@ -158,6 +158,9 @@ body {
     .mobile-menu.active {
         transform: translateX(0);
     }
+    .step-gradient-line {
+       background: linear-gradient(to right, #06b6d4, #10b981);
+    }
 
 
     @keyframes draw {
