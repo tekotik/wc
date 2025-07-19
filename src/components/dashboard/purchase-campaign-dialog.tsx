@@ -54,7 +54,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
     // Create a new campaign draft
     const newCampaign: Campaign = {
         id: `draft_${Date.now()}`,
-        name: `Новая рассылка на ${selectedPackage.messages} сообщений`,
+        name: "",
         status: "Черновик",
         text: "",
     };
