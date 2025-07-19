@@ -4,6 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
+import { Sparkles, ShieldCheck, Rocket, BarChart2 } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -81,7 +82,7 @@ export default function LandingPage() {
       <header className="absolute w-full z-20 py-6 px-4 sm:px-6 lg:px-8">
         <nav className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3 text-white hover:text-green-400 transition-colors">
-                <ElsenderLogo className="w-8 h-8" />
+                <ElsenderLogo className="w-8 h-8 text-primary" />
                 <span className="text-2xl font-bold">Elsender</span>
             </Link>
             <div className="hidden md:flex items-center space-x-8">
@@ -236,31 +237,31 @@ export default function LandingPage() {
                     <h2 className="text-3xl md:text-4xl font-bold text-white">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10c0-2.24-.8-4.33-2.18-5.96"/><path d="m18 12-4-4h-4"/><path d="m18 12 4 4"/><path d="m18 12-4 4"/></svg>
+                           <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 7-7 7 7"/><path d="m5 19 7-7 7 7"/></svg>
+                            <Rocket className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                           <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">Подробная аналитика</h3>
                         <p className="text-gray-400">Отслеживайте ключевые метрики: доставку, прочтения и ответы. Принимайте решения на основе данных.</p>
@@ -276,7 +277,7 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 step-gradient-line"></div>
+                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-green-500"></div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">1</div></div>
@@ -323,7 +324,7 @@ export default function LandingPage() {
                         <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
                     </div>
                     <div className="card p-8 flex flex-col">
-                        <h3 className="text-2xl font-bold text-white mb-2">Бизнес</h3>
+                        <h3 className="text-xl font-bold text-white mb-2">Бизнес</h3>
                         <p className="text-gray-400 mb-6">Для крупных компаний</p>
                         <div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
                         <p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p>
