@@ -10,16 +10,18 @@ import SidebarNav from '@/components/dashboard/sidebar-nav';
 import DashboardHeader from '@/components/dashboard/header';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { getAllReplies, markAllRepliesAsRead, getUnreadRepliesCount } from '@/lib/replies-service';
+import { getAllReplies, markAllRepliesAsRead } from '@/lib/replies-service';
 import RepliesView from './_components/replies-view';
 
 export default async function RepliesPage() {
-  // Although this function is currently a no-op, we keep the call
+  // NOTE: Calling this function marks all replies as "read" conceptually
+  // for this page load, but we cannot write this change back to the data source (Google Sheet).
+  // The unread status is managed in the sheet itself. We call the function
   // in case write-back functionality is added in the future.
   await markAllRepliesAsRead();
 
   const replies = await getAllReplies(); 
-  // After the conceptual "mark as read", the unread count for the nav should be 0.
+  // After visiting this page, the unread count for the nav should be considered 0.
   const unreadCount = 0;
 
 

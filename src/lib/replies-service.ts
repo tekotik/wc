@@ -64,12 +64,15 @@ export async function getAllReplies(): Promise<Reply[]> {
     return freshReplies.sort((a, b) => {
          if (a.unread && !b.unread) return -1;
          if (!a.unread && b.unread) return 1;
-         return 0; // Keep original order for items with same read status
+         // Keep original order for items with same read status, but sort by time conceptually if available
+         // This part is simplified as time is a string like "2 min ago"
+         return 0;
     });
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-    const replies = await getAllReplies();
+    // Prevent fetching again if we just did it.
+    const replies = inMemoryReplies || await getAllReplies();
     return replies.filter(r => r.unread).length;
 }
 
