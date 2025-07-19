@@ -4,7 +4,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import type { Reply } from './mock-data';
-import { revalidatePath } from 'next/cache';
 import Papa from 'papaparse';
 
 const REPLIES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv&gid=0';
@@ -29,20 +28,22 @@ async function fetchRepliesFromSheet(): Promise<Reply[]> {
                 header: true,
                 skipEmptyLines: true,
                 complete: (results) => {
-                    const replies: Reply[] = results.data.map((row, index) => ({
-                        campaignId: row.campaignId || `unknown_campaign_${index}`,
-                        name: row.name || `Unknown User ${index + 1}`,
-                        reply: row.reply || '',
-                        time: row.time || 'just now',
-                        // Handle boolean values from CSV (which are strings "TRUE"/"FALSE")
-                        unread: row.unread?.toString().toUpperCase() === 'TRUE',
-                        // Mock avatar data as it's not in the sheet
-                        avatar: {
-                            src: `https://placehold.co/40x40.png`,
-                            fallback: (row.name || 'U').substring(0, 2).toUpperCase(),
-                            hint: 'person portrait',
-                        },
-                    }));
+                    const replies: Reply[] = results.data
+                        .filter(row => row.reply && row.reply.trim() !== '') // Filter out rows with no reply text
+                        .map((row, index) => ({
+                            campaignId: row.campaignId || `unknown_campaign_${index}`,
+                            name: row.name || `Unknown User ${index + 1}`,
+                            reply: row.reply || '',
+                            time: row.time || 'just now',
+                            // Handle boolean values from CSV (which are strings "TRUE"/"FALSE")
+                            unread: row.unread?.toString().toUpperCase() === 'TRUE',
+                            // Mock avatar data as it's not in the sheet
+                            avatar: {
+                                src: `https://placehold.co/40x40.png`,
+                                fallback: (row.name || 'U').substring(0, 2).toUpperCase(),
+                                hint: 'person portrait',
+                            },
+                        }));
                     resolve(replies);
                 },
                 error: (error: Error) => {
