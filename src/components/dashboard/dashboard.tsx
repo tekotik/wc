@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React, { useState, useMemo } from 'react';
@@ -23,7 +22,6 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
 
     const filteredReplies = useMemo(() => {
         if (!selectedCampaignId) {
-            // If no campaign is selected, show a generic set of recent replies or empty
             return allReplies.filter(r => r.unread).slice(0, 8); 
         }
         return allReplies.filter(reply => reply.campaignId === selectedCampaignId);
@@ -41,26 +39,20 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
 
 
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <div className="grid auto-rows-max items-start gap-4 lg:col-span-7">
-          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              <div className="lg:col-span-4">
-                  <AnalyticsOverview campaigns={completedCampaigns} />
-              </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-7 lg:gap-6">
-              <div className="lg:col-span-3">
-                  <ActiveCampaigns 
-                      campaigns={initialCampaigns}
-                      selectedCampaignId={selectedCampaignId}
-                      onSelectCampaign={handleSelectCampaign}
-                      unreadReplies={unreadRepliesByCampaign}
-                  />
-              </div>
-              <div className="lg:col-span-4">
-                  <RecentReplies replies={filteredReplies} />
-              </div>
-          </div>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 lg:gap-6">
+        <div className="lg:col-span-7">
+            <AnalyticsOverview campaigns={completedCampaigns} />
+        </div>
+        <div className="lg:col-span-3">
+            <ActiveCampaigns 
+                campaigns={initialCampaigns}
+                selectedCampaignId={selectedCampaignId}
+                onSelectCampaign={handleSelectCampaign}
+                unreadReplies={unreadRepliesByCampaign}
+            />
+        </div>
+        <div className="lg:col-span-4">
+            <RecentReplies replies={filteredReplies} />
         </div>
       </div>
     );
