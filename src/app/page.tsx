@@ -237,29 +237,29 @@ export default function LandingPage() {
                     <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div className="card p-8 text-center">
+                <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <Rocket className="w-8 h-8 text-green-400" />
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2 font-headline">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
-                    <div className="card p-8 text-center">
+                    <div className="card p-8 text-center flex flex-col justify-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
@@ -323,35 +323,27 @@ export default function LandingPage() {
         <section id="pricing" className="py-20 lg:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Прозрачные тарифы</h2>
-                <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Выберите план, который идеально подходит для ваших задач. Никаких скрытых платежей.</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Стоимость рассылки:</h2>
             </div>
-            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="card p-8 flex flex-col">
-                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
-                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
-                    <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
+            <div className="max-w-3xl mx-auto space-y-6">
+                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center">
+                    <div className="text-lg md:text-xl font-semibold text-white">300–500 сообщений</div>
+                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">9 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
                 </div>
-                <div className="card p-8 flex flex-col relative popular-plan">
-                     <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div>
-                    <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
-                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
-                    <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
+                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center popular-plan">
+                    <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ВЫГОДНО</span></div>
+                    <div className="text-lg md:text-xl font-semibold text-white">501–1000 сообщений</div>
+                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">8 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
                 </div>
-                <div className="card p-8 flex flex-col">
-                    <h3 className="text-xl font-bold text-white mb-2 font-headline">Бизнес</h3>
-                    <div className="my-6 flex-grow flex items-center justify-center"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium ml-2">₽</span></div>
-                    <Link href="/dashboard" className="w-full text-center bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-600 transition">Выбрать тариф</Link>
+                <div className="card p-6 md:p-8 flex flex-col md:flex-row justify-between items-center">
+                    <div className="text-lg md:text-xl font-semibold text-white">1001–2000 сообщений</div>
+                    <div className="text-2xl md:text-3xl font-bold text-primary mt-2 md:mt-0">7 ₽ <span className="text-base font-normal text-gray-400">/ сообщение</span></div>
                 </div>
             </div>
-            <div className="text-center mt-12">
-                <p className="text-lg text-white font-semibold">Все тарифы включают:</p>
-                <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-gray-400">
-                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>ИИ-генератор текстов</span>
-                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Подробная аналитика</span>
-                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>Поддержка 24/7</span>
-                    <span className="flex items-center"><svg className="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>API для интеграций</span>
-                </div>
+             <div className="text-center mt-12">
+                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                    Рассчитать стоимость
+                </Link>
             </div>
            </div>
         </section>
@@ -382,3 +374,5 @@ export default function LandingPage() {
     </>
   );
 }
+
+    
