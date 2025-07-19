@@ -20,6 +20,7 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
     };
 
     const filteredReplies = useMemo(() => {
+        if (!Array.isArray(allReplies)) return [];
         if (!selectedCampaignId) {
             return allReplies.filter(r => r.unread).slice(0, 8); 
         }
@@ -27,6 +28,7 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
     }, [selectedCampaignId, allReplies]);
 
     const unreadRepliesByCampaign = useMemo(() => {
+        if (!Array.isArray(allReplies)) return new Map<string, number>();
         const unreadMap = new Map<string, number>();
         allReplies.forEach(reply => {
             if(reply.unread) {

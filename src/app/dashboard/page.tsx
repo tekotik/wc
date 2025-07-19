@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   const campaigns = await getCampaigns();
-  const allReplies = await getAllReplies();
+  const { replies: allReplies } = await getAllReplies();
   const activeCampaigns = campaigns.filter(c => c.status === "Активна");
   const completedCampaigns = campaigns.filter(c => c.status === 'Завершена' && c.stats);
   const unreadCount = await getUnreadRepliesCount();
