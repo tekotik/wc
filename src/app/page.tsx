@@ -270,46 +270,31 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section className="py-20 lg:py-24 bg-gray-900">
+        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Начать работу — это просто</h2>
-                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Как это работает:</h2>
                 </div>
-                <div className="relative">
-                     <div className="hidden md:block absolute top-1/2 left-0 w-full -translate-y-1/2">
-                        <svg width="100%" height="100%" viewBox="0 0 1000 40" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stopColor="#06b6d4" />
-                                    <stop offset="100%" stopColor="#10b981" />
-                                </linearGradient>
-                            </defs>
-                            <path 
-                                d="M 0 20 C 250 -20, 750 60, 1000 20" 
-                                stroke="url(#curveGradient)" 
-                                strokeWidth="4" 
-                                fill="none"
-                                className="curve-line"
-                            />
-                        </svg>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">1</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
-                            <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
-                        </div>
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">2</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
-                            <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
-                        </div>
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">3</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
-                            <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
-                        </div>
+                <div className="max-w-3xl mx-auto text-gray-300 text-lg space-y-8">
+                    <ol className="list-decimal list-inside space-y-4 text-left">
+                        <li>Загрузите базу номеров — мы бесплатно проверим её на наличие аккаунтов WhatsApp, чтобы исключить "пустые" отправки.</li>
+                        <li>Отправьте текст сообщения — можно обычный или уже рандомизированный.</li>
+                        <li>Укажите желаемую дату и время отправки.</li>
+                    </ol>
+
+                    <p className="text-left">
+                        Затем ваш текст попадает на проверку модератору:
+                        <br/>
+                        Если текст не рандомизирован, мы сделаем это за вас и отправим готовый вариант на согласование.
+                        <br/>
+                        Если выбранное время недоступно, модератор предложит альтернативные слоты — ближайшие возможные даты и часы.
+                    </p>
+
+                    <div className="rounded-lg border border-primary/50 bg-green-900/20 p-6 text-left">
+                        <p className="font-bold text-white"><span className="mr-2">📌</span>Важно:</p>
+                        <p className="mt-2">
+                        Только после того, как вы одобрите финальный текст рассылки и согласуете время, с вашего баланса будет списана сумма, и рассылка будет запланирована.
+                        </p>
                     </div>
                 </div>
             </div>
