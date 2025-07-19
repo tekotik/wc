@@ -7,10 +7,10 @@ import { revalidatePath } from 'next/cache';
 
 export async function createCampaignAction(newCampaign: Campaign) {
   try {
-    await addCampaign(newCampaign);
+    const createdCampaign = await addCampaign(newCampaign);
     revalidatePath('/campaigns');
     revalidatePath('/dashboard');
-    return { success: true, campaignId: newCampaign.id };
+    return { success: true, campaign: createdCampaign };
   } catch (error) {
     return { success: false, message: 'Не удалось создать рассылку.' };
   }

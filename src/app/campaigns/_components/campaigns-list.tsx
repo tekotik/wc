@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Pencil, Rocket, XCircle, Eye, BarChart3, Send } from "lucide-react";
@@ -32,6 +32,23 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
   const [campaigns, setCampaigns] = useState(initialCampaigns);
   const { toast } = useToast();
   const router = useRouter();
+
+  useEffect(() => {
+    const pendingCampaignData = localStorage.getItem('pendingCampaign');
+    if (pendingCampaignData) {
+      try {
+        const pendingCampaign = JSON.parse(pendingCampaignData);
+        // Check if the campaign is already in the list to avoid duplicates
+        if (!campaigns.some(c => c.id === pendingCampaign.id)) {
+           setCampaigns(prevCampaigns => [pendingCampaign, ...prevCampaigns]);
+        }
+        localStorage.removeItem('pendingCampaign');
+      } catch (e) {
+        console.error("Failed to parse pending campaign from localStorage", e);
+        localStorage.removeItem('pendingCampaign');
+      }
+    }
+  }, []); // Run only once on component mount
 
   const handleStatusChange = async (id: string, status: CampaignStatus) => {
     const campaign = campaigns.find(c => c.id === id);

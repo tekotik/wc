@@ -61,7 +61,7 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
 
     const result = await createCampaignAction(newCampaign);
 
-    if (result.success) {
+    if (result.success && result.campaign) {
       toast({
         title: "Пакет приобретен!",
         description: `С вашего баланса списано ${selectedPackage.price} ₽. Теперь заполните детали рассылки.`,
@@ -69,8 +69,11 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
 
       setIsOpen(false);
       
-      // Redirect to the new campaign's edit page
-      router.push(`/campaigns/${result.campaignId}/edit`);
+      // Store the new campaign in localStorage to be picked up by the campaigns page
+      localStorage.setItem('pendingCampaign', JSON.stringify(result.campaign));
+
+      // Redirect to the campaigns list page
+      router.push(`/campaigns`);
     } else {
        toast({
           variant: "destructive",

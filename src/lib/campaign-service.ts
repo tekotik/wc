@@ -30,12 +30,12 @@ async function readCampaignsFromFile(): Promise<Campaign[]> {
 }
 
 async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
-    try {
-        await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf-8');
-    } catch (error) {
-        // This will fail on Vercel, but we log the error for debugging.
-        console.error('Error writing to campaigns file (this is expected on Vercel):', error);
-    }
+    // This function will not be used in the Vercel environment to avoid write errors.
+    // try {
+    //     await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf-8');
+    // } catch (error) {
+    //     console.error('Error writing to campaigns file (this is expected on Vercel):', error);
+    // }
 }
 
 
@@ -46,28 +46,35 @@ export async function getCampaigns(): Promise<Campaign[]> {
   return inMemoryCampaigns;
 }
 
-export async function addCampaign(newCampaign: Campaign): Promise<void> {
+export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {
     const campaigns = await getCampaigns();
-    campaigns.unshift(newCampaign); // Add to the beginning of the in-memory array
-    // We don't write to file on Vercel to avoid errors. The change exists in memory for the session.
-    // await writeCampaigns(campaigns);
+    // Add to the beginning of the in-memory array for the current serverless function's lifetime
+    campaigns.unshift(newCampaign);
+    // Return the created campaign object so the client can handle it
+    return newCampaign;
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
     const campaigns = await getCampaigns();
-    return campaigns.find(c => c.id === id) || null;
+    const campaign = campaigns.find(c => c.id === id);
+
+    // If not found in memory, it won't exist on the next request on Vercel
+    if (!campaign) {
+        console.warn(`Campaign with id ${id} not found in memory.`);
+        return null;
+    }
+    
+    return campaign;
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
-    const campaigns = await getCampaigns();
+    let campaigns = await getCampaigns();
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
     if (campaignIndex === -1) {
-        console.warn(`Campaign with id ${updatedCampaign.id} not found for update.`);
+        console.warn(`Campaign with id ${updatedCampaign.id} not found for update. Adding it to the list.`);
         // If not found, add it. This can happen if the in-memory store was reset.
         campaigns.unshift(updatedCampaign);
     } else {
         campaigns[campaignIndex] = updatedCampaign;
     }
-    // We don't write to file on Vercel to avoid errors.
-    // await writeCampaigns(campaigns);
 }
