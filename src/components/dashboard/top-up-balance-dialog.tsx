@@ -105,11 +105,11 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
               />
           </div>
         </div>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Отмена</Button>
-          </DialogClose>
-          <Button onClick={handleTopUp} disabled={amount < 1000}>Пополнить на {amount} ₽</Button>
+        <DialogFooter className="flex-col !space-y-2">
+           <Button onClick={handleTopUp} disabled={amount < 1000} className="w-full">Пополнить на {amount} ₽</Button>
+            <DialogClose asChild>
+                <Button variant="ghost" className="w-full">Отмена</Button>
+            </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
