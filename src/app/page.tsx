@@ -83,7 +83,7 @@ export default function LandingPage() {
         <nav className="container mx-auto flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3 text-white hover:text-green-400 transition-colors">
                 <ElsenderLogo className="w-8 h-8 text-primary" />
-                <span className="text-2xl font-bold">Elsender</span>
+                <span className="text-2xl font-bold font-headline">Elsender</span>
             </Link>
             <div className="hidden md:flex items-center space-x-8">
                 <Link href="#features" className="text-gray-300 hover:text-white transition">Возможности</Link>
@@ -118,11 +118,11 @@ export default function LandingPage() {
       <main>
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-28 hero-gradient">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                    Управляйте WhatsApp рассылками <span className="text-green-400">профессионально</span>
+                <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 font-headline">
+                   Добро пожаловать в L-Sender
                 </h1>
                 <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-10">
-                    Elsender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты.
+                    L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
                     <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
@@ -138,7 +138,7 @@ export default function LandingPage() {
         <section id="growth-chart" ref={chartSectionRef} className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">Отправьте сообщения — получите результат</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
                 </div>
 
@@ -234,7 +234,7 @@ export default function LandingPage() {
         <section id="features" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">Все, что нужно для эффективных рассылок</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Все, что нужно для эффективных рассылок</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Наша платформа предоставляет полный набор инструментов для достижения ваших маркетинговых целей.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -242,28 +242,28 @@ export default function LandingPage() {
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <Sparkles className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">ИИ-генерация текстов</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
                         <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">Модерация и безопасность</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <Rocket className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">Мгновенный запуск</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Мгновенный запуск</h3>
                         <p className="text-gray-400">Запускайте рассылки сразу после одобрения. Наша инфраструктура обеспечивает высокую скорость и надежность.</p>
                     </div>
                     <div className="card p-8 text-center">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                            <BarChart2 className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">Подробная аналитика</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Подробная аналитика</h3>
                         <p className="text-gray-400">Отслеживайте ключевые метрики: доставку, прочтения и ответы. Принимайте решения на основе данных.</p>
                     </div>
                 </div>
@@ -273,7 +273,7 @@ export default function LandingPage() {
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">Начать работу — это просто</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Начать работу — это просто</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
@@ -297,17 +297,17 @@ export default function LandingPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">1</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2">Создайте рассылку</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
                             <p className="text-gray-400">Выберите тариф, напишите текст сами или с помощью нашего ИИ-ассистента.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">2</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2">Пройдите модерацию</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
                             <p className="text-gray-400">Отправьте рассылку на быструю проверку на соответствие правилам.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4 z-10 relative">3</div></div>
-                            <h3 className="text-xl font-bold text-white mb-2">Запустите и анализируйте</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
                             <p className="text-gray-400">После одобрения запустите рассылку и отслеживайте ее эффективность.</p>
                         </div>
                     </div>
@@ -318,12 +318,12 @@ export default function LandingPage() {
         <section id="pricing" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">Прозрачные тарифы</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Прозрачные тарифы</h2>
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Выберите план, который идеально подходит для ваших задач. Никаких скрытых платежей.</p>
                 </div>
                 <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="card p-8 flex flex-col">
-                        <h3 className="text-2xl font-bold text-white mb-2">Старт</h3>
+                        <h3 className="text-2xl font-bold text-white mb-2 font-headline">Старт</h3>
                         <p className="text-gray-400 mb-6">Для быстрого начала</p>
                         <div className="mb-6"><span className="text-5xl font-extrabold text-white">1000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
                         <p className="text-green-400 font-semibold text-lg mb-8">1 000 сообщений</p>
@@ -332,7 +332,7 @@ export default function LandingPage() {
                     </div>
                     <div className="card p-8 flex flex-col relative popular-plan">
                          <div className="absolute top-0 -translate-y-1/2 w-full flex justify-center"><span className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full">ПОПУЛЯРНЫЙ ВЫБОР</span></div>
-                        <h3 className="text-2xl font-bold text-white mb-2">Профи</h3>
+                        <h3 className="text-2xl font-bold text-white mb-2 font-headline">Профи</h3>
                         <p className="text-gray-400 mb-6">Для активного роста</p>
                         <div className="mb-6"><span className="text-5xl font-extrabold text-white">4500</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
                         <p className="text-green-400 font-semibold text-lg mb-8">5 000 сообщений</p>
@@ -340,7 +340,7 @@ export default function LandingPage() {
                         <Link href="/dashboard" className="w-full text-center btn-gradient text-white font-bold py-3 px-6 rounded-lg">Выбрать тариф</Link>
                     </div>
                     <div className="card p-8 flex flex-col">
-                        <h3 className="text-xl font-bold text-white mb-2">Бизнес</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Бизнес</h3>
                         <p className="text-gray-400 mb-6">Для крупных компаний</p>
                         <div className="mb-6"><span className="text-5xl font-extrabold text-white">8000</span><span className="text-gray-400 text-lg font-medium">₽</span></div>
                         <p className="text-green-400 font-semibold text-lg mb-8">10 000 сообщений</p>
@@ -362,7 +362,7 @@ export default function LandingPage() {
 
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white">Готовы увеличить продажи?</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Готовы увеличить продажи?</h2>
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
@@ -386,3 +386,5 @@ export default function LandingPage() {
     </>
   );
 }
+
+    
