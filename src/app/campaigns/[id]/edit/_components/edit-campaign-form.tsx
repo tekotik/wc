@@ -111,7 +111,7 @@ export default function EditCampaignForm({ campaign: initialCampaign }: { campai
         />
         <Button type="button" variant="outline" onClick={handleAttachClick}>
             <Paperclip className={cn("mr-2 h-4 w-4", fileName && "text-primary")} />
-            {fileName ? "База прикреплена" : "Прикрепить базу"}
+            {fileName ? fileName : "Прикрепить базу"}
         </Button>
       </>
     );

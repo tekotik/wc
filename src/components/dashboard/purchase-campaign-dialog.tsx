@@ -35,8 +35,31 @@ interface PurchaseCampaignDialogProps {
 export default function PurchaseCampaignDialog({ children, balance, setBalance }: PurchaseCampaignDialogProps) {
   const [selectedPackage, setSelectedPackage] = React.useState(packages[1]);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [baseFile, setBaseFile] = React.useState<{ name: string; content: string } | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
   const { toast } = useToast();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        setBaseFile({ name: file.name, content });
+         toast({
+            title: "Файл прикреплен",
+            description: file.name,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
+
 
   const handleCreateCampaign = async () => {
     if (balance < selectedPackage.price) {
@@ -48,15 +71,14 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
         return;
     }
     
-    // Deduct balance
     setBalance(prev => prev - selectedPackage.price);
 
-    // Create a new campaign draft
     const newCampaign: Campaign = {
         id: `draft_${Date.now()}`,
         name: "",
         status: "Черновик",
         text: "",
+        ...(baseFile && { baseFile: baseFile })
     };
 
     const result = await createCampaignAction(newCampaign);
@@ -68,11 +90,9 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
       });
 
       setIsOpen(false);
+      setBaseFile(null); // Reset file state
       
-      // Store the new campaign in localStorage to be picked up by the edit page
       localStorage.setItem('pendingCampaign', JSON.stringify(result.campaign));
-
-      // Redirect to the edit page
       router.push(`/campaigns/${result.campaign.id}/edit`);
     } else {
        toast({
@@ -80,7 +100,6 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
           title: "Ошибка",
           description: result.message,
        });
-       // refund
        setBalance(prev => prev + selectedPackage.price);
     }
   };
@@ -128,9 +147,16 @@ export default function PurchaseCampaignDialog({ children, balance, setBalance }
         <DialogFooter className="sm:justify-between items-center mt-4">
           <Button variant="ghost" className="text-muted-foreground">Отмена</Button>
           <div className="flex items-center gap-2 mt-2 sm:mt-0">
-             <Button variant="outline">
-                <Paperclip className="mr-2 h-4 w-4" />
-                Прикрепить базу
+             <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept=".csv, .txt, .json"
+             />
+             <Button variant="outline" onClick={handleAttachClick}>
+                <Paperclip className={cn("mr-2 h-4 w-4", baseFile && "text-primary")} />
+                {baseFile ? baseFile.name : "Прикрепить базу"}
             </Button>
             <Button onClick={handleCreateCampaign} className="btn-gradient">
                 Создать рассылку
