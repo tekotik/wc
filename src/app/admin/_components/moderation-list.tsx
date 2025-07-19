@@ -87,7 +87,7 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
                             <p className="text-sm text-card-foreground mt-2 bg-secondary p-3 rounded-md">{campaign.text}</p>
                         </div>
                     </div>
-                    <div className="flex flex-wrap items-center justify-end gap-2 w-full md:w-auto self-end md:self-start">
+                    <div className="flex flex-wrap items-center justify-end gap-2 w-full md:w-auto self-stretch md:self-start">
                         <Button size="sm" onClick={() => handleModerate(campaign.id, "Активна")} className="flex-grow md:flex-grow-0">
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Одобрить и запустить
