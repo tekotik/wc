@@ -11,7 +11,7 @@ const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_
 async function fetchAndParseReplies(): Promise<Reply[]> {
   try {
     const response = await fetch(GOOGLE_SHEET_CSV_URL, {
-      next: { revalidate: 60 }, // Cache for 1 minute
+      next: { revalidate: 600 }, // Cache for 10 minutes
     });
 
     if (!response.ok) {
@@ -19,8 +19,8 @@ async function fetchAndParseReplies(): Promise<Reply[]> {
     }
 
     const csvText = await response.text();
+    // Parse without headers to rely on column index
     const parsed = Papa.parse(csvText, {
-      header: true,
       skipEmptyLines: true,
     });
     
@@ -28,24 +28,26 @@ async function fetchAndParseReplies(): Promise<Reply[]> {
         console.error("Parsing errors:", parsed.errors);
     }
 
-    const allRows = parsed.data as any[];
+    const allRows = parsed.data as string[][];
 
-    // Transform and filter data
+    // Transform and filter data, skipping the header row
     const replies: Reply[] = allRows
+      .slice(1) // Skip header row
       .map((row, index) => ({
-        campaignId: row.campaignId || 'unknown',
-        name: row.name || `Пользователь ${index + 1}`,
-        reply: row.reply || '',
-        time: row.time || new Date().toLocaleTimeString(),
+        // Columns are 0-indexed. C is 2, D is 3.
+        campaignId: 'summer_sale_24', // Default campaign ID as it's not in C or D
+        name: row[2] || `Пользователь ${index + 1}`,
+        reply: row[3] || '',
+        time: new Date().toLocaleTimeString(), // Default time as it's not in C or D
         avatar: {
           src: "https://placehold.co/40x40.png",
-          fallback: (row.name || 'П').charAt(0).toUpperCase(),
+          fallback: (row[2] || 'П').charAt(0).toUpperCase(),
           hint: "person user",
         },
-        // The "unread" messages have 'unread' in the unread column
-        unread: row.unread === 'unread',
+        // The "unread" messages have 'unread' in the 'unread' column (E, index 4)
+        unread: row[4] === 'unread',
       }))
-      .filter(reply => reply.reply && reply.campaignId && reply.campaignId !== 'unknown');
+      .filter(reply => reply.reply); // Filter out rows with empty replies
 
     return replies;
 
