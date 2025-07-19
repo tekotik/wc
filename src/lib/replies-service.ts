@@ -5,7 +5,7 @@ import type { Reply } from './mock-data';
 import Papa from 'papaparse';
 import { revalidatePath } from 'next/cache';
 
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv';
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT39h92aCAtwBi3yV4H5tS5EBCS28Y58bCl-g-wL3i_51nBv1C-8s1-Y1s-Lq-i-iW2L2c-iLwE-N0o/pub?gid=0&single=true&output=csv';
 
 interface SheetRow {
   campaignId: string;
@@ -15,7 +15,7 @@ interface SheetRow {
   avatar_src: string;
   avatar_fallback: string;
   avatar_hint: string;
-  unread: string; // Comes as string 'TRUE' or 'FALSE'
+  unread: string; // Comes as string 'unread' or 'read'
 }
 
 
@@ -43,7 +43,7 @@ export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: 
     const allRepliesData = parsed.data;
 
     const unreadReplies = allRepliesData
-      .filter(row => row.unread === 'TRUE' && row.reply)
+      .filter(row => row.unread === 'unread' && row.reply)
       .map(row => ({
         campaignId: row.campaignId,
         name: row.name,
