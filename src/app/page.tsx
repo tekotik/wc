@@ -233,6 +233,44 @@ export default function LandingPage() {
             </div>
         </section>
         
+        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
+                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
+                </div>
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <svg className="w-full max-w-5xl" viewBox="0 0 1000 200" preserveAspectRatio="none">
+                             <defs>
+                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="url(#processGradient)"/>
+                                </marker>
+                            </defs>
+                            <path d="M 50 150 C 250 200, 400 50, 650 100 S 850 120, 950 80" stroke="url(#processGradient)" strokeWidth="5" fill="none" className="draw-arrow" markerEnd="url(#arrowhead)"/>
+                        </svg>
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                        <div className="text-center">
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
+                            <p className="text-gray-400">Загрузите базу, настройте текст и отправьте на проверку.</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
+                            <p className="text-gray-400">Наша команда быстро проверит вашу кампанию.</p>
+                        </div>
+                        <div className="text-center">
+                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
+                           <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
+                            <p className="text-gray-400">Следите за результатами в реальном времени.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="features" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -272,34 +310,6 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Начать работу — это просто</h2>
-                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
-                </div>
-                <div className="relative">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
-                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
-                            <p className="text-gray-400">Загрузите базу, настройте текст и отправьте на проверку.</p>
-                        </div>
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
-                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
-                            <p className="text-gray-400">Наша команда быстро проверит вашу кампанию.</p>
-                        </div>
-                        <div className="text-center">
-                            <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
-                           <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
-                            <p className="text-gray-400">Следите за результатами в реальном времени.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Готовы увеличить продажи?</h2>
@@ -326,4 +336,3 @@ export default function LandingPage() {
     </>
   );
 }
-
