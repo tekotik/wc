@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const leadsCountRef = useRef<SVGTextElement>(null);
+  const animationFrameId = useRef<number>();
 
   useEffect(() => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -67,6 +69,36 @@ export default function LandingPage() {
         }
     }
 
+    // Animated number counter
+    const leadsElement = leadsCountRef.current;
+    if (leadsElement) {
+        const finalCount = 86;
+        const animationDuration = 4000; // 4 seconds, to match the line drawing
+        const animationStartTime = Date.now() + 1000; // Start after 1 second delay
+
+        const animateCount = () => {
+            const now = Date.now();
+            const elapsedTime = now - animationStartTime;
+
+            if (elapsedTime >= animationDuration) {
+                leadsElement.textContent = `${finalCount} лидов`;
+                if(animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
+                return;
+            }
+
+            const progress = elapsedTime / animationDuration;
+            const currentCount = Math.round(progress * finalCount);
+            leadsElement.textContent = `${currentCount} лидов`;
+
+            animationFrameId.current = requestAnimationFrame(animateCount);
+        };
+        
+        // Start animation after a delay
+        setTimeout(() => {
+           animationFrameId.current = requestAnimationFrame(animateCount);
+        }, 1000);
+    }
+
 
     return () => {
          mobileMenuButton?.removeEventListener('click', openMenu);
@@ -74,6 +106,7 @@ export default function LandingPage() {
          menuLinks?.forEach(link => {
             link.removeEventListener('click', closeMenu);
          });
+         if(animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     }
   }, []);
 
@@ -135,7 +168,7 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
-        
+
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
@@ -277,8 +310,8 @@ export default function LandingPage() {
 
         <section className="py-20 lg:py-24 bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-gray-800/50 rounded-2xl p-4 md:p-8 border border-gray-700/50">
-              <svg width="100%" viewBox="0 0 800 450" className="text-gray-400">
+            <div className="animated-chart-container bg-gray-800/50 rounded-2xl p-4 md:p-8 border border-gray-700/50 transition-all duration-300">
+              <svg width="100%" viewBox="0 0 800 450">
                 <defs>
                    <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
@@ -298,7 +331,7 @@ export default function LandingPage() {
                 </g>
                 
                 {/* <!-- Y-axis labels --> */}
-                <g className="text-gray-400" fontSize="14">
+                <g className="text-gray-400" fill="white" fontSize="14">
                   <text x="30" y="355" textAnchor="end">0</text>
                   <text x="30" y={355 - 25 * 3} textAnchor="end">25</text>
                   <text x="30" y={355 - 50 * 3} textAnchor="end">50</text>
@@ -307,7 +340,7 @@ export default function LandingPage() {
                 </g>
 
                 {/* <!-- X-axis labels --> */}
-                <g className="text-gray-400" fontSize="16" fontWeight="medium">
+                <g className="text-gray-400" fill="white" fontSize="16" fontWeight="medium">
                   <text x="100" y="380" textAnchor="middle">День 1</text>
                   <text x="260" y="380" textAnchor="middle">День 2</text>
                   <text x="420" y="380" textAnchor="middle">День 3</text>
@@ -337,7 +370,7 @@ export default function LandingPage() {
                 {/* <!-- Text info --> */}
                 <g className="text-info">
                     <text x="60" y="60" fontSize="16" fill="#A0AEC0">Результат рассылки:</text>
-                    <text x="60" y="100" fontSize="32" fontWeight="bold" fill="url(#chart-line-gradient)">86 лидов</text>
+                    <text ref={leadsCountRef} x="60" y="100" fontSize="32" fontWeight="bold" fill="url(#chart-line-gradient)">0 лидов</text>
                     <text x="60" y="130" fontSize="18" fill="#A0AEC0">8.6% конверсия</text>
                 </g>
                 <g className="text-info">
