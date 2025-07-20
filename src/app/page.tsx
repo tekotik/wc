@@ -243,15 +243,15 @@ export default function LandingPage() {
                     <div className="absolute inset-0 flex items-center justify-center">
                         <svg className="w-full max-w-5xl" viewBox="0 0 1000 200" preserveAspectRatio="none">
                              <defs>
-                                <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <stop offset="0%" stopColor="#06b6d4" />
                                     <stop offset="100%" stopColor="#10b981" />
                                 </linearGradient>
                                 <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
-                                    <polygon points="0 0, 8 3, 0 6" fill="url(#processGradient)"/>
+                                    <polygon points="0 0, 8 3, 0 6" fill="url(#arrowGradient)"/>
                                 </marker>
                             </defs>
-                            <path d="M 50 150 C 250 200, 400 50, 650 100 S 850 120, 950 80" stroke="url(#processGradient)" strokeWidth="5" fill="none" className="draw-arrow" markerEnd="url(#arrowhead)"/>
+                            <path d="M 50 150 C 250 200, 400 50, 650 100 S 850 120, 950 80" stroke="url(#arrowGradient)" strokeWidth="5" fill="none" className="draw-arrow" markerEnd="url(#arrowhead)"/>
                         </svg>
                     </div>
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
@@ -273,6 +273,80 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section className="py-20 lg:py-24 bg-gray-900">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-gray-800/50 rounded-2xl p-4 md:p-8 border border-gray-700/50">
+              <svg width="100%" viewBox="0 0 800 450" className="text-gray-400">
+                <defs>
+                   <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="chart-line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#06b6d4" />
+                        <stop offset="100%" stopColor="#10b981" />
+                    </linearGradient>
+                </defs>
+                
+                {/* <!-- Grid lines --> */}
+                <g className="text-gray-700">
+                  {[0, 25, 50, 75, 100].map(y => (
+                    <line key={y} x1="50" y1={350 - y * 3} x2="750" y2={350 - y * 3} stroke="currentColor" strokeWidth="1" strokeDasharray="3,3" />
+                  ))}
+                </g>
+                
+                {/* <!-- Y-axis labels --> */}
+                <g className="text-gray-400" fontSize="14">
+                  <text x="30" y="355" textAnchor="end">0</text>
+                  <text x="30" y={355 - 25 * 3} textAnchor="end">25</text>
+                  <text x="30" y={355 - 50 * 3} textAnchor="end">50</text>
+                  <text x="30" y={355 - 75 * 3} textAnchor="end">75</text>
+                  <text x="30" y={355 - 100 * 3} textAnchor="end">100</text>
+                </g>
+
+                {/* <!-- X-axis labels --> */}
+                <g className="text-gray-400" fontSize="16" fontWeight="medium">
+                  <text x="100" y="380" textAnchor="middle">День 1</text>
+                  <text x="260" y="380" textAnchor="middle">День 2</text>
+                  <text x="420" y="380" textAnchor="middle">День 3</text>
+                  <text x="580" y="380" textAnchor="middle">День 4</text>
+                  <text x="740" y="380" textAnchor="middle">День 5</text>
+                </g>
+
+                {/* <!-- Data path and fill --> */}
+                <path d="M 100 335 C 180 250, 220 180, 420 200 C 580 220, 620 100, 740 70" fill="url(#chart-gradient)" className="chart-line-fill" />
+                <path d="M 100 335 C 180 250, 220 180, 420 200 C 580 220, 620 100, 740 70" stroke="url(#chart-line-gradient)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" className="chart-line" />
+
+                {/* <!-- Data points --> */}
+                <g className="chart-point">
+                    <circle cx="100" cy="335" r="8" fill="#111827" stroke="url(#chart-line-gradient)" strokeWidth="3" className="chart-point-circle" />
+                </g>
+                <g className="chart-point">
+                    <circle cx="420" cy="200" r="8" fill="#111827" stroke="url(#chart-line-gradient)" strokeWidth="3" className="chart-point-circle" />
+                    <g className="chart-tooltip">
+                        <rect x="380" y="140" width="80" height="35" rx="8" fill="#1F2937" stroke="#374151" />
+                        <text x="420" y="165" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">45 лидов</text>
+                    </g>
+                </g>
+                 <g className="chart-point">
+                    <circle cx="740" cy="70" r="8" fill="#111827" stroke="url(#chart-line-gradient)" strokeWidth="3" className="chart-point-circle" />
+                </g>
+
+                {/* <!-- Text info --> */}
+                <g className="text-info">
+                    <text x="60" y="60" fontSize="16" fill="#A0AEC0">Результат рассылки:</text>
+                    <text x="60" y="100" fontSize="32" fontWeight="bold" fill="url(#chart-line-gradient)">86 лидов</text>
+                    <text x="60" y="130" fontSize="18" fill="#A0AEC0">8.6% конверсия</text>
+                </g>
+                <g className="text-info">
+                    <text x="740" y="60" fontSize="16" textAnchor="end" fill="#A0AEC0">Отправлено:</text>
+                    <text x="740" y="100" fontSize="32" fontWeight="bold" textAnchor="end" fill="url(#chart-line-gradient)">1000 сообщ.</text>
+                </g>
+              </svg>
+            </div>
+          </div>
         </section>
 
         <section id="features" className="py-20 lg:py-24">

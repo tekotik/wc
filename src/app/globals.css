@@ -112,13 +112,21 @@ body {
     }
      /* Chart animation */
     .chart-line {
-        stroke-dasharray: 1000;
-        stroke-dashoffset: 1000;
+        stroke-dasharray: 2000;
+        stroke-dashoffset: 2000;
         animation: draw 2s 0.5s ease-in-out forwards;
+    }
+    .chart-line-fill {
+      opacity: 0;
+      animation: fade-in 1s 2.5s ease-in-out forwards;
     }
     .chart-point-circle {
         opacity: 0;
         animation: fade-in 0.5s 2.5s ease forwards;
+    }
+    .text-info {
+        opacity: 0;
+        animation: fade-in 1s 2s ease-in-out forwards;
     }
     .chart-point:hover .chart-point-circle-hover {
         opacity: 1;
