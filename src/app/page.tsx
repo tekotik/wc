@@ -103,7 +103,7 @@ export default function LandingPage() {
             const startTime = performance.now();
 
             function animate(time: number) {
-                const duration = 5000;
+                const duration = 60000;
                 const elapsed = time - startTime;
                 const progress = Math.min(elapsed / duration, 1);
 
