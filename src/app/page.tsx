@@ -40,10 +40,14 @@ export default function LandingPage() {
 
     if (rainContainer && path) {
         const pathLength = path.getTotalLength();
-        const numSources = 15;
+        const numSources = 15; // Количество "источников" дождя вдоль линии
 
+        // Создаем несколько источников для рублей
         for (let i = 0; i < numSources; i++) {
+            // Распределяем источники равномерно по длине кривой
             const point = path.getPointAtLength((i / (numSources - 1)) * pathLength);
+            
+            // Генерируем случайное количество рублей для каждого источника (от 7 до 13)
             const numRubles = Math.floor(Math.random() * (13 - 7 + 1)) + 7;
 
             for (let j = 0; j < numRubles; j++) {
@@ -53,11 +57,12 @@ export default function LandingPage() {
                 symbol.setAttribute('class', 'currency-symbol');
                 symbol.textContent = '₽';
 
-                const duration = Math.random() * 2 + 2;
-                const delay = Math.random() * 4;
-                const startX = Math.random() * 20 - 10;
-                const endX = Math.random() * 80 - 40;
-                const rotation = Math.random() * 720 - 360;
+                // Задаем случайные параметры для "рэгдолл" анимации
+                const duration = Math.random() * 2 + 2; // Длительность падения от 2 до 4 секунд
+                const delay = Math.random() * 4; // Случайная задержка до 4 секунд для постоянного эффекта
+                const startX = Math.random() * 20 - 10; // Небольшое начальное смещение по X
+                const endX = Math.random() * 80 - 40; // Конечное смещение по X
+                const rotation = Math.random() * 720 - 360; // Случайное вращение
 
                 symbol.style.setProperty('--start-x', `${startX}px`);
                 symbol.style.setProperty('--end-x', `${endX}px`);
@@ -220,7 +225,7 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
-             <div className="absolute inset-x-0 top-[40px] h-[400px] z-0 pointer-events-none">
+            <div className="absolute inset-x-0 top-[40px] h-[400px] z-0 pointer-events-none">
               <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="none">
                   <defs>
                       <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -383,10 +388,6 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-        
-        <section className="py-20 lg:py-24 bg-gray-900">
             <div className="relative w-full max-w-4xl mx-auto p-4">
                 <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
                     <defs>
@@ -437,8 +438,9 @@ export default function LandingPage() {
                     </g>
                 </svg>
             </div>
+          </div>
         </section>
-
+        
         <section id="features" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
