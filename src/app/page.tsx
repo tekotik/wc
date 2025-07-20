@@ -385,7 +385,7 @@ export default function LandingPage() {
                     {/* <!-- Pro Plan (Popular) --> */}
                     <div className="card popular-plan p-8 flex flex-col h-full relative">
                         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Популярный выбор</div>
+                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
                         </div>
                         <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
                         <p className="text-gray-400 mt-2">Для активного роста</p>
