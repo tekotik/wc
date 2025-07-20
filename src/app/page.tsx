@@ -9,9 +9,6 @@ import { cn } from '@/lib/utils';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const chartSectionRef = useRef<HTMLElement>(null);
-  const leadsCountRef = useRef<SVGTextElement>(null);
-  const conversionRateRef = useRef<SVGTextElement>(null);
 
   useEffect(() => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -27,43 +24,6 @@ export default function LandingPage() {
     menuLinks?.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
-
-    function animateSVGText(obj: SVGTextElement | null, start: number, end: number, duration: number, suffix: string, isFloat = false) {
-        if (!obj) return;
-        let startTimestamp: number | null = null;
-        const step = (timestamp: number) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            let currentValue = progress * (end - start) + start;
-            if (isFloat) {
-                obj.textContent = `${currentValue.toFixed(1)}${suffix}`;
-            } else {
-                obj.textContent = `${Math.floor(currentValue)}${suffix}`;
-            }
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-
-    const chartSection = chartSectionRef.current;
-    const leadsCountText = leadsCountRef.current;
-    const conversionRateText = conversionRateRef.current;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateSVGText(leadsCountText, 0, 86, 2000, ' лидов');
-                animateSVGText(conversionRateText, 0, 8.6, 2000, '% конверсия', true);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-
-    if (chartSection) {
-        observer.observe(chartSection);
-    }
     
     // Money Rain Animation Logic
     const rainContainer = document.getElementById('rain-container');
@@ -114,9 +74,6 @@ export default function LandingPage() {
          menuLinks?.forEach(link => {
             link.removeEventListener('click', closeMenu);
          });
-         if (chartSection) {
-            observer.unobserve(chartSection);
-         }
     }
   }, []);
 
@@ -178,101 +135,102 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
+        
+        <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+                    {/* <!-- Start Plan --> */}
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
+                        <p className="text-gray-400 mt-2">300–500 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">9</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                        <p className="text-gray-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
 
-        <section id="growth-chart" ref={chartSectionRef} className="py-20 lg:py-24 bg-gray-900">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
-                <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
+                    {/* <!-- Pro Plan (Popular) --> */}
+                    <div className="card popular-plan p-8 flex flex-col h-full relative">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
+                        <p className="text-gray-400 mt-2">501–1000 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">8</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                        <p className="text-green-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+
+                    {/* <!-- Business Plan --> */}
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
+                        <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">7</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                         <p className="text-gray-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+                </div>
+                <div className="text-center mt-16">
+                    <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
+                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>ИИ-генератор текстов</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Подробная аналитика</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Поддержка 24/7</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>API для интеграций</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div className="card p-4 sm:p-8 max-w-4xl mx-auto">
-                <svg className="w-full font-sans" viewBox="0 0 550 300">
+             <div className="absolute inset-0 z-0 overflow-hidden">
+                <svg id="money-rain-svg" className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
                     <defs>
-                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" style={{stopColor: '#22C55E'}} />
-                            <stop offset="100%" style={{stopColor: '#4ADE80'}} />
+                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#22D3EE" />
+                            <stop offset="50%" stopColor="#34D399" />
+                            <stop offset="100%" stopColor="#6EE7B7" />
                         </linearGradient>
-                        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" style={{stopColor: '#22C55E', stopOpacity: 0.3}} />
-                            <stop offset="100%" style={{stopColor: '#111827', stopOpacity: 0}} />
+                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#A7F3D0" />
+                            <stop offset="100%" stopColor="#6EE7B7" />
                         </linearGradient>
-                         <filter id="glow">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
                     </defs>
-
-                    <g className="grid-lines" stroke="#374151" strokeWidth="1">
-                        <line x1="50" y1="50" x2="520" y2="50" />
-                        <line x1="50" y1="100" x2="520" y2="100" />
-                        <line x1="50" y1="150" x2="520" y2="150" />
-                        <line x1="50" y1="200" x2="520" y2="200" />
-                        <line x1="50" y1="250" x2="520" y2="250" />
-                    </g>
-
-                    <g className="y-axis-labels" fill="#9CA3AF" fontSize="12">
-                        <text x="40" y="255" textAnchor="end">0</text>
-                        <text x="40" y="205" textAnchor="end">25</text>
-                        <text x="40" y="155" textAnchor="end">50</text>
-                        <text x="40" y="105" textAnchor="end">75</text>
-                        <text x="40" y="55" textAnchor="end">100</text>
-                    </g>
-
-                    <path className="chart-area" d="M 50 250 L 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40 L 520 250 Z" fill="url(#areaGradient)" />
-
-                    <path className="chart-line" d="M 50 220 C 150 200, 200 100, 300 120 S 420 20, 520 40" stroke="url(#lineGradient)" strokeWidth="8" fill="none" strokeLinecap="round" style={{filter: 'url(#glow)'}} />
-
-                    <g className="data-points">
-                        <g className="chart-point" transform="translate(50, 220)">
-                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                            <g className="chart-tooltip" transform="translate(0, -35)">
-                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">12 лидов</text>
-                            </g>
-                        </g>
-                        <g className="chart-point" transform="translate(300, 120)">
-                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                            <g className="chart-tooltip" transform="translate(0, -35)">
-                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">45 лидов</text>
-                            </g>
-                        </g>
-                        <g className="chart-point" transform="translate(520, 40)">
-                            <circle className="chart-point-circle-hover" r="10" fill="#4ADE80" fillOpacity="0.2" />
-                            <circle className="chart-point-circle" r="5" fill="#111827" stroke="#4ADE80" strokeWidth="2" />
-                            <g className="chart-tooltip" transform="translate(0, -35)">
-                                <rect x="-35" y="-20" width="70" height="25" rx="5" fill="#111827" stroke="#4ADE80" strokeWidth="1" />
-                                <text x="0" y="-3" fill="#E5E7EB" textAnchor="middle" fontSize="12">86 лидов</text>
-                            </g>
-                        </g>
-                    </g>
-
-                    <g className="x-axis-labels" fill="#9CA3AF" fontSize="12">
-                        <text x="50" y="275" textAnchor="middle">День 1</text>
-                        <text x="185" y="275" textAnchor="middle">День 2</text>
-                        <text x="300" y="275" textAnchor="middle">День 3</text>
-                        <text x="415" y="275" textAnchor="middle">День 4</text>
-                        <text x="520" y="275" textAnchor="middle">День 5</text>
-                    </g>
-
-                    <g className="integrated-stats" transform="translate(60, 30)">
-                        <text y="0" fontSize="14" fill="#9CA3AF">Результат рассылки:</text>
-                        <text y="30" fontSize="24" fontWeight="bold" fill="#22C55E" id="leads-count-text" ref={leadsCountRef}>0 лидов</text>
-                        <text y="55" fontSize="16" fontWeight="medium" fill="#E5E7EB" id="conversion-rate-text" ref={conversionRateRef}>0.0% конверсия</text>
-                    </g>
-                    <g className="integrated-stats-sent" transform="translate(520, 30)" textAnchor="end">
-                        <text y="0" fontSize="14" fill="#9CA3AF">Отправлено:</text>
-                         <text y="30" fontSize="24" fontWeight="bold" fill="#E5E7EB">1000 сообщ.</text>
-                    </g>
+                    <path id="growth-path" className="growth-line" 
+                            d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100" 
+                            stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <g id="rain-container"></g>
                 </svg>
             </div>
-           </div>
         </section>
         
         <section id="features" className="py-20 lg:py-24">
@@ -321,118 +279,21 @@ export default function LandingPage() {
                     <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
                 </div>
                 <div className="relative">
-                     <div className="hidden md:block absolute top-12 left-0 w-full h-auto">
-                      <svg id="money-rain-svg" className="w-full h-auto" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
-                          <defs>
-                              <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                  <stop offset="0%" stopColor="#22D3EE" />
-                                  <stop offset="50%" stopColor="#34D399" />
-                                  <stop offset="100%" stopColor="#6EE7B7" />
-                              </linearGradient>
-                              <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                  <stop offset="0%" stopColor="#A7F3D0" />
-                                  <stop offset="100%" stopColor="#6EE7B7" />
-                              </linearGradient>
-                          </defs>
-                          <path id="growth-path" className="growth-line" 
-                                d="M 20 180 C 150 160, 250 170, 350 140 S 500 150, 600 100 T 780 90" 
-                                stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                          <g id="rain-container"></g>
-                      </svg>
-                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div></div>
-                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Загрузите базу номеров</h3>
-                            <p className="text-gray-400">Мы бесплатно проверим её на наличие аккаунтов WhatsApp, чтобы исключить "пустые" отправки.</p>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
+                            <p className="text-gray-400">Загрузите базу, настройте текст и отправьте на проверку.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div></div>
-                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Отправьте текст сообщения</h3>
-                            <p className="text-gray-400">Можно обычный или уже рандомизированный.</p>
+                             <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
+                            <p className="text-gray-400">Наша команда быстро проверит вашу кампанию.</p>
                         </div>
                         <div className="text-center">
                             <div className="relative inline-block"><div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div></div>
-                           <h3 className="text-xl font-bold text-white mb-2 font-headline">Укажите желаемую дату</h3>
-                            <p className="text-gray-400">И выберите удобное время для отправки.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="pricing" className="py-20 lg:py-24">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
-                    {/* <!-- Start Plan --> */}
-                    <div className="card p-8 flex flex-col h-full">
-                        <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
-                        <p className="text-gray-400 mt-2">300–500 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">9</span>
-                            <span className="text-xl font-medium text-gray-300">₽</span>
-                        </div>
-                        <p className="text-gray-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
-
-                    {/* <!-- Pro Plan (Popular) --> */}
-                    <div className="card popular-plan p-8 flex flex-col h-full relative">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
-                        <p className="text-gray-400 mt-2">501–1000 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">8</span>
-                            <span className="text-xl font-medium text-gray-300">₽</span>
-                        </div>
-                        <p className="text-green-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
-
-                    {/* <!-- Business Plan --> */}
-                    <div className="card p-8 flex flex-col h-full">
-                        <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
-                        <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">7</span>
-                            <span className="text-xl font-medium text-gray-300">₽</span>
-                        </div>
-                         <p className="text-gray-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
-                </div>
-                <div className="text-center mt-16">
-                    <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
-                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>ИИ-генератор текстов</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Подробная аналитика</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Поддержка 24/7</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>API для интеграций</span>
+                           <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
+                            <p className="text-gray-400">Следите за результатами в реальном времени.</p>
                         </div>
                     </div>
                 </div>
@@ -465,3 +326,4 @@ export default function LandingPage() {
     </>
   );
 }
+
