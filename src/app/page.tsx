@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle } from 'lucide-react';
+import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function LandingPage() {
@@ -34,9 +34,10 @@ export default function LandingPage() {
     menuLinks?.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
-    
-     // Chart Animation Logic
+
     const chart = chartRef.current;
+    if (!chart) return;
+
     const path = pathRef.current;
     const areaPath = areaPathRef.current;
     const leadsCounter = leadsCounterRef.current;
@@ -44,7 +45,7 @@ export default function LandingPage() {
     const sentCounter = sentCounterRef.current;
     const points = [point1Ref.current, point2Ref.current, point3Ref.current];
 
-    if (!chart || !path || !areaPath || !leadsCounter || !conversionCounter || !sentCounter || !points.every(p => p)) {
+    if (!path || !areaPath || !leadsCounter || !conversionCounter || !sentCounter || !points.every(p => p)) {
         return;
     }
 
@@ -63,7 +64,7 @@ export default function LandingPage() {
         const startTime = performance.now();
 
         const animate = (time: number) => {
-            const duration = 5000;
+            const duration = 5000; // 5 seconds animation
             const elapsed = time - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
@@ -92,24 +93,13 @@ export default function LandingPage() {
 
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-            const pathLength = path.getTotalLength();
-            path.style.transition = 'none';
-            path.style.strokeDashoffset = String(pathLength);
-            areaPath.style.opacity = '0';
-            points.forEach(p => { if(p) p.style.opacity = '0' });
-            
-            setTimeout(() => {
-                path.style.transition = '';
-            }, 50);
-
             startAnimation();
             observer.unobserve(chart);
         }
     }, { threshold: 0.5 });
 
     observer.observe(chart);
-
-
+    
     return () => {
          mobileMenuButton?.removeEventListener('click', openMenu);
          closeMenuButton?.removeEventListener('click', closeMenu);
@@ -139,7 +129,7 @@ export default function LandingPage() {
                 <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
                 <Link href="/dashboard" className="text-gray-300 hover:text-white transition">Документация</Link>
             </div>
-            <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
+            <Link href="/dashboard" className="btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                 Начать работу
             </Link>
             <div className="md:hidden">
@@ -185,17 +175,6 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <svg className="w-full h-full" preserveAspectRatio="xMidYMid slice">
-                    <defs>
-                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#A7F3D0" />
-                            <stop offset="100%" stopColor="#6EE7B7" />
-                        </linearGradient>
-                    </defs>
-                    <g id="rain-container"></g>
-                </svg>
-            </div>
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
@@ -271,61 +250,120 @@ export default function LandingPage() {
         </section>
         
         <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
-                    <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
-                </div>
-                <div className="relative w-full max-w-4xl mx-auto p-4">
-                    <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
-                        <defs>
-                            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#22D3EE" />
-                                <stop offset="50%" stopColor="#34D399" />
-                                <stop offset="100%" stopColor="#6EE7B7" />
-                            </linearGradient>
-                            <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#34D399" stopOpacity="0.2" />
-                                <stop offset="100%" stopColor="#111827" stopOpacity="0" />
-                            </linearGradient>
-                            <filter id="glow">
-                                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                                <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
-                            </filter>
-                        </defs>
-                        
-                        <g className="grid" stroke="#1F2937" strokeWidth="1">
-                            <line x1="50" y1="200" x2="450" y2="200" /><line x1="50" y1="150" x2="450" y2="150" /><line x1="50" y1="100" x2="450" y2="100" /><line x1="50" y1="50" x2="450" y2="50" />
-                        </g>
-
-                        <path ref={areaPathRef} id="area-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40 L 450 200 Z" fill="url(#areaGradient)" opacity="0" />
-
-                        <path ref={pathRef} id="growth-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradient)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{filter: 'url(#glow)'}} />
-                        
-                        <g>
-                            <circle ref={point1Ref} id="point-1" cx="50" cy="200" r="6" fill="#111827" stroke="#22D3EE" strokeWidth="2" opacity="0"/>
-                            <circle ref={point2Ref} id="point-2" cx="250" cy="100" r="6" fill="#111827" stroke="#34D399" strokeWidth="2" opacity="0"/>
-                            <circle ref={point3Ref} id="point-3" cx="450" cy="40" r="6" fill="#111827" stroke="#6EE7B7" strokeWidth="2" opacity="0"/>
-                        </g>
-
-                        <g className="text-group">
-                            <text x="50" y="35" fontSize="12" fill="#9CA3AF">Результат рассылки:</text>
-                            <text ref={leadsCounterRef} id="leads-counter" x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
-                            <text ref={conversionCounterRef} id="conversion-counter" x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
-                            <text x="450" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">Отправлено:</text>
-                            <text ref={sentCounterRef} id="sent-counter" x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
-                        </g>
-                        
-                        <g fill="#4B5563" fontSize="12">
-                            <text x="50" y="220">День 1</text>
-                            <text x="250" y="220" textAnchor="middle">День 2</text>
-                            <text x="450" y="220" textAnchor="end">День 3</text>
-                        </g>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
+              <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
+            </div>
+            <div className="relative">
+              {/* Desktop view */}
+              <div className="hidden md:flex items-center justify-center">
+                <div className="flex items-center justify-between w-full max-w-4xl">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">1</div>
+                    <h3 className="mt-4 text-xl font-semibold text-white">Загрузите базу</h3>
+                    <p className="mt-2 text-gray-400 max-w-xs">Загрузите контакты в формате CSV, TXT или JSON</p>
+                  </div>
+                  <div className="flex-1 px-4">
+                    <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+                      <path d="M0 10 Q 50 10, 100 10" stroke="#374151" strokeWidth="2" fill="none" strokeDasharray="5,5"/>
                     </svg>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">2</div>
+                    <h3 className="mt-4 text-xl font-semibold text-white">Напишите текст</h3>
+                    <p className="mt-2 text-gray-400 max-w-xs">Используйте наш ИИ-генератор или напишите свой текст</p>
+                  </div>
+                  <div className="flex-1 px-4">
+                    <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
+                       <path d="M0 10 Q 50 10, 100 10" stroke="#374151" strokeWidth="2" fill="none" strokeDasharray="5,5"/>
+                    </svg>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">3</div>
+                    <h3 className="mt-4 text-xl font-semibold text-white">Получите лиды</h3>
+                    <p className="mt-2 text-gray-400 max-w-xs">Отслеживайте результаты и получайте ответы от клиентов</p>
+                  </div>
                 </div>
+              </div>
+              {/* Mobile view */}
+              <div className="md:hidden space-y-12">
+                <div className="flex items-start gap-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">1</div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Загрузите базу</h3>
+                    <p className="mt-1 text-gray-400">Загрузите контакты в формате CSV, TXT или JSON</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">2</div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Напишите текст</h3>
+                    <p className="mt-1 text-gray-400">Используйте наш ИИ-генератор или напишите свой текст</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-6">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">3</div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white">Получите лиды</h3>
+                    <p className="mt-1 text-gray-400">Отслеживайте результаты и получайте ответы от клиентов</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 lg:py-24 bg-gray-900">
+            <div className="relative w-full max-w-4xl mx-auto p-4">
+                <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
+                    <defs>
+                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#22D3EE" />
+                            <stop offset="50%" stopColor="#34D399" />
+                            <stop offset="100%" stopColor="#6EE7B7" />
+                        </linearGradient>
+                        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#34D399" stopOpacity="0.2" />
+                            <stop offset="100%" stopColor="#111827" stopOpacity="0" />
+                        </linearGradient>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <g className="grid" stroke="#1F2937" strokeWidth="1">
+                        <line x1="50" y1="200" x2="450" y2="200" /><line x1="50" y1="150" x2="450" y2="150" /><line x1="50" y1="100" x2="450" y2="100" /><line x1="50" y1="50" x2="450" y2="50" />
+                    </g>
+
+                    <path ref={areaPathRef} id="area-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40 L 450 200 Z" fill="url(#areaGradient)" opacity="0" />
+
+                    <path ref={pathRef} id="growth-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradient)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{filter: 'url(#glow)'}} />
+                    
+                    <g>
+                        <circle ref={point1Ref} id="point-1" cx="50" cy="200" r="6" fill="#111827" stroke="#22D3EE" strokeWidth="2" opacity="0"/>
+                        <circle ref={point2Ref} id="point-2" cx="250" cy="100" r="6" fill="#111827" stroke="#34D399" strokeWidth="2" opacity="0"/>
+                        <circle ref={point3Ref} id="point-3" cx="450" cy="40" r="6" fill="#111827" stroke="#6EE7B7" strokeWidth="2" opacity="0"/>
+                    </g>
+
+                    <g className="text-group">
+                        <text x="50" y="35" fontSize="12" fill="#9CA3AF">Результат рассылки:</text>
+                        <text ref={leadsCounterRef} id="leads-counter" x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
+                        <text ref={conversionCounterRef} id="conversion-counter" x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
+                        <text x="450" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">Отправлено:</text>
+                        <text ref={sentCounterRef} id="sent-counter" x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
+                    </g>
+                    
+                    <g fill="#4B5563" fontSize="12">
+                        <text x="50" y="220">День 1</text>
+                        <text x="250" y="220" textAnchor="middle">День 2</text>
+                        <text x="450" y="220" textAnchor="end">День 3</text>
+                    </g>
+                </svg>
             </div>
         </section>
 
@@ -394,3 +432,5 @@ export default function LandingPage() {
     </>
   );
 }
+
+    
