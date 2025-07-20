@@ -69,6 +69,8 @@ export default function LandingPage() {
     const rainContainer = document.getElementById('rain-container');
     const path = document.getElementById('growth-path') as SVGPathElement | null;
     if (rainContainer && path) {
+        // Clear previous symbols if any
+        rainContainer.innerHTML = '';
         const pathLength = path.getTotalLength();
         const numSources = 15; // Number of rain "sources" along the line
 
