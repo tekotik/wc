@@ -293,7 +293,7 @@ export default function LandingPage() {
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
                             <ShieldCheck className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация и безопасность</h3>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Модерация</h3>
                         <p className="text-gray-400">Все рассылки проходят проверку перед запуском, что гарантирует соответствие стандартам и защищает вашу репутацию.</p>
                     </div>
                     <div className="card p-8 text-center flex flex-col justify-start">
@@ -370,12 +370,12 @@ export default function LandingPage() {
                     {/* <!-- Start Plan --> */}
                     <div className="card p-8 flex flex-col h-full">
                         <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
-                        <p className="text-gray-400 mt-2">Для быстрого начала</p>
+                        <p className="text-gray-400 mt-2">300–500 сообщений</p>
                         <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">1000</span>
+                            <span className="text-5xl font-extrabold text-white">9</span>
                             <span className="text-xl font-medium text-gray-300">₽</span>
                         </div>
-                        <p className="text-gray-400 text-lg">1 000 сообщений</p>
+                        <p className="text-gray-400 text-lg">за сообщение</p>
                         <div className="flex-grow"></div>
                         <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
                             Выбрать тариф
@@ -388,12 +388,12 @@ export default function LandingPage() {
                             <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
                         </div>
                         <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
-                        <p className="text-gray-400 mt-2">Для активного роста</p>
+                        <p className="text-gray-400 mt-2">501–1000 сообщений</p>
                         <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">4500</span>
+                            <span className="text-5xl font-extrabold text-white">8</span>
                             <span className="text-xl font-medium text-gray-300">₽</span>
                         </div>
-                        <p className="text-green-400 text-lg">5 000 сообщений</p>
+                        <p className="text-green-400 text-lg">за сообщение</p>
                         <div className="flex-grow"></div>
                         <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
                             Выбрать тариф
@@ -403,12 +403,12 @@ export default function LandingPage() {
                     {/* <!-- Business Plan --> */}
                     <div className="card p-8 flex flex-col h-full">
                         <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
-                        <p className="text-gray-400 mt-2">Для крупных компаний</p>
+                        <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
                         <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">8000</span>
+                            <span className="text-5xl font-extrabold text-white">7</span>
                             <span className="text-xl font-medium text-gray-300">₽</span>
                         </div>
-                         <p className="text-gray-400 text-lg">10 000 сообщений</p>
+                         <p className="text-gray-400 text-lg">за сообщение</p>
                         <div className="flex-grow"></div>
                         <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
                             Выбрать тариф
