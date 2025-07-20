@@ -220,108 +220,105 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
-             <div className="absolute inset-0 z-0">
-                <div className="relative w-full max-w-5xl mx-auto p-4 h-full">
-                    <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#22D3EE" />
-                                <stop offset="50%" stopColor="#34D399" />
-                                <stop offset="100%" stopColor="#6EE7B7" />
-                            </linearGradient>
-                            <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#A7F3D0" />
-                                <stop offset="100%" stopColor="#6EE7B7" />
-                            </linearGradient>
-                        </defs>
-                        <path
-                            ref={growthPathRef}
-                            className="growth-line"
-                            d="M 20 180 C 150 160, 250 170, 350 140 S 500 150, 600 100 T 780 90"
-                            stroke="url(#processGradient)"
-                            strokeWidth="6"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <g ref={rainContainerRef}></g>
-                    </svg>
+            <div className="absolute inset-x-0 top-[40px] h-[250px] z-0 pointer-events-none">
+              <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 250" preserveAspectRatio="none">
+                  <defs>
+                      <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#22D3EE" />
+                          <stop offset="50%" stopColor="#34D399" />
+                          <stop offset="100%" stopColor="#6EE7B7" />
+                      </linearGradient>
+                      <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#A7F3D0" />
+                          <stop offset="100%" stopColor="#6EE7B7" />
+                      </linearGradient>
+                  </defs>
+                  <path
+                      ref={growthPathRef}
+                      className="growth-line"
+                      d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100"
+                      stroke="url(#processGradient)"
+                      strokeWidth="6"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                  />
+                  <g ref={rainContainerRef}></g>
+              </svg>
+            </div>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
+                </div>
+                
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
+                        <p className="text-gray-400 mt-2">300–500 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">9</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                        <p className="text-gray-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+
+                    <div className="card popular-plan p-8 flex flex-col h-full relative">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
+                        <p className="text-gray-400 mt-2">501–1000 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">8</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                        <p className="text-green-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+
+                    <div className="card p-8 flex flex-col h-full">
+                        <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
+                        <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
+                        <div className="my-8">
+                            <span className="text-5xl font-extrabold text-white">7</span>
+                            <span className="text-xl font-medium text-gray-300"> ₽</span>
+                        </div>
+                        <p className="text-gray-400 text-lg">за сообщение</p>
+                        <div className="flex-grow"></div>
+                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                            Выбрать тариф
+                        </button>
+                    </div>
+                </div>
+                <div className="text-center mt-16">
+                    <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
+                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>ИИ-генератор текстов</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Подробная аналитика</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>Поддержка 24/7</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span>API для интеграций</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <div className="text-center mb-16">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
-                  <div className="card p-8 flex flex-col h-full">
-                      <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
-                      <p className="text-gray-400 mt-2">300–500 сообщений</p>
-                      <div className="my-8">
-                          <span className="text-5xl font-extrabold text-white">9</span>
-                          <span className="text-xl font-medium text-gray-300"> ₽</span>
-                      </div>
-                      <p className="text-gray-400 text-lg">за сообщение</p>
-                      <div className="flex-grow"></div>
-                      <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                          Выбрать тариф
-                      </button>
-                  </div>
-
-                  <div className="card popular-plan p-8 flex flex-col h-full relative">
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                          <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
-                      </div>
-                      <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
-                      <p className="text-gray-400 mt-2">501–1000 сообщений</p>
-                      <div className="my-8">
-                          <span className="text-5xl font-extrabold text-white">8</span>
-                          <span className="text-xl font-medium text-gray-300"> ₽</span>
-                      </div>
-                      <p className="text-green-400 text-lg">за сообщение</p>
-                      <div className="flex-grow"></div>
-                      <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
-                          Выбрать тариф
-                      </button>
-                  </div>
-
-                  <div className="card p-8 flex flex-col h-full">
-                      <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
-                      <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
-                      <div className="my-8">
-                          <span className="text-5xl font-extrabold text-white">7</span>
-                          <span className="text-xl font-medium text-gray-300"> ₽</span>
-                      </div>
-                       <p className="text-gray-400 text-lg">за сообщение</p>
-                      <div className="flex-grow"></div>
-                      <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                          Выбрать тариф
-                      </button>
-                  </div>
-              </div>
-              <div className="text-center mt-16">
-                  <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
-                  <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
-                      <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <span>ИИ-генератор текстов</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <span>Подробная аналитика</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <span>Поддержка 24/7</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                          <span>API для интеграций</span>
-                      </div>
-                  </div>
-              </div>
-          </div>
         </section>
 
         <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
@@ -393,7 +390,7 @@ export default function LandingPage() {
             <div className="relative w-full max-w-4xl mx-auto p-4">
                 <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
                     <defs>
-                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <linearGradient id="processGradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#22D3EE" />
                             <stop offset="50%" stopColor="#34D399" />
                             <stop offset="100%" stopColor="#6EE7B7" />
@@ -417,7 +414,7 @@ export default function LandingPage() {
 
                     <path ref={areaPathRef} id="area-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40 L 450 200 Z" fill="url(#areaGradient)" opacity="0" />
 
-                    <path ref={pathRef} id="growth-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradient)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{filter: 'url(#glow)'}} />
+                    <path ref={pathRef} id="growth-path-chart" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradientChart)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{filter: 'url(#glow)'}} />
                     
                     <g>
                         <circle ref={point1Ref} id="point-1" cx="50" cy="200" r="6" fill="#111827" stroke="#22D3EE" strokeWidth="2" opacity="0"/>
