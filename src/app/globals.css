@@ -163,23 +163,23 @@ body {
     }
 
     .currency-symbol {
-        font-family: Arial, sans-serif;
-        font-size: 20px;
-        font-weight: bold;
-        fill: url(#currencyGradient);
-        opacity: 0;
-        animation: rain-fall 5s ease-in-out infinite alternate;
-        transform-origin: center;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      font-weight: bold;
+      fill: url(#currencyGradient);
+      opacity: 0;
+      animation: rain-fall linear infinite;
+      transform-origin: center;
     }
 
     @keyframes rain-fall {
         0% {
-            opacity: 0.1;
-            transform: translateY(10px);
+            transform: translate(var(--start-x, 0px), -10px) rotate(0deg);
+            opacity: 1;
         }
         100% {
-            opacity: 0.5;
-            transform: translateY(-10px);
+            transform: translate(var(--end-x, 0px), 450px) rotate(var(--r, 720deg));
+            opacity: 0;
         }
     }
 }
