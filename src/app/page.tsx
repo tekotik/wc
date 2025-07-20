@@ -237,7 +237,7 @@ export default function LandingPage() {
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
             <div className="absolute inset-0 z-0">
-                <svg ref={moneyRainChartRef} className="w-full h-full" preserveAspectRatio="xMidYMid slice">
+                <svg ref={moneyRainChartRef} className="w-full h-full" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1920 1080">
                     <defs>
                         <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#22D3EE" />
@@ -250,7 +250,7 @@ export default function LandingPage() {
                         </linearGradient>
                     </defs>
                     <path className="growth-line" 
-                          d="M -100 250 C 400 350, 800 50, 1200 150 S 1600 300, 2000 200"
+                          d="M -100 540 C 400 650, 800 250, 1200 450 S 1600 700, 2020 500"
                           stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                     <g ref={rainContainerRef} id="rain-container"></g>
                 </svg>
