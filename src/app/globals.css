@@ -138,7 +138,15 @@ body {
     }
 
     .growth-line {
-        /* Управление анимацией через JS */
+        stroke-dasharray: 2000;
+        stroke-dashoffset: 2000;
+        animation: draw-line 4s ease-out forwards;
+    }
+
+    @keyframes draw-line {
+        to {
+            stroke-dashoffset: 0;
+        }
     }
 
     .popup-notification {
@@ -175,5 +183,3 @@ body {
         }
     }
 }
-
-    

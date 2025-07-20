@@ -11,14 +11,14 @@ export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<SVGSVGElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const rainContainerRef = useRef<SVGGElement>(null);
+  const moneyRainChartRef = useRef<SVGSVGElement>(null);
+
+  // Refs for the animated chart
   const areaPathRef = useRef<SVGPathElement>(null);
-  const leadsCounterRef = useRef<SVGTextElement>(null);
-  const conversionCounterRef = useRef<SVGTextElement>(null);
-  const sentCounterRef = useRef<SVGTextElement>(null);
   const point1Ref = useRef<SVGCircleElement>(null);
   const point2Ref = useRef<SVGCircleElement>(null);
   const point3Ref = useRef<SVGCircleElement>(null);
-  const animationFrameId = useRef<number>();
 
   useEffect(() => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -34,84 +34,155 @@ export default function LandingPage() {
     menuLinks?.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
+    
+    // Logic for the money rain animation
+    const moneyRainChart = moneyRainChartRef.current;
+    if (moneyRainChart) {
+      const rainContainer = rainContainerRef.current;
+      const growthPath = pathRef.current;
 
-    const chart = chartRef.current;
-    if (!chart) return;
+      const setupMoneyRain = () => {
+          if (!rainContainer || !growthPath) return;
 
-    const path = pathRef.current;
-    const areaPath = areaPathRef.current;
-    const leadsCounter = leadsCounterRef.current;
-    const conversionCounter = conversionCounterRef.current;
-    const sentCounter = sentCounterRef.current;
-    const points = [point1Ref.current, point2Ref.current, point3Ref.current];
+          // Clear previous symbols if any
+          while (rainContainer.firstChild) {
+              rainContainer.removeChild(rainContainer.firstChild);
+          }
 
-    if (!path || !areaPath || !leadsCounter || !conversionCounter || !sentCounter || !points.every(p => p)) {
-        return;
+          const pathLength = growthPath.getTotalLength();
+          const numSources = 15;
+
+          for (let i = 0; i < numSources; i++) {
+              const point = growthPath.getPointAtLength((i / (numSources - 1)) * pathLength);
+              const numRubles = Math.floor(Math.random() * (13 - 7 + 1)) + 7;
+
+              for (let j = 0; j < numRubles; j++) {
+                  const symbol = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                  symbol.setAttribute('x', String(point.x));
+                  symbol.setAttribute('y', String(point.y));
+                  symbol.setAttribute('class', 'currency-symbol');
+                  symbol.textContent = '₽';
+
+                  const duration = Math.random() * 2 + 2;
+                  const delay = Math.random() * 4;
+                  const startX = Math.random() * 20 - 10;
+                  const endX = Math.random() * 80 - 40;
+                  const rotation = Math.random() * 720 - 360;
+
+                  symbol.style.setProperty('--start-x', `${startX}px`);
+                  symbol.style.setProperty('--end-x', `${endX}px`);
+                  symbol.style.setProperty('--r', `${rotation}deg`);
+                  symbol.style.animationDuration = `${duration}s`;
+                  symbol.style.animationDelay = `${delay}s`;
+                  
+                  rainContainer.appendChild(symbol);
+              }
+          }
+      };
+      
+       const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          setupMoneyRain();
+          observer.unobserve(moneyRainChart);
+        }
+      }, { threshold: 0.5 });
+      
+      observer.observe(moneyRainChart);
+
+      return () => {
+        if (moneyRainChart) {
+          observer.unobserve(moneyRainChart);
+        }
+      }
     }
 
-    const finalLeads = 86;
-    const finalSent = 1000;
-    const finalConversion = 8.6;
+    // Logic for the main growth chart
+    const mainChart = chartRef.current;
+    if (mainChart) {
+      const growthPath = pathRef.current;
+      const areaPath = areaPathRef.current;
+      const leadsCounter = mainChart.querySelector('#leads-counter');
+      const conversionCounter = mainChart.querySelector('#conversion-counter');
+      const sentCounter = mainChart.querySelector('#sent-counter');
+      const points = [point1Ref.current, point2Ref.current, point3Ref.current];
+      
+      const finalLeads = 86;
+      const finalSent = 1000;
+      const finalConversion = 8.6;
 
-    const startAnimation = () => {
-        if (animationFrameId.current) {
-            cancelAnimationFrame(animationFrameId.current);
-        }
-        const pathLength = path.getTotalLength();
-        path.style.strokeDasharray = String(pathLength);
-        path.style.strokeDashoffset = String(pathLength);
+      let animationFrameId: number;
+
+      function startAnimation() {
+        if (!growthPath || !areaPath || !leadsCounter || !conversionCounter || !sentCounter) return;
+
+        const pathLength = growthPath.getTotalLength();
+        growthPath.style.strokeDasharray = String(pathLength);
+        growthPath.style.strokeDashoffset = String(pathLength);
         
         const startTime = performance.now();
 
-        const animate = (time: number) => {
-            const duration = 5000; // 5 seconds animation
+        function animate(time: number) {
+            const duration = 4000; // 4 seconds for a smoother animation
             const elapsed = time - startTime;
             const progress = Math.min(elapsed / duration, 1);
 
-            path.style.strokeDashoffset = String(pathLength * (1 - progress));
-            areaPath.style.opacity = String(progress);
+            growthPath!.style.strokeDashoffset = String(pathLength * (1 - progress));
+            areaPath!.style.opacity = String(progress);
 
             const currentLeads = Math.floor(finalLeads * progress);
             const currentSent = Math.floor(finalSent * progress);
             const currentConversion = finalConversion * progress;
 
-            leadsCounter.textContent = `${currentLeads} лидов`;
-            sentCounter.textContent = `${currentSent} сообщ.`;
-            conversionCounter.textContent = `${currentConversion.toFixed(1)}% конверсия`;
+            leadsCounter!.textContent = `${currentLeads} лидов`;
+            sentCounter!.textContent = `${currentSent} сообщ.`;
+            conversionCounter!.textContent = `${currentConversion.toFixed(1)}% конверсия`;
             
             if (progress > 0.01 && points[0]) points[0].style.opacity = '1';
             if (progress >= 0.5 && points[1]) points[1].style.opacity = '1';
             if (progress >= 1 && points[2]) points[2].style.opacity = '1';
 
             if (progress < 1) {
-                animationFrameId.current = requestAnimationFrame(animate);
+                animationFrameId = requestAnimationFrame(animate);
             }
-        };
-        
-        animationFrameId.current = requestAnimationFrame(animate);
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-            startAnimation();
-            observer.unobserve(chart);
         }
-    }, { threshold: 0.5 });
+        
+        animationFrameId = requestAnimationFrame(animate);
+      }
+      
+      const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+              if (growthPath) {
+                const pathLength = growthPath.getTotalLength();
+                growthPath.style.transition = 'none';
+                growthPath.style.strokeDashoffset = String(pathLength);
+              }
+              if (areaPath) areaPath.style.opacity = '0';
+              points.forEach(p => { if (p) p.style.opacity = '0'; });
+              
+              setTimeout(() => {
+                  if (growthPath) growthPath.style.transition = '';
+              }, 50);
 
-    observer.observe(chart);
-    
+              startAnimation();
+              observer.unobserve(mainChart);
+          }
+      }, { threshold: 0.5 });
+      
+      observer.observe(mainChart);
+
+      return () => {
+        if (mainChart) observer.unobserve(mainChart);
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      }
+    }
+
+
     return () => {
          mobileMenuButton?.removeEventListener('click', openMenu);
          closeMenuButton?.removeEventListener('click', closeMenu);
          menuLinks?.forEach(link => {
             link.removeEventListener('click', closeMenu);
          });
-         if (animationFrameId.current) {
-            cancelAnimationFrame(animationFrameId.current);
-         }
-         if (chart) {
-            observer.unobserve(chart);
-         }
     }
   }, []);
 
@@ -175,80 +246,99 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="text-center mb-16">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
+              </div>
+                <div className="relative w-full max-w-5xl mx-auto p-4 -mt-16 -mb-8">
+                    <svg ref={moneyRainChartRef} className="w-full h-auto" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#22D3EE" />
+                                <stop offset="50%" stopColor="#34D399" />
+                                <stop offset="100%" stopColor="#6EE7B7" />
+                            </linearGradient>
+                            <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#A7F3D0" />
+                                <stop offset="100%" stopColor="#6EE7B7" />
+                            </linearGradient>
+                        </defs>
+                        <path ref={pathRef} className="growth-line" 
+                              d="M 20 180 C 150 160, 250 170, 350 140 S 500 150, 600 100 T 780 90" 
+                              stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                        <g ref={rainContainerRef} id="rain-container"></g>
+                    </svg>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
-                    <div className="card p-8 flex flex-col h-full">
-                        <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
-                        <p className="text-gray-400 mt-2">300–500 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">9</span>
-                            <span className="text-xl font-medium text-gray-300"> ₽</span>
-                        </div>
-                        <p className="text-gray-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+                  <div className="card p-8 flex flex-col h-full">
+                      <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
+                      <p className="text-gray-400 mt-2">300–500 сообщений</p>
+                      <div className="my-8">
+                          <span className="text-5xl font-extrabold text-white">9</span>
+                          <span className="text-xl font-medium text-gray-300"> ₽</span>
+                      </div>
+                      <p className="text-gray-400 text-lg">за сообщение</p>
+                      <div className="flex-grow"></div>
+                      <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                          Выбрать тариф
+                      </button>
+                  </div>
 
-                    <div className="card popular-plan p-8 flex flex-col h-full relative">
-                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
-                        </div>
-                        <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
-                        <p className="text-gray-400 mt-2">501–1000 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">8</span>
-                            <span className="text-xl font-medium text-gray-300"> ₽</span>
-                        </div>
-                        <p className="text-green-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
+                  <div className="card popular-plan p-8 flex flex-col h-full relative">
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          <div className="bg-green-500 text-white text-sm font-bold px-4 py-1 rounded-full uppercase">Оптимально</div>
+                      </div>
+                      <h3 className="text-2xl font-bold text-white font-headline">Профи</h3>
+                      <p className="text-gray-400 mt-2">501–1000 сообщений</p>
+                      <div className="my-8">
+                          <span className="text-5xl font-extrabold text-white">8</span>
+                          <span className="text-xl font-medium text-gray-300"> ₽</span>
+                      </div>
+                      <p className="text-green-400 text-lg">за сообщение</p>
+                      <div className="flex-grow"></div>
+                      <button className="w-full mt-8 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition-colors">
+                          Выбрать тариф
+                      </button>
+                  </div>
 
-                    <div className="card p-8 flex flex-col h-full">
-                        <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
-                        <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
-                        <div className="my-8">
-                            <span className="text-5xl font-extrabold text-white">7</span>
-                            <span className="text-xl font-medium text-gray-300"> ₽</span>
-                        </div>
-                         <p className="text-gray-400 text-lg">за сообщение</p>
-                        <div className="flex-grow"></div>
-                        <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
-                            Выбрать тариф
-                        </button>
-                    </div>
-                </div>
-                <div className="text-center mt-16">
-                    <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
-                    <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>ИИ-генератор текстов</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Подробная аналитика</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>Поддержка 24/7</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>API для интеграций</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                  <div className="card p-8 flex flex-col h-full">
+                      <h3 className="text-2xl font-bold text-white font-headline">Бизнес</h3>
+                      <p className="text-gray-400 mt-2">1001–2000 сообщений</p>
+                      <div className="my-8">
+                          <span className="text-5xl font-extrabold text-white">7</span>
+                          <span className="text-xl font-medium text-gray-300"> ₽</span>
+                      </div>
+                       <p className="text-gray-400 text-lg">за сообщение</p>
+                      <div className="flex-grow"></div>
+                      <button className="w-full mt-8 bg-gray-700 text-white font-semibold py-3 rounded-lg hover:bg-gray-600 transition-colors">
+                          Выбрать тариф
+                      </button>
+                  </div>
+              </div>
+              <div className="text-center mt-16">
+                  <h3 className="text-xl font-bold text-white mb-6">Все тарифы включают:</h3>
+                  <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
+                      <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <span>ИИ-генератор текстов</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <span>Подробная аналитика</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <span>Поддержка 24/7</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                          <span>API для интеграций</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </section>
-        
+
         <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
@@ -313,7 +403,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
+        
         <section className="py-20 lg:py-24 bg-gray-900">
             <div className="relative w-full max-w-4xl mx-auto p-4">
                 <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
@@ -352,10 +442,10 @@ export default function LandingPage() {
 
                     <g className="text-group">
                         <text x="50" y="35" fontSize="12" fill="#9CA3AF">Результат рассылки:</text>
-                        <text ref={leadsCounterRef} id="leads-counter" x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
-                        <text ref={conversionCounterRef} id="conversion-counter" x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
+                        <text id="leads-counter" x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
+                        <text id="conversion-counter" x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
                         <text x="450" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">Отправлено:</text>
-                        <text ref={sentCounterRef} id="sent-counter" x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
+                        <text id="sent-counter" x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
                     </g>
                     
                     <g fill="#4B5563" fontSize="12">
@@ -432,5 +522,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-    
