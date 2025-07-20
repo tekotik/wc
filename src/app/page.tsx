@@ -243,8 +243,12 @@ export default function LandingPage() {
                     <div className="absolute inset-0 flex items-center justify-center">
                         <svg className="w-full max-w-5xl" viewBox="0 0 1000 200" preserveAspectRatio="none">
                              <defs>
-                                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="url(#processGradient)"/>
+                                <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stopColor="#06b6d4" />
+                                    <stop offset="100%" stopColor="#10b981" />
+                                </linearGradient>
+                                <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+                                    <polygon points="0 0, 8 3, 0 6" fill="url(#processGradient)"/>
                                 </marker>
                             </defs>
                             <path d="M 50 150 C 250 200, 400 50, 650 100 S 850 120, 950 80" stroke="url(#processGradient)" strokeWidth="5" fill="none" className="draw-arrow" markerEnd="url(#arrowhead)"/>
