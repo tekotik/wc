@@ -220,8 +220,8 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-[40px] h-[250px] z-0 pointer-events-none">
-              <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 250" preserveAspectRatio="none">
+             <div className="absolute inset-x-0 top-[40px] h-[400px] z-0 pointer-events-none">
+              <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="none">
                   <defs>
                       <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                           <stop offset="0%" stopColor="#22D3EE" />
