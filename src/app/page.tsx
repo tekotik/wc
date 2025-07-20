@@ -65,6 +65,47 @@ export default function LandingPage() {
         observer.observe(chartSection);
     }
     
+    // Money Rain Animation Logic
+    const rainContainer = document.getElementById('rain-container');
+    const path = document.getElementById('growth-path') as SVGPathElement | null;
+    if (rainContainer && path) {
+        const pathLength = path.getTotalLength();
+        const numSources = 15; // Number of rain "sources" along the line
+
+        // Create several sources for the symbols
+        for (let i = 0; i < numSources; i++) {
+            // Distribute sources evenly along the path
+            const point = path.getPointAtLength((i / (numSources - 1)) * pathLength);
+            
+            // Generate a random number of symbols for each source (from 7 to 13)
+            const numRubles = Math.floor(Math.random() * (13 - 7 + 1)) + 7;
+
+            for (let j = 0; j < numRubles; j++) {
+                const symbol = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                symbol.setAttribute('x', String(point.x));
+                symbol.setAttribute('y', String(point.y));
+                symbol.setAttribute('class', 'currency-symbol');
+                symbol.textContent = '₽';
+
+                // Set random parameters for the "ragdoll" animation
+                const duration = Math.random() * 2 + 2; // Fall duration from 2 to 4 seconds
+                const delay = Math.random() * 4; // Random delay up to 4 seconds for a continuous effect
+                const startX = Math.random() * 20 - 10; // Small initial X offset
+                const endX = Math.random() * 80 - 40; // Final X offset
+                const rotation = Math.random() * 720 - 360; // Random rotation
+
+                symbol.style.setProperty('--start-x', `${startX}px`);
+                symbol.style.setProperty('--end-x', `${endX}px`);
+                symbol.style.setProperty('--r', `${rotation}deg`);
+                symbol.style.animationDuration = `${duration}s`;
+                symbol.style.animationDelay = `${delay}s`;
+                
+                rainContainer.appendChild(symbol);
+            }
+        }
+    }
+
+
     return () => {
          mobileMenuButton?.removeEventListener('click', openMenu);
          closeMenuButton?.removeEventListener('click', closeMenu);
@@ -279,24 +320,22 @@ export default function LandingPage() {
                 </div>
                 <div className="relative">
                      <div className="hidden md:block absolute top-12 left-0 w-full h-auto">
-                      <svg width="100%" height="60" viewBox="0 0 1000 60" preserveAspectRatio="none" >
+                      <svg id="money-rain-svg" className="w-full h-auto" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
                           <defs>
-                              <linearGradient id="curve-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                  <stop offset="0%" stopColor="#06b6d4" /> 
-                                  <stop offset="100%" stopColor="#22c55e" />
+                              <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                  <stop offset="0%" stopColor="#22D3EE" />
+                                  <stop offset="50%" stopColor="#34D399" />
+                                  <stop offset="100%" stopColor="#6EE7B7" />
                               </linearGradient>
-                               <marker id="arrowhead" markerWidth="2" markerHeight="1.4" refX="0" refY="0.7" orient="auto">
-                                <polygon points="0 0, 2 0.7, 0 1.4" fill="url(#curve-gradient)" />
-                              </marker>
+                              <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                  <stop offset="0%" stopColor="#A7F3D0" />
+                                  <stop offset="100%" stopColor="#6EE7B7" />
+                              </linearGradient>
                           </defs>
-                          <path
-                              d="M 20 30 Q 250 50 500 30 T 980 30"
-                              stroke="url(#curve-gradient)"
-                              strokeWidth="8"
-                              fill="none"
-                              className="curve-line"
-                              markerEnd="url(#arrowhead)"
-                          />
+                          <path id="growth-path" className="growth-line" 
+                                d="M 20 180 C 150 160, 250 170, 350 140 S 500 150, 600 100 T 780 90" 
+                                stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                          <g id="rain-container"></g>
                       </svg>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
