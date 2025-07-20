@@ -50,7 +50,7 @@ export default function LandingPage() {
           }
 
           const pathLength = growthPath.getTotalLength();
-          const numSources = 15;
+          const numSources = 30; // Increased sources for full width
 
           for (let i = 0; i < numSources; i++) {
               const point = growthPath.getPointAtLength((i / (numSources - 1)) * pathLength);
@@ -63,8 +63,8 @@ export default function LandingPage() {
                   symbol.setAttribute('class', 'currency-symbol');
                   symbol.textContent = '₽';
 
-                  const duration = Math.random() * 2 + 2;
-                  const delay = Math.random() * 4;
+                  const duration = Math.random() * 2 + 3; // Slower fall
+                  const delay = Math.random() * 5;
                   const startX = Math.random() * 20 - 10;
                   const endX = Math.random() * 80 - 40;
                   const rotation = Math.random() * 720 - 360;
@@ -85,7 +85,7 @@ export default function LandingPage() {
           setupMoneyRain();
           observer.unobserve(moneyRainChart);
         }
-      }, { threshold: 0.5 });
+      }, { threshold: 0.1 });
       
       observer.observe(moneyRainChart);
 
@@ -245,30 +245,32 @@ export default function LandingPage() {
             </div>
         </section>
 
-        <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
+        <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
+            <div className="absolute inset-0 z-0">
+                <svg ref={moneyRainChartRef} className="w-full h-full" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#22D3EE" />
+                            <stop offset="50%" stopColor="#34D399" />
+                            <stop offset="100%" stopColor="#6EE7B7" />
+                        </linearGradient>
+                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#A7F3D0" />
+                            <stop offset="100%" stopColor="#6EE7B7" />
+                        </linearGradient>
+                    </defs>
+                    <path ref={pathRef} className="growth-line" 
+                          d="M -100 250 C 400 350, 800 50, 1200 150 S 1600 300, 2000 200"
+                          stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    <g ref={rainContainerRef} id="rain-container"></g>
+                </svg>
+            </div>
+
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center mb-16">
                   <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
               </div>
-                <div className="relative w-full max-w-5xl mx-auto p-4 -mt-16 -mb-8">
-                    <svg ref={moneyRainChartRef} className="w-full h-auto" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
-                        <defs>
-                            <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#22D3EE" />
-                                <stop offset="50%" stopColor="#34D399" />
-                                <stop offset="100%" stopColor="#6EE7B7" />
-                            </linearGradient>
-                            <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="#A7F3D0" />
-                                <stop offset="100%" stopColor="#6EE7B7" />
-                            </linearGradient>
-                        </defs>
-                        <path ref={pathRef} className="growth-line" 
-                              d="M 20 180 C 150 160, 250 170, 350 140 S 500 150, 600 100 T 780 90" 
-                              stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                        <g ref={rainContainerRef} id="rain-container"></g>
-                    </svg>
-                </div>
+              
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
                   <div className="card p-8 flex flex-col h-full">
                       <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
