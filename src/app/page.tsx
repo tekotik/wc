@@ -11,7 +11,19 @@ export default function LandingPage() {
   const rainContainerRef = useRef<SVGGElement>(null);
   const growthPathRef = useRef<SVGPathElement>(null);
 
+  // Refs for the new synchronized chart
+  const mainChartRef = useRef<SVGSVGElement>(null);
+  const growthPath2Ref = useRef<SVGPathElement>(null);
+  const areaPathRef = useRef<SVGPathElement>(null);
+  const leadsCounterRef = useRef<SVGTextElement>(null);
+  const conversionCounterRef = useRef<SVGTextElement>(null);
+  const sentCounterRef = useRef<SVGTextElement>(null);
+  const point1Ref = useRef<SVGCircleElement>(null);
+  const point2Ref = useRef<SVGCircleElement>(null);
+  const point3Ref = useRef<SVGCircleElement>(null);
+
   useEffect(() => {
+    // --- Mobile Menu Logic ---
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const closeMenuButton = document.getElementById('close-menu-button');
     const mobileMenu = mobileMenuRef.current;
@@ -25,11 +37,16 @@ export default function LandingPage() {
     menuLinks?.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
+    
+    // --- Money Rain Animation Logic ---
+    const setupMoneyRain = () => {
+        const rainContainer = rainContainerRef.current;
+        const path = growthPathRef.current;
+        if (!rainContainer || !path) return;
+        
+        // Clear previous symbols if any
+        rainContainer.innerHTML = '';
 
-    const rainContainer = rainContainerRef.current;
-    const path = growthPathRef.current;
-
-    if (rainContainer && path) {
         const pathLength = path.getTotalLength();
         const numSources = 15;
 
@@ -59,14 +76,100 @@ export default function LandingPage() {
                 rainContainer.appendChild(symbol);
             }
         }
-    }
+    };
+
+    // --- Synchronized Growth Chart Animation Logic ---
+    const setupSyncChart = () => {
+        const chart = mainChartRef.current;
+        const path = growthPath2Ref.current;
+        const areaPath = areaPathRef.current;
+        const leadsCounter = leadsCounterRef.current;
+        const conversionCounter = conversionCounterRef.current;
+        const sentCounter = sentCounterRef.current;
+        const points = [point1Ref.current, point2Ref.current, point3Ref.current];
+
+        if (!chart || !path || !areaPath || !leadsCounter || !conversionCounter || !sentCounter) return;
+
+        const finalLeads = 86;
+        const finalSent = 1000;
+        const finalConversion = 8.6;
+        let animationFrameId: number;
+
+        function startAnimation() {
+            const pathLength = path.getTotalLength();
+            path.style.strokeDasharray = String(pathLength);
+            path.style.strokeDashoffset = String(pathLength);
+            
+            const startTime = performance.now();
+
+            function animate(time: number) {
+                const duration = 5000;
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                path.style.strokeDashoffset = String(pathLength * (1 - progress));
+                areaPath.style.opacity = String(progress);
+
+                const currentLeads = Math.floor(finalLeads * progress);
+                const currentSent = Math.floor(finalSent * progress);
+                const currentConversion = finalConversion * progress;
+
+                leadsCounter.textContent = `${currentLeads} лидов`;
+                sentCounter.textContent = `${currentSent} сообщ.`;
+                conversionCounter.textContent = `${currentConversion.toFixed(1)}% конверсия`;
+                
+                points.forEach((p, i) => {
+                    if (p) {
+                        if (progress > 0.01 && i === 0) p.style.opacity = '1';
+                        if (progress >= 0.5 && i === 1) p.style.opacity = '1';
+                        if (progress >= 1 && i === 2) p.style.opacity = '1';
+                    }
+                });
+
+                if (progress < 1) {
+                    animationFrameId = requestAnimationFrame(animate);
+                }
+            }
+            
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                const pathLength = path.getTotalLength();
+                path.style.transition = 'none';
+                path.style.strokeDashoffset = String(pathLength);
+                if(areaPath) areaPath.style.opacity = '0';
+                points.forEach(p => { if(p) p.style.opacity = '0' });
+                
+                setTimeout(() => {
+                    if(path) path.style.transition = '';
+                }, 50);
+
+                startAnimation();
+                observer.unobserve(chart);
+            }
+        }, { threshold: 0.5 });
+
+        observer.observe(chart);
+        
+        return () => {
+             cancelAnimationFrame(animationFrameId);
+             observer.unobserve(chart);
+        }
+    };
+    
+    setupMoneyRain();
+    const cleanupSyncChart = setupSyncChart();
 
     return () => {
+         // --- Cleanup Listeners ---
          mobileMenuButton?.removeEventListener('click', openMenu);
          closeMenuButton?.removeEventListener('click', closeMenu);
          menuLinks?.forEach(link => {
             link.removeEventListener('click', closeMenu);
          });
+         if(cleanupSyncChart) cleanupSyncChart();
     }
   }, []);
 
@@ -130,6 +233,33 @@ export default function LandingPage() {
         </section>
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
+             <div className="absolute inset-0 z-0 overflow-hidden">
+                <svg id="money-rain-svg" className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
+                    <defs>
+                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#22D3EE"></stop>
+                            <stop offset="50%" stopColor="#34D399"></stop>
+                            <stop offset="100%" stopColor="#6EE7B7"></stop>
+                        </linearGradient>
+                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#A7F3D0"></stop>
+                            <stop offset="100%" stopColor="#6EE7B7"></stop>
+                        </linearGradient>
+                    </defs>
+                    <path
+                        ref={growthPathRef}
+                        id="growth-path"
+                        className="growth-line"
+                        d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100"
+                        stroke="url(#processGradient)"
+                        strokeWidth="6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    ></path>
+                    <g ref={rainContainerRef} id="rain-container"></g>
+                </svg>
+            </div>
              <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
@@ -203,33 +333,6 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <svg id="money-rain-svg" className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
-                    <defs>
-                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#22D3EE"></stop>
-                            <stop offset="50%" stopColor="#34D399"></stop>
-                            <stop offset="100%" stopColor="#6EE7B7"></stop>
-                        </linearGradient>
-                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#A7F3D0"></stop>
-                            <stop offset="100%" stopColor="#6EE7B7"></stop>
-                        </linearGradient>
-                    </defs>
-                    <path
-                        ref={growthPathRef}
-                        id="growth-path"
-                        className="growth-line"
-                        d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100"
-                        stroke="url(#processGradient)"
-                        strokeWidth="6"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    ></path>
-                    <g ref={rainContainerRef} id="rain-container"></g>
-                </svg>
-            </div>
         </section>
 
         <section id="features" className="py-20 lg:py-24">
@@ -269,6 +372,59 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section className="py-20 lg:py-24 bg-gray-900">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
+              <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
+            </div>
+            <div className="relative w-full max-w-4xl p-4 mx-auto">
+              <svg ref={mainChartRef} className="w-full h-auto" viewBox="0 0 500 250">
+                <defs>
+                  <linearGradient id="processGradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#22D3EE" />
+                    <stop offset="50%" stopColor="#34D399" />
+                    <stop offset="100%" stopColor="#6EE7B7" />
+                  </linearGradient>
+                  <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#34D399" stopOpacity="0.2" />
+                    <stop offset="100%" stopColor="#111827" stopOpacity="0" />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                    <feMerge>
+                      <feMergeNode in="coloredBlur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <g className="grid" stroke="#1F2937" strokeWidth="1">
+                  <line x1="50" y1="200" x2="450" y2="200" /><line x1="50" y1="150" x2="450" y2="150" /><line x1="50" y1="100" x2="450" y2="100" /><line x1="50" y1="50" x2="450" y2="50" />
+                </g>
+                <path ref={areaPathRef} d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40 L 450 200 Z" fill="url(#areaGradient)" opacity="0" />
+                <path ref={growthPath2Ref} className="growth-line" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradientChart)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'url(#glow)' }} />
+                <g>
+                  <circle ref={point1Ref} cx="50" cy="200" r="6" fill="#111827" stroke="#22D3EE" strokeWidth="2" opacity="0" />
+                  <circle ref={point2Ref} cx="250" cy="100" r="6" fill="#111827" stroke="#34D399" strokeWidth="2" opacity="0" />
+                  <circle ref={point3Ref} cx="450" cy="40" r="6" fill="#111827" stroke="#6EE7B7" strokeWidth="2" opacity="0" />
+                </g>
+                <g className="text-group">
+                  <text x="50" y="35" fontSize="12" fill="#9CA3AF">Результат рассылки:</text>
+                  <text ref={leadsCounterRef} x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
+                  <text ref={conversionCounterRef} x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
+                  <text x="450" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">Отправлено:</text>
+                  <text ref={sentCounterRef} x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
+                </g>
+                <g fill="#4B5563" fontSize="12">
+                  <text x="50" y="220">День 1</text>
+                  <text x="250" y="220" textAnchor="middle">День 2</text>
+                  <text x="450" y="220" textAnchor="end">День 3</text>
+                </g>
+              </svg>
+            </div>
+          </div>
         </section>
 
         <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
