@@ -4,20 +4,12 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle, ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const moneyRainSvgRef = useRef<SVGSVGElement>(null);
   const rainContainerRef = useRef<SVGGElement>(null);
   const growthPathRef = useRef<SVGPathElement>(null);
-  const chartRef = useRef<SVGSVGElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const areaPathRef = useRef<SVGPathElement>(null);
-  const point1Ref = useRef<SVGCircleElement>(null);
-  const point2Ref = useRef<SVGCircleElement>(null);
-  const point3Ref = useRef<SVGCircleElement>(null);
 
   useEffect(() => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -33,21 +25,16 @@ export default function LandingPage() {
     menuLinks?.forEach(link => {
         link.addEventListener('click', closeMenu);
     });
-    
-    // Logic for the money rain animation
+
     const rainContainer = rainContainerRef.current;
     const path = growthPathRef.current;
 
     if (rainContainer && path) {
         const pathLength = path.getTotalLength();
-        const numSources = 15; // Количество "источников" дождя вдоль линии
+        const numSources = 15;
 
-        // Создаем несколько источников для рублей
         for (let i = 0; i < numSources; i++) {
-            // Распределяем источники равномерно по длине кривой
             const point = path.getPointAtLength((i / (numSources - 1)) * pathLength);
-            
-            // Генерируем случайное количество рублей для каждого источника (от 7 до 13)
             const numRubles = Math.floor(Math.random() * (13 - 7 + 1)) + 7;
 
             for (let j = 0; j < numRubles; j++) {
@@ -57,12 +44,11 @@ export default function LandingPage() {
                 symbol.setAttribute('class', 'currency-symbol');
                 symbol.textContent = '₽';
 
-                // Задаем случайные параметры для "рэгдолл" анимации
-                const duration = Math.random() * 2 + 2; // Длительность падения от 2 до 4 секунд
-                const delay = Math.random() * 4; // Случайная задержка до 4 секунд для постоянного эффекта
-                const startX = Math.random() * 20 - 10; // Небольшое начальное смещение по X
-                const endX = Math.random() * 80 - 40; // Конечное смещение по X
-                const rotation = Math.random() * 720 - 360; // Случайное вращение
+                const duration = Math.random() * 2 + 2;
+                const delay = Math.random() * 4;
+                const startX = Math.random() * 20 - 10;
+                const endX = Math.random() * 80 - 40;
+                const rotation = Math.random() * 720 - 360;
 
                 symbol.style.setProperty('--start-x', `${startX}px`);
                 symbol.style.setProperty('--end-x', `${endX}px`);
@@ -74,87 +60,6 @@ export default function LandingPage() {
             }
         }
     }
-
-    // Logic for the main growth chart
-    const mainChart = chartRef.current;
-    if (mainChart) {
-      const growthPath = pathRef.current;
-      const areaPath = areaPathRef.current;
-      const leadsCounter = mainChart.querySelector('#leads-counter');
-      const conversionCounter = mainChart.querySelector('#conversion-counter');
-      const sentCounter = mainChart.querySelector('#sent-counter');
-      const points = [point1Ref.current, point2Ref.current, point3Ref.current];
-      
-      const finalLeads = 86;
-      const finalSent = 1000;
-      const finalConversion = 8.6;
-
-      let animationFrameId: number;
-
-      function startAnimation() {
-        if (!growthPath || !areaPath || !leadsCounter || !conversionCounter || !sentCounter) return;
-
-        const pathLength = growthPath.getTotalLength();
-        growthPath.style.strokeDasharray = String(pathLength);
-        growthPath.style.strokeDashoffset = String(pathLength);
-        
-        const startTime = performance.now();
-
-        function animate(time: number) {
-            const duration = 4000; // 4 seconds for a smoother animation
-            const elapsed = time - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            growthPath!.style.strokeDashoffset = String(pathLength * (1 - progress));
-            areaPath!.style.opacity = String(progress);
-
-            const currentLeads = Math.floor(finalLeads * progress);
-            const currentSent = Math.floor(finalSent * progress);
-            const currentConversion = finalConversion * progress;
-
-            leadsCounter!.textContent = `${currentLeads} лидов`;
-            sentCounter!.textContent = `${currentSent} сообщ.`;
-            conversionCounter!.textContent = `${currentConversion.toFixed(1)}% конверсия`;
-            
-            if (progress > 0.01 && points[0]) points[0].style.opacity = '1';
-            if (progress >= 0.5 && points[1]) points[1].style.opacity = '1';
-            if (progress >= 1 && points[2]) points[2].style.opacity = '1';
-
-            if (progress < 1) {
-                animationFrameId = requestAnimationFrame(animate);
-            }
-        }
-        
-        animationFrameId = requestAnimationFrame(animate);
-      }
-      
-      const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-              if (growthPath) {
-                const pathLength = growthPath.getTotalLength();
-                growthPath.style.transition = 'none';
-                growthPath.style.strokeDashoffset = String(pathLength);
-              }
-              if (areaPath) areaPath.style.opacity = '0';
-              points.forEach(p => { if (p) p.style.opacity = '0'; });
-              
-              setTimeout(() => {
-                  if (growthPath) growthPath.style.transition = '';
-              }, 50);
-
-              startAnimation();
-              observer.unobserve(mainChart);
-          }
-      }, { threshold: 0.5 });
-      
-      observer.observe(mainChart);
-
-      return () => {
-        if (mainChart) observer.unobserve(mainChart);
-        if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      }
-    }
-
 
     return () => {
          mobileMenuButton?.removeEventListener('click', openMenu);
@@ -179,7 +84,7 @@ export default function LandingPage() {
                 <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
                 <Link href="/dashboard" className="text-gray-300 hover:text-white transition">Документация</Link>
             </div>
-            <Link href="/dashboard" className="btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
+            <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                 Начать работу
             </Link>
             <div className="md:hidden">
@@ -224,39 +129,13 @@ export default function LandingPage() {
             </div>
         </section>
 
-        <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
-            <div className="absolute inset-x-0 top-[40px] h-[400px] z-0 pointer-events-none">
-              <svg ref={moneyRainSvgRef} className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="none">
-                  <defs>
-                      <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#22D3EE" />
-                          <stop offset="50%" stopColor="#34D399" />
-                          <stop offset="100%" stopColor="#6EE7B7" />
-                      </linearGradient>
-                      <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#A7F3D0" />
-                          <stop offset="100%" stopColor="#6EE7B7" />
-                      </linearGradient>
-                  </defs>
-                  <path
-                      ref={growthPathRef}
-                      className="growth-line"
-                      d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100"
-                      stroke="url(#processGradient)"
-                      strokeWidth="6"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                  />
-                  <g ref={rainContainerRef}></g>
-              </svg>
-            </div>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative">
+             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Тарифы</h2>
                 </div>
                 
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
                     <div className="card p-8 flex flex-col h-full">
                         <h3 className="text-2xl font-bold text-white font-headline">Старт</h3>
                         <p className="text-gray-400 mt-2">300–500 сообщений</p>
@@ -324,123 +203,35 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Отправьте сообщения — получите результат</h2>
-              <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Превратите рассылки в реальные продажи. Наша платформа показывает прозрачную воронку от отправки до лида.</p>
-            </div>
-            <div className="relative">
-              {/* Desktop view */}
-              <div className="hidden md:flex items-center justify-center">
-                <div className="flex items-center justify-between w-full max-w-4xl">
-                  <div className="flex flex-col items-center text-center">
-                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">1</div>
-                    <h3 className="mt-4 text-xl font-semibold text-white">Загрузите базу</h3>
-                    <p className="mt-2 text-gray-400 max-w-xs">Загрузите контакты в формате CSV, TXT или JSON</p>
-                  </div>
-                  <div className="flex-1 px-4">
-                    <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
-                      <path d="M0 10 Q 50 10, 100 10" stroke="#374151" strokeWidth="2" fill="none" strokeDasharray="5,5"/>
-                    </svg>
-                  </div>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">2</div>
-                    <h3 className="mt-4 text-xl font-semibold text-white">Напишите текст</h3>
-                    <p className="mt-2 text-gray-400 max-w-xs">Используйте наш ИИ-генератор или напишите свой текст</p>
-                  </div>
-                  <div className="flex-1 px-4">
-                    <svg width="100%" height="20" viewBox="0 0 100 20" preserveAspectRatio="none">
-                       <path d="M0 10 Q 50 10, 100 10" stroke="#374151" strokeWidth="2" fill="none" strokeDasharray="5,5"/>
-                    </svg>
-                  </div>
-                  <div className="flex flex-col items-center text-center">
-                    <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-3xl font-bold">3</div>
-                    <h3 className="mt-4 text-xl font-semibold text-white">Получите лиды</h3>
-                    <p className="mt-2 text-gray-400 max-w-xs">Отслеживайте результаты и получайте ответы от клиентов</p>
-                  </div>
-                </div>
-              </div>
-              {/* Mobile view */}
-              <div className="md:hidden space-y-12">
-                <div className="flex items-start gap-6">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">1</div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Загрузите базу</h3>
-                    <p className="mt-1 text-gray-400">Загрузите контакты в формате CSV, TXT или JSON</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-6">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">2</div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Напишите текст</h3>
-                    <p className="mt-1 text-gray-400">Используйте наш ИИ-генератор или напишите свой текст</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-6">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 border-2 border-green-500 text-green-400 text-2xl font-bold flex-shrink-0">3</div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-white">Получите лиды</h3>
-                    <p className="mt-1 text-gray-400">Отслеживайте результаты и получайте ответы от клиентов</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="relative w-full max-w-4xl mx-auto p-4">
-                <svg ref={chartRef} id="main-chart" className="w-full h-auto" viewBox="0 0 500 250">
+            <div className="absolute inset-0 z-0 overflow-hidden">
+                <svg id="money-rain-svg" className="w-full h-full" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice">
                     <defs>
-                        <linearGradient id="processGradientChart" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#22D3EE" />
-                            <stop offset="50%" stopColor="#34D399" />
-                            <stop offset="100%" stopColor="#6EE7B7" />
+                        <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#22D3EE"></stop>
+                            <stop offset="50%" stopColor="#34D399"></stop>
+                            <stop offset="100%" stopColor="#6EE7B7"></stop>
                         </linearGradient>
-                        <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#34D399" stopOpacity="0.2" />
-                            <stop offset="100%" stopColor="#111827" stopOpacity="0" />
+                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#A7F3D0"></stop>
+                            <stop offset="100%" stopColor="#6EE7B7"></stop>
                         </linearGradient>
-                        <filter id="glow">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                            <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
                     </defs>
-                    
-                    <g className="grid" stroke="#1F2937" strokeWidth="1">
-                        <line x1="50" y1="200" x2="450" y2="200" /><line x1="50" y1="150" x2="450" y2="150" /><line x1="50" y1="100" x2="450" y2="100" /><line x1="50" y1="50" x2="450" y2="50" />
-                    </g>
-
-                    <path ref={areaPathRef} id="area-path" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40 L 450 200 Z" fill="url(#areaGradient)" opacity="0" />
-
-                    <path ref={pathRef} id="growth-path-chart" d="M 50 200 C 150 200, 200 100, 250 100 S 350 100, 450 40" stroke="url(#processGradientChart)" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{filter: 'url(#glow)'}} />
-                    
-                    <g>
-                        <circle ref={point1Ref} id="point-1" cx="50" cy="200" r="6" fill="#111827" stroke="#22D3EE" strokeWidth="2" opacity="0"/>
-                        <circle ref={point2Ref} id="point-2" cx="250" cy="100" r="6" fill="#111827" stroke="#34D399" strokeWidth="2" opacity="0"/>
-                        <circle ref={point3Ref} id="point-3" cx="450" cy="40" r="6" fill="#111827" stroke="#6EE7B7" strokeWidth="2" opacity="0"/>
-                    </g>
-
-                    <g className="text-group">
-                        <text x="50" y="35" fontSize="12" fill="#9CA3AF">Результат рассылки:</text>
-                        <text id="leads-counter" x="50" y="65" fontSize="28" fontWeight="bold" fill="#FFFFFF">0 лидов</text>
-                        <text id="conversion-counter" x="50" y="85" fontSize="14" fill="#A7F3D0">0.0% конверсия</text>
-                        <text x="450" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">Отправлено:</text>
-                        <text id="sent-counter" x="450" y="45" textAnchor="end" fontSize="16" fontWeight="bold" fill="#FFFFFF">0 сообщ.</text>
-                    </g>
-                    
-                    <g fill="#4B5563" fontSize="12">
-                        <text x="50" y="220">День 1</text>
-                        <text x="250" y="220" textAnchor="middle">День 2</text>
-                        <text x="450" y="220" textAnchor="end">День 3</text>
-                    </g>
+                    <path
+                        ref={growthPathRef}
+                        id="growth-path"
+                        className="growth-line"
+                        d="M -50 150 C 150 180, 250 100, 400 120 S 600 80, 850 100"
+                        stroke="url(#processGradient)"
+                        strokeWidth="6"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    ></path>
+                    <g ref={rainContainerRef} id="rain-container"></g>
                 </svg>
             </div>
-          </div>
         </section>
-        
+
         <section id="features" className="py-20 lg:py-24">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
@@ -478,6 +269,40 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
+        </section>
+
+        <section id="how-it-works" className="py-20 lg:py-24 bg-gray-900">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">Начать работу — это просто</h2>
+              <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Всего три шага отделяют вас от успешной рассылки.</p>
+            </div>
+            <div className="relative">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <div className="text-center">
+                  <div className="relative inline-block">
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-cyan-500 rounded-full text-2xl font-bold text-cyan-400 mb-4">1</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-headline">Создайте рассылку</h3>
+                  <p className="text-gray-400">Загрузите базу, настройте текст и отправьте на проверку.</p>
+                </div>
+                <div className="text-center">
+                  <div className="relative inline-block">
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500/50 rounded-full text-2xl font-bold text-green-400/80 mb-4">2</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-headline">Пройдите модерацию</h3>
+                  <p className="text-gray-400">Наша команда быстро проверит вашу кампанию.</p>
+                </div>
+                <div className="text-center">
+                  <div className="relative inline-block">
+                    <div className="w-20 h-20 flex items-center justify-center bg-gray-800 border-2 border-green-500 rounded-full text-2xl font-bold text-green-400 mb-4">3</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2 font-headline">Запустите и анализируйте</h3>
+                  <p className="text-gray-400">Следите за результатами в реальном времени.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
         
         <section className="py-20 lg:py-24 bg-gray-900">
