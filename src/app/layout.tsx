@@ -6,6 +6,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import React from 'react';
+import { AuthProvider } from '@/providers/auth-provider';
 
 export default function RootLayout({
   children,
@@ -48,11 +49,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn('antialiased', isDashboard ? 'dashboard' : 'bg-gray-900 text-gray-200')}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Toaster />
       </body>
     </html>
   );
 }
-
-    

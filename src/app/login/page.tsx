@@ -1,4 +1,6 @@
 
+'use client';
+
 import { ElsenderLogo } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +14,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { User, KeyRound } from "lucide-react";
+import { auth } from "@/lib/firebase";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error during Google sign-in:", error);
+      toast({
+        variant: "destructive",
+        title: "Ошибка входа",
+        description: "Не удалось войти через Google. Пожалуйста, попробуйте еще раз.",
+      });
+    }
+  };
+
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <Card className="mx-auto max-w-sm w-full">
@@ -61,7 +86,7 @@ export default function LoginPage() {
             <Button type="submit" className="w-full">
               Войти
             </Button>
-            <Button variant="outline" className="w-full">
+            <Button variant="outline" className="w-full" onClick={handleGoogleSignIn}>
               Войти через Google
             </Button>
           </div>
