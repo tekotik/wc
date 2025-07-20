@@ -39,44 +39,34 @@ export default function LandingPage() {
     const moneyRainChart = moneyRainChartRef.current;
     if (moneyRainChart) {
       const rainContainer = rainContainerRef.current;
-      const growthPath = pathRef.current;
 
       const setupMoneyRain = () => {
-          if (!rainContainer || !growthPath) return;
+          if (!rainContainer) return;
 
-          // Clear previous symbols if any
           while (rainContainer.firstChild) {
               rainContainer.removeChild(rainContainer.firstChild);
           }
 
-          const pathLength = growthPath.getTotalLength();
-          const numSources = 30; // Increased sources for full width
+          const numRubles = 30; // Reduced number of symbols
+          const viewBox = moneyRainChart.viewBox.baseVal;
+          const width = viewBox.width;
+          const height = viewBox.height;
 
-          for (let i = 0; i < numSources; i++) {
-              const point = growthPath.getPointAtLength((i / (numSources - 1)) * pathLength);
-              const numRubles = Math.floor(Math.random() * (13 - 7 + 1)) + 7;
 
-              for (let j = 0; j < numRubles; j++) {
-                  const symbol = document.createElementNS("http://www.w3.org/2000/svg", "text");
-                  symbol.setAttribute('x', String(point.x));
-                  symbol.setAttribute('y', String(point.y));
-                  symbol.setAttribute('class', 'currency-symbol');
-                  symbol.textContent = '₽';
+          for (let j = 0; j < numRubles; j++) {
+              const symbol = document.createElementNS("http://www.w3.org/2000/svg", "text");
+              symbol.setAttribute('x', String(Math.random() * width));
+              symbol.setAttribute('y', String(Math.random() * height));
+              symbol.setAttribute('class', 'currency-symbol');
+              symbol.textContent = '₽';
 
-                  const duration = Math.random() * 2 + 3; // Slower fall
-                  const delay = Math.random() * 5;
-                  const startX = Math.random() * 20 - 10;
-                  const endX = Math.random() * 80 - 40;
-                  const rotation = Math.random() * 720 - 360;
+              const duration = Math.random() * 5 + 5; // Slower animation
+              const delay = Math.random() * 10;
 
-                  symbol.style.setProperty('--start-x', `${startX}px`);
-                  symbol.style.setProperty('--end-x', `${endX}px`);
-                  symbol.style.setProperty('--r', `${rotation}deg`);
-                  symbol.style.animationDuration = `${duration}s`;
-                  symbol.style.animationDelay = `${delay}s`;
-                  
-                  rainContainer.appendChild(symbol);
-              }
+              symbol.style.animationDuration = `${duration}s`;
+              symbol.style.animationDelay = `${delay}s`;
+              
+              rainContainer.appendChild(symbol);
           }
       };
       
@@ -247,19 +237,19 @@ export default function LandingPage() {
 
         <section id="pricing" className="py-20 lg:py-24 bg-gray-900 relative overflow-hidden">
             <div className="absolute inset-0 z-0">
-                <svg ref={moneyRainChartRef} className="w-full h-full" preserveAspectRatio="none">
+                <svg ref={moneyRainChartRef} className="w-full h-full" preserveAspectRatio="xMidYMid slice">
                     <defs>
                         <linearGradient id="processGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#22D3EE" />
                             <stop offset="50%" stopColor="#34D399" />
                             <stop offset="100%" stopColor="#6EE7B7" />
                         </linearGradient>
-                        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                         <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#A7F3D0" />
                             <stop offset="100%" stopColor="#6EE7B7" />
                         </linearGradient>
                     </defs>
-                    <path ref={pathRef} className="growth-line" 
+                    <path className="growth-line" 
                           d="M -100 250 C 400 350, 800 50, 1200 150 S 1600 300, 2000 200"
                           stroke="url(#processGradient)" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                     <g ref={rainContainerRef} id="rain-container"></g>
