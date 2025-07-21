@@ -1,6 +1,6 @@
 
 import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
+import { getAuth, connectAuthEmulator, type Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +15,17 @@ const firebaseConfig = {
 // Initialize Firebase
 const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth: Auth = getAuth(app);
+
+// Connect to emulators if running locally
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    // Point to the RTDB emulator running on localhost.
+    try {
+        console.log("Connecting to Firebase Auth Emulator");
+        connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+    } catch (e) {
+        console.error("Error connecting to auth emulator", e);
+    }
+}
 
 
 export { app, auth };
