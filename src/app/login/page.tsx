@@ -27,25 +27,31 @@ export default function LoginPage() {
   const { user, loading } = useAuthContext();
 
   const handleGoogleSignIn = async () => {
+    console.log("Attempting Google Sign-In...");
     if (!auth) {
         toast({
             variant: "destructive",
             title: "Ошибка конфигурации",
-            description: "Сервис аутентификации не настроен. Пожалуйста, проверьте ключи Firebase.",
+            description: "Сервис аутентификации не настроен.",
         });
+        console.error("Firebase auth instance is not available.");
         return;
     }
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("Успешный вход! Данные пользователя:", result.user);
-      // The redirect is now handled by the AuthProvider
-    } catch (error) {
+      console.log("Sign-in successful! User data:", result.user);
+      toast({
+        title: "Вход выполнен успешно!",
+        description: `Добро пожаловать, ${result.user.displayName}!`,
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
       console.error("Ошибка входа через Google:", error);
       toast({
         variant: "destructive",
         title: "Ошибка входа",
-        description: "Не удалось войти через Google. Пожалуйста, попробуйте еще раз.",
+        description: `Не удалось войти через Google. Ошибка: ${error.message}`,
       });
     }
   };
