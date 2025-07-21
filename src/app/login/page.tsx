@@ -19,47 +19,48 @@ import { signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "fireb
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/providers/auth-provider";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { user, loading } = useAuthContext();
-  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [isProcessingRedirect, setIsProcessingRedirect] = useState(true);
 
-  // Effect to handle the redirect result from Google
+  // Effect to handle the redirect result from Google.
+  // This runs only once on component mount.
   useEffect(() => {
-    if (!auth) return;
+    if (!auth) {
+      setIsProcessingRedirect(false);
+      return;
+    };
 
-    const processRedirect = async () => {
-      try {
-        setIsProcessing(true);
-        const result = await getRedirectResult(auth);
+    getRedirectResult(auth)
+      .then((result) => {
         if (result) {
-          // User successfully signed in.
+          // This means the user has just signed in via redirect.
+          // The onAuthStateChanged listener in useAuth will handle the user state update and redirection.
           console.log("Redirect sign-in successful! User data:", result.user);
           toast({
             title: "Вход выполнен успешно!",
             description: `Добро пожаловать, ${result.user.displayName}!`,
           });
-          router.push('/dashboard');
-        } else {
-          // No redirect result, which is normal on initial page load.
-          setIsProcessing(false);
+          // No need to router.push here, AuthProvider will do it.
         }
-      } catch (error: any) {
+      })
+      .catch((error) => {
         console.error("Ошибка при обработке редиректа:", error);
         toast({
           variant: "destructive",
           title: "Ошибка входа",
           description: `Не удалось завершить вход. Ошибка: ${error.message}`,
         });
-        setIsProcessing(false);
-      }
-    };
-    
-    processRedirect();
-  }, [router, toast]);
+      })
+      .finally(() => {
+        // We are done checking for a redirect result.
+        setIsProcessingRedirect(false);
+      });
+  }, [toast]);
 
   const handleGoogleSignIn = async () => {
     if (!auth) {
@@ -72,16 +73,18 @@ export default function LoginPage() {
         return;
     }
     const provider = new GoogleAuthProvider();
-    setIsProcessing(true); // Show loading state before redirect
+    // No need to set processing state, the browser will navigate away
     await signInWithRedirect(auth, provider);
   };
 
-  // While loading auth state or processing redirect, show a loader
-  if (loading || isProcessing) {
+  // Show loader while the initial auth state is being determined OR
+  // while we are processing a potential redirect result.
+  if (loading || isProcessingRedirect) {
     return <div>Проверка статуса входа...</div>;
   }
   
-  // If user is already logged in, AuthProvider will redirect. 
+  // If user is already logged in, AuthProvider will redirect them.
+  // We can return null here to avoid a flash of the login form.
   if (user) {
     return null;
   }
