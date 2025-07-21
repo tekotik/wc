@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { ShieldCheck, Rocket, BarChart2, CheckCircle, Shuffle } from 'lucide-react';
+import { ShieldCheck, Rocket, BarChart2, CheckCircle, Shuffle, Ban } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -472,6 +472,54 @@ export default function LandingPage() {
                 </Link>
             </div>
         </section>
+
+        <section className="py-20 lg:py-24 border-t border-gray-800">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-white font-headline">С какими проектами мы не работаем</h2>
+              <p className="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">Мы строго соблюдаем требования WhatsApp и законодательства. Поэтому не принимаем заявки от следующих тематик:</p>
+            </div>
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-800/50 border border-transparent hover:border-red-500/50 transition-colors">
+                <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-red-900/50">
+                   <Ban className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Гадания, магия, астрология</h3>
+                  <p className="text-gray-400 text-sm">Любые эзотерические и оккультные услуги.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-800/50 border border-transparent hover:border-red-500/50 transition-colors">
+                 <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-red-900/50">
+                   <Ban className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Казино, ставки, букмекерские конторы</h3>
+                   <p className="text-gray-400 text-sm">Любые проекты, связанные с азартными играми.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-800/50 border border-transparent hover:border-red-500/50 transition-colors">
+                 <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-red-900/50">
+                   <Ban className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Финансовые пирамиды, хайпы</h3>
+                   <p className="text-gray-400 text-sm">Высокорискованные инвестиционные проекты.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-800/50 border border-transparent hover:border-red-500/50 transition-colors">
+                <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-red-900/50">
+                   <Ban className="w-5 h-5 text-red-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white">Скам-проекты и любые сомнительные схемы</h3>
+                   <p className="text-gray-400 text-sm">Мошеннические предложения и обман.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
 
       <footer className="bg-gray-900 border-t border-gray-800">
@@ -487,5 +535,3 @@ export default function LandingPage() {
     </>
   );
 }
-
-    
