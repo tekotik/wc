@@ -4,7 +4,7 @@
 import React, { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { ElsenderLogo } from '@/components/icons';
-import { Sparkles, ShieldCheck, Rocket, BarChart2, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Rocket, BarChart2, CheckCircle, Shuffle } from 'lucide-react';
 
 export default function LandingPage() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -316,7 +316,7 @@ export default function LandingPage() {
                     <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 text-gray-300">
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-5 h-5 text-green-500" />
-                            <span>ИИ-генератор текстов</span>
+                            <span>Рандомизатор текстов</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <CheckCircle className="w-5 h-5 text-green-500" />
@@ -344,10 +344,10 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
-                           <Sparkles className="w-8 h-8 text-green-400" />
+                           <Shuffle className="w-8 h-8 text-green-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2 font-headline">ИИ-генерация текстов</h3>
-                        <p className="text-gray-400">Создавайте вовлекающие тексты для ваших рассылок в один клик. Наш ИИ-помощник предложит несколько вариантов.</p>
+                        <h3 className="text-xl font-bold text-white mb-2 font-headline">Рандомизатор текстов</h3>
+                        <p className="text-gray-400">Получайте различные варианты сообщений, чтобы сделать ваши рассылки более уникальными и избежать блокировок.</p>
                     </div>
                     <div className="card p-8 text-center flex flex-col justify-start">
                         <div className="flex justify-center items-center mb-6 h-16 w-16 rounded-full bg-green-900/50 mx-auto">
@@ -487,3 +487,5 @@ export default function LandingPage() {
     </>
   );
 }
+
+    
