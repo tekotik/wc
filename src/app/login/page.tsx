@@ -30,6 +30,7 @@ export default function LoginPage() {
   // Effect to handle the redirect result from Google.
   // This runs only once on component mount.
   useEffect(() => {
+    // This check is important. If auth is not initialized, we can't proceed.
     if (!auth) {
       setIsProcessingRedirect(false);
       return;
@@ -60,7 +61,7 @@ export default function LoginPage() {
         // We are done checking for a redirect result.
         setIsProcessingRedirect(false);
       });
-  }, [toast]);
+  }, [toast]); // Run only on mount
 
   const handleGoogleSignIn = async () => {
     if (!auth) {
@@ -83,8 +84,8 @@ export default function LoginPage() {
     return <div>Проверка статуса входа...</div>;
   }
   
-  // If user is already logged in, AuthProvider will redirect them.
-  // We can return null here to avoid a flash of the login form.
+  // If user is already logged in (e.g. from a previous session),
+  // AuthProvider will redirect them. We can return null to avoid a flash of the login form.
   if (user) {
     return null;
   }
