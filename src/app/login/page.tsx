@@ -25,7 +25,8 @@ export default function LoginPage() {
   const { toast } = useToast();
   const { user, loading } = useAuthContext();
 
-  // This effect will run on mount to handle the result of a redirect sign-in
+  // This effect runs on mount to handle the result of a redirect sign-in.
+  // It's the standard way to finalize the signInWithRedirect flow.
   useEffect(() => {
     // This check is important. If auth is not initialized, we can't proceed.
     if (!auth) {
@@ -66,7 +67,7 @@ export default function LoginPage() {
         return;
     }
     const provider = new GoogleAuthProvider();
-    // Start the sign-in process, the browser will navigate away.
+    // Start the sign-in process. The browser will navigate away.
     // The result will be handled by getRedirectResult when the user returns.
     await signInWithRedirect(auth, provider);
   };
