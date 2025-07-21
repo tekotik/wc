@@ -15,19 +15,53 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { User, KeyRound } from "lucide-react";
 import { auth } from "@/lib/firebase";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithRedirect, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthContext } from "@/providers/auth-provider";
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { user, loading } = useAuthContext();
+  const [isProcessing, setIsProcessing] = React.useState(false);
+
+  // Effect to handle the redirect result from Google
+  useEffect(() => {
+    if (!auth) return;
+
+    const processRedirect = async () => {
+      try {
+        setIsProcessing(true);
+        const result = await getRedirectResult(auth);
+        if (result) {
+          // User successfully signed in.
+          console.log("Redirect sign-in successful! User data:", result.user);
+          toast({
+            title: "Вход выполнен успешно!",
+            description: `Добро пожаловать, ${result.user.displayName}!`,
+          });
+          router.push('/dashboard');
+        } else {
+          // No redirect result, which is normal on initial page load.
+          setIsProcessing(false);
+        }
+      } catch (error: any) {
+        console.error("Ошибка при обработке редиректа:", error);
+        toast({
+          variant: "destructive",
+          title: "Ошибка входа",
+          description: `Не удалось завершить вход. Ошибка: ${error.message}`,
+        });
+        setIsProcessing(false);
+      }
+    };
+    
+    processRedirect();
+  }, [router, toast]);
 
   const handleGoogleSignIn = async () => {
-    console.log("Attempting Google Sign-In...");
     if (!auth) {
         toast({
             variant: "destructive",
@@ -38,35 +72,19 @@ export default function LoginPage() {
         return;
     }
     const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      console.log("Sign-in successful! User data:", result.user);
-      toast({
-        title: "Вход выполнен успешно!",
-        description: `Добро пожаловать, ${result.user.displayName}!`,
-      });
-      router.push('/dashboard');
-    } catch (error: any) {
-      console.error("Ошибка входа через Google:", error);
-      toast({
-        variant: "destructive",
-        title: "Ошибка входа",
-        description: `Не удалось войти через Google. Ошибка: ${error.message}`,
-      });
-    }
+    setIsProcessing(true); // Show loading state before redirect
+    await signInWithRedirect(auth, provider);
   };
 
-  // While loading auth state, you can show a loader or an empty page
-  if (loading) {
+  // While loading auth state or processing redirect, show a loader
+  if (loading || isProcessing) {
     return <div>Проверка статуса входа...</div>;
   }
   
   // If user is already logged in, AuthProvider will redirect. 
-  // This check can prevent rendering the form for a split second.
   if (user) {
     return null;
   }
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
