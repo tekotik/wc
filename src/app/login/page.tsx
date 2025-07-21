@@ -18,16 +18,19 @@ import { auth } from "@/lib/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthContext } from "@/providers/auth-provider";
+import React from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { user, loading } = useAuthContext();
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
+      // The redirect is now handled by the AuthProvider
       await signInWithPopup(auth, provider);
-      router.push("/dashboard");
     } catch (error) {
       console.error("Error during Google sign-in:", error);
       toast({
@@ -37,6 +40,17 @@ export default function LoginPage() {
       });
     }
   };
+
+  // While loading auth state, you can show a loader or an empty page
+  if (loading) {
+    return <div>Проверка статуса входа...</div>;
+  }
+  
+  // If user is already logged in, AuthProvider will redirect. 
+  // This check can prevent rendering the form for a split second.
+  if (user) {
+    return null;
+  }
 
 
   return (
