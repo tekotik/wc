@@ -28,7 +28,8 @@ export default function LoginPage() {
   // This effect runs on mount to handle the result of a redirect sign-in.
   // It's the standard way to finalize the signInWithRedirect flow.
   useEffect(() => {
-    // This check is important. If auth is not initialized, we can't proceed.
+    // --- AUTHENTICATION DISABLED ---
+    /*
     if (!auth) {
       return;
     };
@@ -54,9 +55,16 @@ export default function LoginPage() {
           description: `Не удалось войти. Ошибка: ${error.message}`,
         });
       });
+    */
   }, [toast]); // Run only on mount
 
   const handleGoogleSignIn = async () => {
+    // --- AUTHENTICATION DISABLED ---
+    toast({
+        title: "Авторизация отключена",
+        description: "Вход временно не работает. Вы можете получить доступ ко всем страницам напрямую.",
+    });
+    /*
     if (!auth) {
         toast({
             variant: "destructive",
@@ -70,20 +78,13 @@ export default function LoginPage() {
     // Start the sign-in process. The browser will navigate away.
     // The result will be handled by getRedirectResult when the user returns.
     await signInWithRedirect(auth, provider);
+    */
   };
 
-  // While the initial auth state is being determined, show a loading message.
-  // The AuthProvider will handle redirection if the user is already logged in.
   if (loading) {
     return <div>Проверка статуса входа...</div>;
   }
   
-  // If user is already logged in (e.g. from a previous session),
-  // AuthProvider will redirect them. We can return null to avoid a flash of the login form.
-  if (user) {
-    return null;
-  }
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <Card className="mx-auto max-w-sm w-full">

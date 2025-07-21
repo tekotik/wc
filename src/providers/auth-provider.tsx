@@ -24,6 +24,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   useEffect(() => {
+    // --- AUTHENTICATION DISABLED ---
+    // The logic below is commented out to bypass authentication checks.
+    /*
     if (loading) {
       return; // Do nothing while loading
     }
@@ -39,14 +42,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (user && pathname === '/login') {
       router.push('/dashboard');
     }
-
+    */
   }, [user, loading, router, pathname]);
 
   // To avoid flashing content, we can show a loader or nothing while checking auth state
+  // --- AUTHENTICATION DISABLED ---
+  /*
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   if (loading && isProtectedRoute) {
     return <div>Loading...</div>; // Or a proper spinner component
   }
+  */
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

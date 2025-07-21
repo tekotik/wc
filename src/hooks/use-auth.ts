@@ -11,6 +11,11 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // --- AUTHENTICATION DISABLED ---
+    // Immediately set loading to false without checking for a user.
+    setLoading(false);
+    
+    /*
     if (!auth) {
       setLoading(false);
       return;
@@ -22,7 +27,8 @@ export function useAuth() {
     });
 
     return () => unsubscribe();
+    */
   }, []);
 
-  return { user, loading };
+  return { user: null, loading: false };
 }
