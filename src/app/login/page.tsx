@@ -22,44 +22,36 @@ import { useAuthContext } from "@/providers/auth-provider";
 import React, { useEffect, useState } from 'react';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { toast } = useToast();
   const { user, loading } = useAuthContext();
-  const [isProcessingRedirect, setIsProcessingRedirect] = useState(true);
 
-  // Effect to handle the redirect result from Google.
-  // This runs only once on component mount.
+  // This effect will run on mount to handle the result of a redirect sign-in
   useEffect(() => {
     // This check is important. If auth is not initialized, we can't proceed.
     if (!auth) {
-      setIsProcessingRedirect(false);
       return;
     };
 
     getRedirectResult(auth)
       .then((result) => {
         if (result) {
-          // This means the user has just signed in via redirect.
-          // The onAuthStateChanged listener in useAuth will handle the user state update and redirection.
+          // The user has just signed in. The onAuthStateChanged listener in AuthProvider
+          // will handle the user state update and redirection to the dashboard.
           console.log("Redirect sign-in successful! User data:", result.user);
           toast({
             title: "Вход выполнен успешно!",
             description: `Добро пожаловать, ${result.user.displayName}!`,
           });
-          // No need to router.push here, AuthProvider will do it.
         }
       })
       .catch((error) => {
-        console.error("Ошибка при обработке редиректа:", error);
+        // Handle Errors here.
+        console.error("Ошибка при входе через редирект:", error);
         toast({
           variant: "destructive",
           title: "Ошибка входа",
-          description: `Не удалось завершить вход. Ошибка: ${error.message}`,
+          description: `Не удалось войти. Ошибка: ${error.message}`,
         });
-      })
-      .finally(() => {
-        // We are done checking for a redirect result.
-        setIsProcessingRedirect(false);
       });
   }, [toast]); // Run only on mount
 
@@ -74,13 +66,14 @@ export default function LoginPage() {
         return;
     }
     const provider = new GoogleAuthProvider();
-    // No need to set processing state, the browser will navigate away
+    // Start the sign-in process, the browser will navigate away.
+    // The result will be handled by getRedirectResult when the user returns.
     await signInWithRedirect(auth, provider);
   };
 
-  // Show loader while the initial auth state is being determined OR
-  // while we are processing a potential redirect result.
-  if (loading || isProcessingRedirect) {
+  // While the initial auth state is being determined, show a loading message.
+  // The AuthProvider will handle redirection if the user is already logged in.
+  if (loading) {
     return <div>Проверка статуса входа...</div>;
   }
   
