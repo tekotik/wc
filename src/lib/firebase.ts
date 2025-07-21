@@ -23,7 +23,7 @@ if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
         console.log("Connecting to Firebase Auth Emulator");
         connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
     } catch (e) {
-        console.error("Error connecting to auth emulator", e);
+        console.error("Error connecting to auth emulator, falling back to production. Is the emulator running?", e);
     }
 }
 
