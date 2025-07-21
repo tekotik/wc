@@ -24,14 +24,6 @@ export default function LoginPage() {
   const { toast } = useToast();
 
   const handleGoogleSignIn = async () => {
-    if (!auth) {
-      toast({
-        variant: "destructive",
-        title: "Ошибка конфигурации",
-        description: "Сервис аутентификации Firebase не настроен. Пожалуйста, проверьте ключи в .env файле.",
-      });
-      return;
-    }
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);

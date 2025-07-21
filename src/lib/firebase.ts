@@ -13,19 +13,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let app: FirebaseApp;
-let auth: Auth;
-
-// Check if the API key is provided before initializing
-if (firebaseConfig.apiKey) {
-  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-  auth = getAuth(app);
-} else {
-    console.error("Firebase API Key is missing. Please check your .env file.");
-    // Provide dummy instances to prevent crashing the app where auth is used
-    app = null as any; 
-    auth = null as any;
-}
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth: Auth = getAuth(app);
 
 
 export { app, auth };
