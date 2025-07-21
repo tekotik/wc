@@ -13,17 +13,21 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth: Auth = getAuth(app);
+let app: FirebaseApp | null = null;
+let auth: Auth | null = null;
 
-// Connect to emulators if running locally
-if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    // Point to the RTDB emulator running on localhost.
-    try {
-        console.log("Connecting to Firebase Auth Emulator");
-        connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
-    } catch (e) {
-        console.error("Error connecting to auth emulator, falling back to production. Is the emulator running?", e);
+if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+
+    // Connect to emulators if running locally
+    if (window.location.hostname === 'localhost') {
+        try {
+            console.log("Connecting to Firebase Auth Emulator");
+            connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+        } catch (e) {
+            console.error("Error connecting to auth emulator, falling back to production. Is the emulator running?", e);
+        }
     }
 }
 
