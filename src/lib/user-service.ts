@@ -4,9 +4,6 @@
 import bcrypt from 'bcryptjs';
 import { db } from './firebase';
 import { collection, query, where, getDocs, addDoc, limit, doc, getDoc } from 'firebase/firestore';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
 
 // Define the user type, excluding the password for security
 export interface User {
@@ -21,7 +18,8 @@ interface UserWithPassword extends User {
     passwordHash: string;
 }
 
-const usersCollection = collection(db, 'users');
+// Use the collection name 'bd' as created by the user
+const usersCollection = collection(db, 'bd');
 
 export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
     const q = query(usersCollection, where("email", "==", email.toLowerCase()), limit(1));
@@ -44,7 +42,7 @@ export async function findUserByEmail(email: string): Promise<UserWithPassword |
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    const userDocRef = doc(db, "users", id);
+    const userDocRef = doc(db, "bd", id);
     const userDoc = await getDoc(userDocRef);
 
     if (!userDoc.exists()) {
@@ -74,7 +72,7 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
         name: userData.name,
         email: userData.email.toLowerCase(),
         passwordHash: passwordHash,
-        balance: 0 // Add initial balance
+        balance: 0 
     });
 
     return {
