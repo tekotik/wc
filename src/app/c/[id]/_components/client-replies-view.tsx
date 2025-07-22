@@ -22,12 +22,14 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [data, setData] = useState<{ campaign: Campaign | null; replies: Reply[] }>({ campaign: null, replies: [] });
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const fetchData = useCallback(() => {
     // No need to wrap in startTransition for background polling
     getCampaignDataAction(campaignId).then(result => {
         if (result.success && result.campaign) {
             setData({ campaign: result.campaign, replies: result.replies || [] });
+            setLastUpdated(new Date()); // Update the time on successful fetch
             setError(null);
         } else {
             // Only set error if it's the first fetch, otherwise keep showing old data
@@ -36,7 +38,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
             }
         }
     });
-  }, [campaignId]);
+  }, [campaignId, data.campaign]);
 
   // Effect for the initial data load with a loading state
   useEffect(() => {
@@ -91,7 +93,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
 
   const { campaign, replies } = data;
   const messageCount = campaign.text.match(/Рассылка на (\d+) сообщений/)?.[1] || 'N/A';
-  const scheduledDate = campaign.scheduledAt 
+  const scheduledDate = campaign.scheduledAt
     ? new Date(campaign.scheduledAt).toLocaleString('ru-RU', { dateStyle: 'long', timeStyle: 'short' })
     : 'Не указано';
 
@@ -110,10 +112,10 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">{campaign.name}</CardTitle>
                     <CardDescription>
-                        Статус рассылки: <span className="font-medium text-primary">{campaign.status}</span>. 
+                        Статус рассылки: <span className="font-medium text-primary">{campaign.status}</span>.
                         Запланировано на: {scheduledDate}.
                         Всего сообщений: {messageCount}.
-                        Последнее обновление: {new Date().toLocaleTimeString()}
+                        {lastUpdated && ` Последнее обновление: ${lastUpdated.toLocaleTimeString()}`}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -122,7 +124,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
                         <div className="space-y-6 pr-4">
                             {replies.length > 0 ? (
                             replies.map((reply, index) => (
-                                <div 
+                                <div
                                     className="flex items-start gap-4 p-3 rounded-lg transition-colors"
                                     key={index}
                                 >
