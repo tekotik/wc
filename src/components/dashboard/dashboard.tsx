@@ -5,6 +5,7 @@ import React, { useState, useMemo } from 'react';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import ActiveCampaigns from './active-campaigns';
 import RecentReplies from './recent-replies';
+import CreateCampaignForm from './create-campaign-form';
 
 interface DashboardProps {
     initialCampaigns: Campaign[];

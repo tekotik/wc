@@ -24,6 +24,7 @@ import React from 'react';
 import Link from "next/link";
 import { useAuthContext } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
+import CreateCampaignDialog from "./create-campaign-dialog";
 
 
 export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
@@ -41,6 +42,13 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
         {/* The create button is now part of the main dashboard form. */}
       </div>
       <div className="flex items-center gap-2">
+        <CreateCampaignDialog>
+          <Button>
+            <PlusCircle className="mr-2" />
+            Заказать рассылку
+          </Button>
+        </CreateCampaignDialog>
+
         <TopUpBalanceDialog balance={balance} setBalance={setBalance}>
           <Button variant="ghost" className="flex items-center gap-2 p-2">
             <Wallet className="h-5 w-5 text-foreground" />

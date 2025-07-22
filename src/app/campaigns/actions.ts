@@ -10,6 +10,7 @@ export async function createCampaignAction(newCampaign: Campaign) {
     const createdCampaign = await addCampaign(newCampaign);
     revalidatePath('/campaigns');
     revalidatePath('/dashboard');
+    revalidatePath('/admin');
     return { success: true, campaign: createdCampaign };
   } catch (error) {
     return { success: false, message: 'Не удалось создать рассылку.' };
@@ -37,6 +38,7 @@ export async function deleteCampaignAction(campaignId: string) {
         revalidatePath('/admin');
         revalidatePath('/dashboard');
         revalidatePath('/in-progress');
+        revalidatePath('/');
         return { success: true };
     } catch (error) {
         return { success: false, message: 'Не удалось удалить рассылку.' };

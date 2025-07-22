@@ -1,4 +1,6 @@
 
+// This file is no longer used and can be removed in the future.
+// The functionality has been moved to `create-campaign-dialog.tsx`.
 "use client";
 
 import React, { useEffect, useRef } from "react";
