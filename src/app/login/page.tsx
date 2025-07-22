@@ -56,9 +56,8 @@ export default function LoginPage() {
 
     if (response.success) {
       toast({ title: response.message });
-      // The router push will trigger the middleware and auth provider to re-check the session
-      router.push('/dashboard');
-      // No need to manually refresh, Next.js handles it.
+      // Force a full page reload to ensure the session is picked up correctly by the middleware.
+      window.location.href = '/dashboard';
     } else {
       toast({ variant: 'destructive', title: 'Ошибка', description: response.message });
     }

@@ -4,5 +4,11 @@
     "name": "terikotij@gmail.com",
     "email": "terikotij@gmail.com",
     "passwordHash": "$2a$10$nqCSq/7Jn9dXZCz8ukwWFe1NiYmFV.hFzp6UFv06vAdNgoS.4NBri"
+  },
+  {
+    "id": "user_1753196713959_oygl01s",
+    "name": "teri",
+    "email": "terij@gmail.com",
+    "passwordHash": "$2a$10$mJNVyvnfxa/pCTxtXq0KDeBoKT0wYRME029j5co2CqN3QlGl2OVH."
   }
 ]
