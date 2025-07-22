@@ -5,13 +5,12 @@ import 'server-only';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { createServerClient } from '@/lib/supabase/server';
 
-// This is a mock login action. In a real app, you'd validate against a database.
-// For now, any email/password combination will "work".
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Неверный формат email." }),
-  password: z.string().min(1, { message: "Пароль не может быть пустым." }),
+  password: z.string().min(6, { message: "Пароль должен содержать не менее 6 символов." }),
 });
 
 export type LoginFormState = {
@@ -19,6 +18,7 @@ export type LoginFormState = {
     errors?: {
         email?: string[];
         password?: string[];
+        server?: string;
     };
     success: boolean;
 }
@@ -37,17 +37,28 @@ export async function loginAction(
         };
     }
     
-    // In a real app, you would verify the credentials here.
-    // For this mock version, we'll just redirect to the dashboard.
-    
-    // We'll simulate a successful login and redirect.
-    // In a real app with sessions, you'd set a session cookie here.
+    const supabase = createServerClient();
+    const { email, password } = validatedFields.data;
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+        return {
+            success: false,
+            errors: { server: error.message },
+            message: "Ошибка входа. Пожалуйста, проверьте свои данные."
+        }
+    }
     
     revalidatePath('/', 'layout');
     redirect('/dashboard');
 }
 
 export async function logout() {
-    // In a real app, you would clear the session cookie here.
+    const supabase = createServerClient();
+    await supabase.auth.signOut();
     redirect('/login');
 }

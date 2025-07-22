@@ -2,51 +2,37 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
+import { createBrowserClient } from "@/lib/supabase/client";
 import { usePathname } from "next/navigation";
 
-// This is a mock User type, replace with your actual User type
-type User = {
-    id: string;
-    email: string;
-    user_metadata: {
-        name: string;
-        balance?: number;
-    }
-}
-
-// This is a mock session hook. In a real app, you would check for a session cookie
-// and fetch user data from your API.
 export function useSession() {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const pathname = usePathname();
+    const supabase = createBrowserClient();
 
     useEffect(() => {
-        // Simulate an async check for a user session
-        const checkSession = () => {
-             // In a real app, you'd decode a JWT or call an API endpoint.
-             // For this mock, we'll create a fake user after a short delay
-             // to simulate a network request.
-             setTimeout(() => {
-                // If we are on login/signup pages, don't set a user.
-                if (pathname.startsWith('/login') || pathname.startsWith('/signup')) {
-                    setUser(null);
-                } else {
-                    setUser({
-                        id: 'mock-user-123',
-                        email: 'test@example.com',
-                        user_metadata: {
-                            name: 'Тестовый Пользователь',
-                            balance: 15300
-                        }
-                    });
-                }
-                setIsLoading(false);
-             }, 500);
+        const getSession = async () => {
+            setIsLoading(true);
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+            setIsLoading(false);
         };
 
-        checkSession();
-    }, [pathname]);
+        getSession();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user ?? null);
+            }
+        );
+
+        return () => {
+            subscription.unsubscribe();
+        };
+
+    }, [pathname, supabase]); // Re-run on path change
 
     return { user, isLoading };
 }

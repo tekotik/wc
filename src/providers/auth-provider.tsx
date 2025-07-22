@@ -4,19 +4,22 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
+import type { User } from '@supabase/supabase-js';
 
-// This is a mock User type.
-type User = {
-    id: string;
-    email: string;
-    user_metadata: {
-        name: string;
-        balance?: number;
-    }
+// Extend the user_metadata type to include our custom fields
+interface AppUserMetadata {
+    name?: string;
+    balance?: number;
 }
 
+// Extend the Supabase User type
+interface AppUser extends User {
+    user_metadata: AppUserMetadata;
+}
+
+
 interface AuthContextType {
-  user: User | null;
+  user: AppUser | null;
   loading: boolean;
   balance: number;
   setBalance: React.Dispatch<React.SetStateAction<number>>;
@@ -36,8 +39,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Sync balance when user data changes
   useEffect(() => {
     if (user) {
-      // In a real app, this data would come from your DB.
-      const userBalance = user.user_metadata?.balance ?? 15300;
+      // User from useSession is already the correct type with metadata
+      const appUser = user as AppUser;
+      const userBalance = appUser.user_metadata?.balance ?? 0;
       setBalance(userBalance);
     }
   }, [user]);
@@ -51,7 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading: isLoading, balance, setBalance }}>
+    <AuthContext.Provider value={{ user: user as AppUser, loading: isLoading, balance, setBalance }}>
       {children}
     </AuthContext.Provider>
   );

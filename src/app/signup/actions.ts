@@ -5,7 +5,7 @@ import 'server-only';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
+import { createServerClient } from '@/lib/supabase/server';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -19,6 +19,7 @@ export type SignupFormState = {
         name?: string[];
         email?: string[];
         password?: string[];
+        server?: string;
     };
     success: boolean;
 }
@@ -37,9 +38,29 @@ export async function signupAction(
     };
   }
   
-  // In a real app, you'd create a new user in your database here.
-  // We'll simulate a successful signup and redirect.
+  const supabase = createServerClient();
+  const { name, email, password } = validatedFields.data;
   
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        name: name,
+        balance: 1000 // Starting balance for new users
+      },
+    },
+  });
+
+  if (error) {
+    console.error("Supabase signup error:", error);
+    return {
+        success: false,
+        errors: { server: error.message },
+        message: "Ошибка регистрации. Возможно, пользователь с таким email уже существует."
+    }
+  }
+
   revalidatePath('/', 'layout');
   redirect('/dashboard');
 }
