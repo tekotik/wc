@@ -28,7 +28,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isInitialLoading, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isBackground = false) => {
     try {
       // Используем прямой fetch к нашему новому API-маршруту
       const response = await fetch(`/api/campaign/${campaignId}`);
@@ -44,28 +44,27 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
        const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
        console.error(errorMessage);
        // Устанавливаем ошибку только если это не фоновое обновление, а первая загрузка
-       if (!data) {
+       if (!isBackground) {
          setError(errorMessage);
        }
     }
-  }, [campaignId, error, data]); // Зависимости для useCallback
+  }, [campaignId]); // Зависимости для useCallback
 
   // Начальная загрузка данных
   useEffect(() => {
     startTransition(() => {
-      fetchData();
+      fetchData(false);
     });
-  }, [fetchData]); // Зависимость от fetchData, которая теперь корректно создается с useCallback
+  }, [fetchData]);
 
   // Настройка интервала для фонового обновления
   useEffect(() => {
     const intervalId = setInterval(() => {
-      // В фоновом режиме просто вызываем fetch без startTransition
-      fetchData();
+      fetchData(true);
     }, 60000); // 60 секунд
 
     return () => clearInterval(intervalId); // Очистка при размонтировании
-  }, [fetchData]); // Зависимость от fetchData
+  }, [fetchData]);
 
 
   if (isInitialLoading && !data) {
