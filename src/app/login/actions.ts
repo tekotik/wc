@@ -51,7 +51,6 @@ export async function loginAction(
             return { success: false, message: "Неверный email или пароль." };
         }
         
-        // Remove password hash from the user object before creating the session
         const { passwordHash, ...sessionUser } = user;
 
         await createSession(sessionUser);
@@ -62,7 +61,8 @@ export async function loginAction(
         return { success: false, message };
     }
 
-    redirect('/dashboard');
+    // Instead of redirecting, return a success state
+    return { success: true, message: "Вход выполнен успешно." };
 }
 
 

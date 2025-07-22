@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const initialState: SignupFormState = {
   message: "",
@@ -34,8 +35,12 @@ function SubmitButton() {
 export default function SignupPage() {
   const [state, formAction] = useActionState(signupAction, initialState);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
+    if (state.success) {
+      router.push('/dashboard');
+    }
     if (state.message && !state.success) {
       toast({
         variant: "destructive",
@@ -43,7 +48,7 @@ export default function SignupPage() {
         description: state.message,
       });
     }
-  }, [state, toast]);
+  }, [state, toast, router]);
 
 
   return (
