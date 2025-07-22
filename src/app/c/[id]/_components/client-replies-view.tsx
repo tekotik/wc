@@ -24,35 +24,33 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isPending, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback((isInitialLoad = false) => {
-    const fetchAction = () => {
-        getCampaignDataAction(campaignId).then(result => {
-            if (result.success && result.campaign) {
-                setData({ campaign: result.campaign, replies: result.replies || [] });
-                setLastUpdated(new Date()); 
-                if (error) setError(null);
-            } else {
-                if (!data.campaign) {
-                    setError(result.error || 'Не удалось загрузить данные.');
-                }
-            }
-        });
-    };
-    
-    if (isInitialLoad) {
-        startTransition(fetchAction);
-    } else {
-        fetchAction();
-    }
-
-  }, [campaignId, data.campaign, error]);
+  const fetchData = useCallback(() => {
+    return getCampaignDataAction(campaignId).then(result => {
+      if (result.success && result.campaign) {
+        setData({ campaign: result.campaign, replies: result.replies || [] });
+        setLastUpdated(new Date()); 
+        if (error) setError(null);
+      } else {
+        // Only set error if it's the very first fetch that fails
+        if (!data.campaign) {
+          setError(result.error || 'Не удалось загрузить данные.');
+        }
+      }
+    });
+  }, [campaignId, error, data.campaign]);
 
   useEffect(() => {
-    fetchData(true); // Initial fetch
-    const intervalId = setInterval(() => fetchData(false), 60000); // Refresh every minute
+    startTransition(() => {
+      fetchData();
+    });
+
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 60000); // Refresh every minute
+
     return () => clearInterval(intervalId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [campaignId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [campaignId]); // Rerun effect only if campaignId changes
 
   if (isPending && !data.campaign) {
     return (
