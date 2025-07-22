@@ -95,9 +95,7 @@ function SignupForm({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
     }
     const response = await signup({ name, email, password });
     if (response.success) {
-      toast({ title: response.message });
-      // After successful registration, switch to login view so they can log in.
-       toast({
+      toast({
         title: "Регистрация успешна!",
         description: "Теперь вы можете войти в свой аккаунт.",
       });
