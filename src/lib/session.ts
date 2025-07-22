@@ -32,7 +32,7 @@ export async function decrypt(input: string): Promise<any> {
   }
 }
 
-export async function createSession(user: Omit<User, 'id'> & { id?: string }) {
+export async function createSession(user: Omit<User, 'id'> & { id?: number | string }) {
   const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
   const session = await encrypt({ user, expires });
 
@@ -40,12 +40,10 @@ export async function createSession(user: Omit<User, 'id'> & { id?: string }) {
 }
 
 export async function getSession(): Promise<{ user: User } | null> {
-  const session = cookies().get('session')?.value;
-  if (!session) return null;
-  const decrypted = await decrypt(session);
-  return decrypted ? { user: decrypted.user } : null;
-}
+  const sessionCookie = cookies().get('session');
+  if (!sessionCookie) return null;
 
-export async function deleteSession() {
-  cookies().set('session', '', { expires: new Date(0) });
-}
+  const session = sessionCookie.value;
+  const decrypted = await decrypt(session);
+  
+  return decrypted ? { user: decrypted
