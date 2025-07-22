@@ -1,12 +1,26 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp, getApps, getApp, type FirebaseApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 
-// This file is no longer used after removing Firebase Authentication.
-// It is kept to avoid breaking imports in files that are not part of this change.
-// In a real cleanup, this file and its dependencies would be removed.
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+};
 
-import type { FirebaseApp } from "firebase/app";
-import type { Auth } from "firebase/auth";
+// Initialize Firebase
+let app: FirebaseApp;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApp();
+}
 
-const app: FirebaseApp | null = null;
-const auth: Auth | null = null;
+const db = getFirestore(app);
 
-export { app, auth };
+export { app, db };

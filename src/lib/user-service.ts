@@ -2,6 +2,8 @@
 'use server';
 
 import bcrypt from 'bcryptjs';
+import { db } from './firebase';
+import { collection, query, where, getDocs, addDoc, limit } from 'firebase/firestore';
 
 // Define the user type, excluding the password for security
 export interface User {
@@ -15,25 +17,44 @@ interface UserWithPassword extends User {
     passwordHash: string;
 }
 
-// In-memory store that starts with a hardcoded admin user.
-// In a real application, this would be a database.
-const inMemoryUsers: UserWithPassword[] = [
-    {
-        id: 'admin_user',
-        name: 'Admin',
-        email: 'admin@example.com',
-        // Hash for "password". Generate with: await bcrypt.hash('password', 10)
-        passwordHash: '$2a$10$f.74s6A.G03GOv0iC72M5.ElHnCjL02r5aDQsN9VzSSTfVzscuO.C'
-    }
-];
-
+const usersCollection = collection(db, 'users');
 
 export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
-    return inMemoryUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
+    const q = query(usersCollection, where("email", "==", email.toLowerCase()), limit(1));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+        return undefined;
+    }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    return {
+        id: userDoc.id,
+        name: userData.name,
+        email: userData.email,
+        passwordHash: userData.passwordHash
+    };
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    return inMemoryUsers.find(user => user.id === id);
+    // This function is less critical with Firestore but good to have.
+    // In a real app, you might get the document directly by ID.
+    const q = query(usersCollection, where("__name__", "==", id), limit(1));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+        return undefined;
+    }
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+    return {
+        id: userDoc.id,
+        name: userData.name,
+        email: userData.email,
+        passwordHash: userData.passwordHash
+    };
 }
 
 
@@ -44,20 +65,18 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
     }
 
     const passwordHash = await bcrypt.hash(userData.password, 10);
-    const newUser: UserWithPassword = {
-        id: `user_${Date.now()}`,
-        name: userData.name,
-        email: userData.email,
-        passwordHash,
-    };
     
-    // On Vercel, this in-memory modification will not persist across serverless function invocations.
-    // For a real application, this must be replaced with a database write.
-    inMemoryUsers.push(newUser);
+    const newUserDoc = await addDoc(usersCollection, {
+        name: userData.name,
+        email: userData.email.toLowerCase(),
+        passwordHash: passwordHash
+    });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash: _, ...userToReturn } = newUser;
-    return userToReturn;
+    return {
+        id: newUserDoc.id,
+        name: userData.name,
+        email: userData.email
+    };
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
