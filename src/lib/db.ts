@@ -1,8 +1,6 @@
 
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { pgTable, serial, text, varchar, integer, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core';
-import { run } from 'drizzle-kit/bin/utils';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not set in .env file');
