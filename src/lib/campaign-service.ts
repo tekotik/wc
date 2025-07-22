@@ -70,3 +70,10 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     await writeCampaigns(campaigns);
     inMemoryCampaigns = campaigns;
 }
+
+export async function deleteCampaign(campaignId: string): Promise<void> {
+    let campaigns = await getCampaigns();
+    const newCampaigns = campaigns.filter(c => c.id !== campaignId);
+    await writeCampaigns(newCampaigns);
+    inMemoryCampaigns = newCampaigns;
+}
