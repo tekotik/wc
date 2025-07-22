@@ -6,6 +6,9 @@ import {
   Wallet,
   PlusCircle,
   User,
+  LogOut,
+  Settings,
+  LifeBuoy
 } from "lucide-react";
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
@@ -25,6 +28,7 @@ import Link from "next/link";
 import { useAuthContext } from "@/providers/auth-provider";
 import { useRouter } from "next/navigation";
 import CreateCampaignDialog from "./create-campaign-dialog";
+import { auth } from "@/lib/firebase";
 
 
 export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
@@ -32,6 +36,23 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
   const hasUnreadReplies = (unreadCount ?? 0) > 0;
   const { user } = useAuthContext();
   const router = useRouter();
+
+  const handleLogout = async () => {
+    if (auth) {
+      await auth.signOut();
+      router.push('/login');
+    }
+  };
+
+  const getInitials = (name?: string | null) => {
+    if (!name) return <User className="h-5 w-5 text-foreground" />;
+    const names = name.split(' ');
+    if (names.length > 1) {
+      return `${names[0][0]}${names[1][0]}`.toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
 
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-card px-4 lg:h-[60px] lg:px-6 sticky top-0 z-30">
@@ -68,31 +89,34 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
           <span className="sr-only">Переключить уведомления</span>
         </Link>
       </Button>
-      {/* --- AUTHENTICATION DISABLED ---
-      The user dropdown is hidden when authentication is off.
+      
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  <User className="h-5 w-5 text-foreground" />
+                  {getInitials(user.displayName)}
                 </AvatarFallback>
               </Avatar>
               <span className="sr-only">Переключить меню пользователя</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Настройки</DropdownMenuItem>
-            <DropdownMenuItem>Поддержка</DropdownMenuItem>
+            <DropdownMenuItem><Settings className="mr-2"/>Настройки</DropdownMenuItem>
+            <DropdownMenuItem><LifeBuoy className="mr-2"/>Поддержка</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Выйти</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}><LogOut className="mr-2"/>Выйти</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      */}
     </header>
   );
 }

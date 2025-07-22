@@ -11,12 +11,8 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // --- AUTHENTICATION DISABLED ---
-    // Immediately set loading to false without checking for a user.
-    setLoading(false);
-    
-    /*
     if (!auth) {
+      console.error("Firebase auth is not initialized.");
       setLoading(false);
       return;
     }
@@ -27,8 +23,7 @@ export function useAuth() {
     });
 
     return () => unsubscribe();
-    */
   }, []);
 
-  return { user: null, loading: false };
+  return { user, loading };
 }
