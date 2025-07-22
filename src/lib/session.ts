@@ -10,7 +10,7 @@ const secretKey = process.env.SESSION_SECRET;
 const key = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: any) {
-  if (!key) throw new Error('SESSION_SECRET is not defined');
+  if (!key || secretKey.length === 0) throw new Error('SESSION_SECRET is not defined');
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -19,7 +19,7 @@ export async function encrypt(payload: any) {
 }
 
 export async function decrypt(input: string): Promise<any> {
-  if (!key) throw new Error('SESSION_SECRET is not defined');
+  if (!key || secretKey.length === 0) throw new Error('SESSION_SECRET is not defined');
   try {
     const { payload } = await jwtVerify(input, key, {
       algorithms: ['HS256'],
