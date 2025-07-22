@@ -18,22 +18,22 @@ import { auth } from "@/lib/firebase";
 import { 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  onAuthStateChanged
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { useAuthContext } from "@/providers/auth-provider";
 import React, { useEffect, useState } from 'react';
 
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
-  const { user, loading } = useAuthContext();
   const [isLoginView, setIsLoginView] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,13 +82,22 @@ export default function LoginPage() {
 
   // Redirect if user is already logged in
   useEffect(() => {
-    if (!loading && user) {
-      router.push('/dashboard');
+    if (auth) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          router.push('/dashboard');
+        } else {
+          setIsLoading(false);
+        }
+      });
+      return () => unsubscribe();
+    } else {
+      setIsLoading(false);
     }
-  }, [user, loading, router]);
+  }, [router]);
 
 
-  if (loading || user) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
           <Loader2 className="h-8 w-8 animate-spin" />
