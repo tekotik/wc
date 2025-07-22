@@ -10,9 +10,8 @@ const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT
 
 async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise<Reply[]> {
   try {
-    const response = await fetch(url, {
-      next: { revalidate: 0 }, // Disable cache for dynamic URLs
-    });
+    // Add { cache: 'no-store' } to prevent Next.js from caching the fetch request
+    const response = await fetch(url, { cache: 'no-store' });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch sheet: ${response.statusText}`);
