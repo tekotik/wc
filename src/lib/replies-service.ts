@@ -2,13 +2,18 @@
 'use server';
 
 import type { Reply } from './mock-data';
-import { revalidatePath } from 'next/cache';
 import Papa from 'papaparse';
 
 // The correct URL to export the Google Sheet as CSV
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv';
 
-async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise<Reply[]> {
+
+async function fetchAndParseReplies(url: string | null): Promise<Reply[]> {
+  // If no URL is provided, return an empty array immediately.
+  if (!url) {
+      return [];
+  }
+
   try {
     // Add { cache: 'no-store' } to prevent Next.js from caching the fetch request
     const response = await fetch(url, { cache: 'no-store' });
@@ -58,6 +63,15 @@ async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise
   }
 }
 
+export async function getRepliesFromCsvUrl(url: string | null): Promise<{ replies: Reply[] }> {
+    try {
+        const replies = await fetchAndParseReplies(url);
+        return { replies };
+    } catch (error) {
+        // Re-throwing the error to be caught by the action
+        throw error;
+    }
+}
 
 export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: Date }> {
     const replies = await fetchAndParseReplies(GOOGLE_SHEET_CSV_URL);
@@ -77,14 +91,4 @@ export async function markAllRepliesAsRead(): Promise<void> {
     // and makes the app aware of any changes made directly in the sheet.
     // The actual revalidation is now handled in the server action that calls this.
     console.log("Simulating marking all replies as read. Revalidation will occur in the server action.");
-}
-
-export async function getRepliesFromCsvUrl(url: string): Promise<{ replies: Reply[] }> {
-    try {
-        const replies = await fetchAndParseReplies(url);
-        return { replies };
-    } catch (error) {
-        // Re-throwing the error to be caught by the action
-        throw error;
-    }
 }

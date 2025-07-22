@@ -24,27 +24,30 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isPending, startTransition] = useTransition();
 
   const fetchData = useCallback(() => {
-    startTransition(async () => {
-      setError(null);
-      const result = await getCampaignDataAction(campaignId);
-      if (result.success && result.campaign) {
-        setData({ campaign: result.campaign, replies: result.replies || [] });
-      } else {
-        setError(result.error || 'Не удалось загрузить данные.');
-      }
+    // No need to wrap in startTransition for background polling
+    getCampaignDataAction(campaignId).then(result => {
+        if (result.success && result.campaign) {
+            setData({ campaign: result.campaign, replies: result.replies || [] });
+            setError(null);
+        } else {
+            // Only set error if it's the first fetch, otherwise keep showing old data
+            if (!data.campaign) {
+                setError(result.error || 'Не удалось загрузить данные.');
+            }
+        }
     });
-  }, [campaignId]);
+  }, [campaignId, data.campaign]);
 
+  // Effect for the initial data load with a loading state
   useEffect(() => {
-    fetchData(); // Initial fetch
-    
-    // Set up polling to fetch data every 60 seconds
-    const intervalId = setInterval(() => {
-      console.log('Polling for new replies...');
-      fetchData();
-    }, 60000); // 60 seconds
+    startTransition(() => {
+        fetchData();
+    });
+  }, [fetchData]);
 
-    // Clear interval on component unmount
+  // Effect for polling every minute
+  useEffect(() => {
+    const intervalId = setInterval(fetchData, 60000); // 60 seconds
     return () => clearInterval(intervalId);
   }, [fetchData]);
 
