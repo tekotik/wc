@@ -10,6 +10,7 @@ export interface User {
     id: string;
     name: string;
     email: string;
+    balance: number;
 }
 
 // Internal type that includes the hashed password
@@ -34,13 +35,12 @@ export async function findUserByEmail(email: string): Promise<UserWithPassword |
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
+        balance: userData.balance || 0,
         passwordHash: userData.passwordHash
     };
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    // This function is less critical with Firestore but good to have.
-    // In a real app, you might get the document directly by ID.
     const q = query(usersCollection, where("__name__", "==", id), limit(1));
     const querySnapshot = await getDocs(q);
 
@@ -53,6 +53,7 @@ export async function findUserById(id: string): Promise<UserWithPassword | undef
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
+        balance: userData.balance || 0,
         passwordHash: userData.passwordHash
     };
 }
@@ -69,13 +70,15 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
     const newUserDoc = await addDoc(usersCollection, {
         name: userData.name,
         email: userData.email.toLowerCase(),
-        passwordHash: passwordHash
+        passwordHash: passwordHash,
+        balance: 0 // Add initial balance
     });
 
     return {
         id: newUserDoc.id,
         name: userData.name,
-        email: userData.email
+        email: userData.email,
+        balance: 0
     };
 }
 

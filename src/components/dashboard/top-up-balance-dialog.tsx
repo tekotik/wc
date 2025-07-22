@@ -17,16 +17,16 @@ import { Input } from "@/components/ui/input";
 import { useToast } from '@/hooks/use-toast';
 import { Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuthContext } from '@/providers/auth-provider';
 
 interface TopUpBalanceDialogProps {
     children: React.ReactNode;
-    balance: number;
-    setBalance: (value: React.SetStateAction<number>) => void;
 }
 
 const quickAmounts = [1000, 3000, 5000];
 
-export default function TopUpBalanceDialog({ children, balance, setBalance }: TopUpBalanceDialogProps) {
+export default function TopUpBalanceDialog({ children }: TopUpBalanceDialogProps) {
+  const { balance, setBalance } = useAuthContext();
   const [amount, setAmount] = useState(1000);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
@@ -42,7 +42,7 @@ export default function TopUpBalanceDialog({ children, balance, setBalance }: To
       return;
     }
     
-    // In a real app, this would trigger a payment flow.
+    // In a real app, this would trigger a payment flow and update the DB.
     // For now, we'll just update the state.
     setBalance(prev => prev + numericAmount);
     

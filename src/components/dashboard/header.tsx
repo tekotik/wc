@@ -31,9 +31,8 @@ import { logout } from "@/app/login/actions";
 
 
 export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
-  const [balance, setBalance] = React.useState(1000);
   const hasUnreadReplies = (unreadCount ?? 0) > 0;
-  const { user } = useAuthContext();
+  const { user, balance, setBalance } = useAuthContext();
 
   const handleLogout = async () => {
     await logout();

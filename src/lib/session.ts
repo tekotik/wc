@@ -32,7 +32,7 @@ export async function decrypt(input: string): Promise<any> {
   }
 }
 
-export async function createSession(user: User) {
+export async function createSession(user: Omit<User, 'id'> & { id?: string }) {
   const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
   const session = await encrypt({ user, expires });
 

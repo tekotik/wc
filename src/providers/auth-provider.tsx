@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { User } from '@/lib/user-service';
 import { Loader2 } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
@@ -9,15 +9,27 @@ import { useSession } from '@/hooks/use-session';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  balance: number;
+  setBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
+  balance: 0,
+  setBalance: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useSession();
+  const [balance, setBalance] = useState(user?.balance ?? 0);
+
+  // Sync balance when user data changes
+  useState(() => {
+    if(user?.balance) {
+      setBalance(user.balance);
+    }
+  });
   
   if (isLoading) {
      return (
@@ -28,7 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading: isLoading }}>
+    <AuthContext.Provider value={{ user, loading: isLoading, balance, setBalance }}>
       {children}
     </AuthContext.Provider>
   );
