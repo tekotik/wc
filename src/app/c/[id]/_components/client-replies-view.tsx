@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useEffect, useState, useTransition, useCallback } from 'react';
-import { getCampaignDataAction } from '../actions';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -13,46 +12,63 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { RefreshCw, ServerCrash, MessagesSquare } from 'lucide-react';
 import Link from 'next/link';
 
+// Определяем тип для ответа от нашего нового API
+interface CampaignDataResponse {
+  campaign: Campaign;
+  replies: Reply[];
+}
 
 interface ClientRepliesViewProps {
   campaignId: string;
 }
 
 export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps) {
-  const [data, setData] = useState<{ campaign: Campaign | null; replies: Reply[] }>({ campaign: null, replies: [] });
+  const [data, setData] = useState<CampaignDataResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isInitialLoading, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(() => {
-    return getCampaignDataAction(campaignId).then(result => {
-      if (result.success && result.campaign) {
-        setData({ campaign: result.campaign, replies: result.replies || [] });
-        setLastUpdated(new Date()); 
-        if (error) setError(null);
-      } else {
-        // Only set error if it's the very first fetch that fails
-        if (!data.campaign) {
-          setError(result.error || 'Не удалось загрузить данные.');
-        }
+  const fetchData = useCallback(async () => {
+    try {
+      // Используем прямой fetch к нашему новому API-маршруту
+      const response = await fetch(`/api/campaign/${campaignId}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка при загрузке данных');
       }
-    });
-  }, [campaignId, error, data.campaign]);
+      const result: CampaignDataResponse = await response.json();
+      setData(result);
+      setLastUpdated(new Date());
+      if (error) setError(null); // Сбрасываем ошибку при успешной загрузке
+    } catch (e) {
+       const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
+       console.error(errorMessage);
+       // Устанавливаем ошибку только если это не фоновое обновление, а первая загрузка
+       if (!data) {
+         setError(errorMessage);
+       }
+    }
+  }, [campaignId, error, data]); // Зависимости для useCallback
 
+  // Начальная загрузка данных
   useEffect(() => {
     startTransition(() => {
       fetchData();
     });
+  }, [fetchData]); // Зависимость от fetchData, которая теперь корректно создается с useCallback
 
+  // Настройка интервала для фонового обновления
+  useEffect(() => {
     const intervalId = setInterval(() => {
+      // В фоновом режиме просто вызываем fetch без startTransition
       fetchData();
-    }, 60000); // Refresh every minute
+    }, 60000); // 60 секунд
 
-    return () => clearInterval(intervalId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [campaignId]); // Rerun effect only if campaignId changes
+    return () => clearInterval(intervalId); // Очистка при размонтировании
+  }, [fetchData]); // Зависимость от fetchData
 
-  if (isPending && !data.campaign) {
+
+  if (isInitialLoading && !data) {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen text-center">
             <RefreshCw className="h-12 w-12 animate-spin text-primary mb-4" />
@@ -62,21 +78,19 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
     );
   }
 
-  if (error && !data.campaign) {
+  if (error && !data) {
      return (
         <div className="flex items-center justify-center min-h-screen p-4">
             <Alert variant="destructive" className="max-w-md">
                 <ServerCrash className="h-4 w-4" />
                 <AlertTitle>Ошибка загрузки</AlertTitle>
-                <AlertDescription>
-                    {error}
-                </AlertDescription>
+                <AlertDescription>{error}</AlertDescription>
             </Alert>
         </div>
     );
   }
 
-  if (!data.campaign) {
+  if (!data?.campaign) {
     return (
          <div className="flex items-center justify-center min-h-screen p-4">
             <Alert className="max-w-md">

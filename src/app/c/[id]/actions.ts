@@ -5,6 +5,10 @@ import { getCampaignById } from '@/lib/campaign-service';
 import { getRepliesFromCsvUrl } from '@/lib/replies-service';
 import type { Campaign, Reply } from '@/lib/mock-data';
 
+// Этот файл больше не используется компонентом client-replies-view,
+// так как мы перешли на прямой API-маршрут для обхода кеширования.
+// Но мы оставим его на случай, если он понадобится для других серверных операций в будущем.
+
 export async function getCampaignDataAction(
   campaignId: string
 ): Promise<{ success: boolean; campaign?: Campaign; replies?: Reply[]; error?: string }> {
@@ -15,13 +19,9 @@ export async function getCampaignDataAction(
       return { success: false, error: 'Кампания не найдена.' };
     }
 
-    // The "csvUrl" is stored in the `text` field for campaigns created via the admin form.
-    // Example: "Рассылка на 1500 сообщений. База: https://..."
     const csvUrlMatch = campaign.text.match(/База: (https?:\/\/[^\s]+)/);
     const csvUrl = csvUrlMatch ? csvUrlMatch[1] : null;
     
-    // We pass the extracted URL to the service to fetch replies.
-    // The service itself will handle caching, ensuring we get fresh data.
     const { replies } = await getRepliesFromCsvUrl(csvUrl);
 
     return { success: true, campaign, replies };
