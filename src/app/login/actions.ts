@@ -5,7 +5,9 @@ import 'server-only';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createServerActionClient } from '@/lib/supabase/server';
+
+// This is a mock login action. In a real app, you'd validate against a database.
+// For now, any email/password combination will "work".
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Неверный формат email." }),
@@ -34,25 +36,18 @@ export async function loginAction(
             message: "Пожалуйста, исправьте ошибки в форме.",
         };
     }
-
-    const { email, password } = validatedFields.data;
-    const supabase = createServerActionClient();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-        return { success: false, message: "Неверный email или пароль." };
-    }
-
+    
+    // In a real app, you would verify the credentials here.
+    // For this mock version, we'll just redirect to the dashboard.
+    
+    // We'll simulate a successful login and redirect.
+    // In a real app with sessions, you'd set a session cookie here.
+    
     revalidatePath('/', 'layout');
     redirect('/dashboard');
 }
 
 export async function logout() {
-    const supabase = createServerActionClient();
-    await supabase.auth.signOut();
+    // In a real app, you would clear the session cookie here.
     redirect('/login');
 }

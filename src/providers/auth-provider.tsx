@@ -2,9 +2,18 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { User } from '@supabase/supabase-js';
 import { Loader2 } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
+
+// This is a mock User type.
+type User = {
+    id: string;
+    email: string;
+    user_metadata: {
+        name: string;
+        balance?: number;
+    }
+}
 
 interface AuthContextType {
   user: User | null;
@@ -27,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Sync balance when user data changes
   useEffect(() => {
     if (user) {
-      // In Supabase, the balance is stored in user_metadata
+      // In a real app, this data would come from your DB.
       const userBalance = user.user_metadata?.balance ?? 15300;
       setBalance(userBalance);
     }
