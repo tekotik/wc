@@ -27,11 +27,11 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = async (isInitialLoad = false) => {
+    if (!isInitialLoad && isLoading) return; // Не обновлять, если идет начальная загрузка
+
     try {
-      // Прямой запрос к нашему новому API-маршруту
       const response = await fetch(`/api/campaign/${campaignId}`);
-      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Ошибка при загрузке данных');
@@ -42,32 +42,31 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
       setData(result);
       setLastUpdated(new Date());
 
-      // Если была ошибка, сбрасываем ее после успешной загрузки
       if (error) {
         setError(null);
       }
     } catch (e) {
        const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
        console.error(errorMessage);
-       // Устанавливаем ошибку, только если это не фоновое обновление
-       if (!data) {
+       if (!data) { // Показать ошибку только если данных еще нет
          setError(errorMessage);
        }
     } finally {
-        // Отключаем индикатор загрузки только после самого первого запроса
-        if (isLoading) {
-            setIsLoading(false);
-        }
+      if (isInitialLoad) {
+        setIsLoading(false);
+      }
     }
-  }, [campaignId]);
-
+  };
 
   // Запускаем начальную загрузку и интервал
   useEffect(() => {
-    fetchData(); // Начальная загрузка
-    const intervalId = setInterval(fetchData, 60000); // Обновление каждую минуту (60000 мс)
+    fetchData(true); // Начальная загрузка
+
+    const intervalId = setInterval(() => fetchData(false), 60000); // Обновление каждую минуту
+
     return () => clearInterval(intervalId); // Очистка при размонтировании компонента
-  }, [fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [campaignId]); // Зависимость только от campaignId
 
 
   if (isLoading) {
