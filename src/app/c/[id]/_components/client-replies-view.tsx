@@ -1,13 +1,12 @@
 
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { WhatsAppIcon, ElsenderLogo } from '@/components/icons';
 import { Avatar } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { RefreshCw, ServerCrash, MessagesSquare } from 'lucide-react';
 import Link from 'next/link';
@@ -25,15 +24,11 @@ interface ClientRepliesViewProps {
 export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps) {
   const [data, setData] = useState<CampaignDataResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isInitialLoading, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = async (isBackground = false) => {
-    if (!isBackground) {
-        // We only want the loading spinner on the initial load, not for background updates.
-    }
+  const fetchData = useCallback(async () => {
     try {
-      // Используем прямой fetch к нашему новому API-маршруту
       const response = await fetch(`/api/campaign/${campaignId}`);
       if (!response.ok) {
         const errorData = await response.json();
@@ -42,35 +37,31 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
       const result: CampaignDataResponse = await response.json();
       setData(result);
       setLastUpdated(new Date());
-      if (error) setError(null); // Сбрасываем ошибку при успешной загрузке
+      if (error) setError(null);
     } catch (e) {
        const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
        console.error(errorMessage);
-       // Устанавливаем ошибку только если это не фоновое обновление, а первая загрузка
-       if (!isBackground) {
+       // Only set error on initial load, not for background fetches which might temporarily fail
+       if (!data) {
          setError(errorMessage);
        }
+    } finally {
+        if (isLoading) {
+            setIsLoading(false);
+        }
     }
-  };
+  }, [campaignId, error, data, isLoading]);
 
-  // Начальная загрузка данных
+
+  // Initial fetch and set up interval
   useEffect(() => {
-    startTransition(() => {
-      fetchData(false);
-    });
-  }, [campaignId]);
-
-  // Настройка интервала для фонового обновления
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchData(true);
-    }, 60000); // 60 секунд
-
-    return () => clearInterval(intervalId); // Очистка при размонтировании
-  }, [campaignId]); // Зависимость от campaignId, чтобы таймер перезапустился, если ID изменится.
+    fetchData(); // Initial fetch
+    const intervalId = setInterval(fetchData, 60000); // 60 seconds
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, [fetchData]);
 
 
-  if (isInitialLoading && !data) {
+  if (isLoading) {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen text-center">
             <RefreshCw className="h-12 w-12 animate-spin text-primary mb-4" />
