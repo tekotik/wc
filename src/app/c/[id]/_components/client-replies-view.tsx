@@ -27,7 +27,10 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isInitialLoad = false) => {
+    if (isInitialLoad) {
+      setIsLoading(true);
+    }
     try {
       const response = await fetch(`/api/campaign/${campaignId}`);
       if (!response.ok) {
@@ -38,35 +41,31 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
       const result: CampaignDataResponse = await response.json();
       setData(result);
       setLastUpdated(new Date());
-
-      // Если была ошибка, но сейчас все хорошо - убираем ее
-      if (error) {
-        setError(null);
-      }
+      setError(null); // Clear error on successful fetch
     } catch (e) {
        const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
        console.error(errorMessage);
-       // Показываем ошибку только если данных еще нет.
-       // Если данные уже есть, мы не будем показывать ошибку при фоновом обновлении,
-       // чтобы не мешать пользователю.
+       // Show error only if it's the initial load that fails
        if (!data) { 
          setError(errorMessage);
        }
     } finally {
-      // Отключаем индикатор загрузки только после первого запроса
-      if (isLoading) {
+      if (isInitialLoad) {
         setIsLoading(false);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [campaignId]); // Зависимость только от ID кампании
+  }, [campaignId, data]); // data is included to re-create the function if data changes from other sources (less likely here but good practice)
 
 
-  // Запускаем начальную загрузку и интервал
+  // Effect for fetching data
   useEffect(() => {
-    fetchData(); // Начальная загрузка
-    const intervalId = setInterval(fetchData, 60000); // Обновление каждую минуту
-    return () => clearInterval(intervalId); // Очистка при размонтировании компонента
+    fetchData(true); // Initial fetch
+
+    const intervalId = setInterval(() => {
+      fetchData(false); // Subsequent fetches are not "initial loads"
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(intervalId); // Cleanup on component unmount
   }, [fetchData]);
 
 
