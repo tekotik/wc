@@ -1,14 +1,12 @@
 
 import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL is not set in .env file');
 }
 
+// Ensure ssl mode is require, Neon's serverless driver handles this well.
 export const sql = postgres(process.env.DATABASE_URL, { ssl: 'require' });
-export const db = drizzle(sql);
-
 
 // Helper function to create tables if they don't exist
 async function setupDatabase() {
@@ -57,8 +55,14 @@ async function setupDatabase() {
         console.log("Database schema check complete. Tables are ready.");
     } catch(error) {
         console.error("Error setting up database schema:", error);
+        // We throw the error here to make it visible during development if setup fails.
+        throw new Error("Could not set up the database schema.");
     }
 }
 
-// Run setup only once
-setupDatabase();
+// Run setup only once. The top-level await ensures this runs when the module is first imported.
+await setupDatabase().catch(err => {
+    // This will prevent the app from starting if the database setup fails, which is good for debugging.
+    console.error("CRITICAL: Database setup failed. The application cannot start.");
+    process.exit(1);
+});

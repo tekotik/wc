@@ -19,13 +19,10 @@ interface UserWithPassword extends User {
 
 export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
     try {
-        const result = await sql`
+        const result = await sql<UserWithPassword[]>`
             SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE email = ${email.toLowerCase()}
         `;
-        if (result.count === 0) {
-            return undefined;
-        }
-        return result[0] as UserWithPassword;
+        return result[0];
     } catch (error) {
         console.error('Database error while finding user by email:', error);
         throw new Error('Could not find user.');
@@ -34,13 +31,10 @@ export async function findUserByEmail(email: string): Promise<UserWithPassword |
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
    try {
-        const result = await sql`
+        const result = await sql<UserWithPassword[]>`
             SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE id = ${id}
         `;
-        if (result.count === 0) {
-            return undefined;
-        }
-        return result[0] as UserWithPassword;
+        return result[0];
     } catch (error) {
         console.error('Database error while finding user by id:', error);
         throw new Error('Could not find user.');
@@ -57,12 +51,12 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
     const passwordHash = await bcrypt.hash(userData.password, 10);
     
     try {
-         const result = await sql`
+         const result = await sql<User[]>`
             INSERT INTO users (name, email, password_hash, balance)
             VALUES (${userData.name}, ${userData.email.toLowerCase()}, ${passwordHash}, 0)
             RETURNING id, name, email, balance
         `;
-        return result[0] as User;
+        return result[0];
     } catch (error) {
         console.error('Database error during user creation:', error);
         throw new Error('Could not create user.');
