@@ -29,35 +29,44 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
 
   const fetchData = useCallback(async () => {
     try {
+      // Прямой запрос к нашему новому API-маршруту
       const response = await fetch(`/api/campaign/${campaignId}`);
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Ошибка при загрузке данных');
       }
+
       const result: CampaignDataResponse = await response.json();
+      
       setData(result);
       setLastUpdated(new Date());
-      if (error) setError(null);
+
+      // Если была ошибка, сбрасываем ее после успешной загрузки
+      if (error) {
+        setError(null);
+      }
     } catch (e) {
        const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
        console.error(errorMessage);
-       // Only set error on initial load, not for background fetches which might temporarily fail
+       // Устанавливаем ошибку, только если это не фоновое обновление
        if (!data) {
          setError(errorMessage);
        }
     } finally {
+        // Отключаем индикатор загрузки только после самого первого запроса
         if (isLoading) {
             setIsLoading(false);
         }
     }
-  }, [campaignId, error, data, isLoading]);
+  }, [campaignId]);
 
 
-  // Initial fetch and set up interval
+  // Запускаем начальную загрузку и интервал
   useEffect(() => {
-    fetchData(); // Initial fetch
-    const intervalId = setInterval(fetchData, 60000); // 60 seconds
-    return () => clearInterval(intervalId); // Cleanup on unmount
+    fetchData(); // Начальная загрузка
+    const intervalId = setInterval(fetchData, 60000); // Обновление каждую минуту (60000 мс)
+    return () => clearInterval(intervalId); // Очистка при размонтировании компонента
   }, [fetchData]);
 
 
