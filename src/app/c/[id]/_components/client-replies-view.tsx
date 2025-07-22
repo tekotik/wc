@@ -32,6 +32,8 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
                 setLastUpdated(new Date()); 
                 if (error) setError(null);
             } else {
+                // Only set an error if we fail to get the initial data.
+                // For subsequent fetches, we can just keep the old data.
                 if (!data.campaign) {
                     setError(result.error || 'Не удалось загрузить данные.');
                 }
@@ -42,17 +44,17 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
     if (isInitialLoad) {
         startTransition(fetchAction);
     } else {
-        fetchAction();
+        fetchAction(); // Don't show loading spinner for background refresh
     }
 
   }, [campaignId, error, data.campaign]);
 
   useEffect(() => {
-    fetchData(true);
-    const intervalId = setInterval(() => fetchData(false), 60000); 
-    return () => clearInterval(intervalId);
+    fetchData(true); // Initial fetch
+    const intervalId = setInterval(() => fetchData(false), 60000); // Refresh every minute
+    return () => clearInterval(intervalId); // Cleanup on unmount
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [campaignId]); // We only want this to run once when the campaignId changes.
+  }, [campaignId]); // Rerun effect only if campaignId changes. fetchData is now stable.
 
   if (isPending && !data.campaign) {
     return (
@@ -116,7 +118,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
                         Статус рассылки: <span className="font-medium text-primary">{campaign.status}</span>.
                         Запланировано на: {scheduledDate}.
                         Всего сообщений: {messageCount}.
-                        {lastUpdated && ` Последнее обновление: ${lastUpdated.toLocaleTimeString()}`}
+                        {lastUpdated && ` Последнее обновление: ${lastUpdated.toLocaleTimeString('ru-RU')}`}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
