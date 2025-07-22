@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import Papa from 'papaparse';
 
 // The correct URL to export the Google Sheet as CSV
-const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv&gid=0';
+const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv';
 
 async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise<Reply[]> {
   try {
@@ -61,13 +61,13 @@ async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise
 
 
 export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: Date }> {
-    const replies = await fetchAndParseReplies();
+    const replies = await fetchAndParseReplies(GOOGLE_SHEET_CSV_URL);
     // Return all valid replies
     return { replies, lastFetched: new Date() };
 }
 
 export async function getUnreadRepliesCount(): Promise<number> {
-  const replies = await fetchAndParseReplies();
+  const replies = await fetchAndParseReplies(GOOGLE_SHEET_CSV_URL);
   // Count only the ones marked as unread
   return replies.filter(r => r.unread).length;
 }

@@ -1,5 +1,12 @@
 [
   {
+    "id": "campaign_1753170717178",
+    "name": "RRRRR",
+    "status": "Активна",
+    "text": "Рассылка на 5000 сообщений. База: https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv",
+    "scheduledAt": "2025-07-22T10:32:00.000Z"
+  },
+  {
     "id": "campaign_1753168365083",
     "name": "ука",
     "status": "Активна",
