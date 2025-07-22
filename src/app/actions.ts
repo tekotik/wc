@@ -8,6 +8,7 @@ const inputSchema = z.object({
   csvUrl: z.string().min(1, { message: "Ссылка на CSV обязательна." }),
   campaignName: z.string().min(3, { message: "Название должно содержать не менее 3 символов." }),
   messageCount: z.coerce.number().int().positive({ message: "Количество сообщений должно быть положительным числом." }),
+  scheduledAt: z.string().min(1, { message: "Дата и время обязательны." }),
 });
 
 export type ClientLinkFormState = {
@@ -16,6 +17,7 @@ export type ClientLinkFormState = {
     csvUrl?: string[];
     campaignName?: string[];
     messageCount?: string[];
+    scheduledAt?: string[];
     server?: string;
   } | null;
   data: {
@@ -33,6 +35,7 @@ export async function generateClientLinkAction(
     csvUrl: formData.get("csvUrl"),
     campaignName: formData.get("campaignName"),
     messageCount: formData.get("messageCount"),
+    scheduledAt: formData.get("scheduledAt"),
   });
 
   if (!validatedFields.success) {
@@ -43,7 +46,7 @@ export async function generateClientLinkAction(
     };
   }
   
-  const { campaignName, csvUrl, messageCount } = validatedFields.data;
+  const { campaignName, csvUrl, messageCount, scheduledAt } = validatedFields.data;
 
   try {
     const campaignId = `campaign_${Date.now()}`;
@@ -52,6 +55,7 @@ export async function generateClientLinkAction(
       name: campaignName,
       status: "Активна",
       text: `Рассылка на ${messageCount} сообщений. База: ${csvUrl}`,
+      scheduledAt: new Date(scheduledAt).toISOString(), // Store as ISO string
     };
     
     // In a real app, you would save this campaign to a database.
@@ -59,16 +63,14 @@ export async function generateClientLinkAction(
     await addCampaign(newCampaign);
 
     const clientLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/c/${campaignId}`;
-    const scheduledAt = new Date();
-    scheduledAt.setHours(scheduledAt.getHours() + 1);
 
     return {
-      message: "Ссылка успешно сгенерирована!",
+      message: "Рассылка успешно создана и запущена!",
       errors: null,
       data: {
         clientLink,
         campaignName,
-        scheduledAt: scheduledAt.toLocaleString('ru-RU', { dateStyle: 'full', timeStyle: 'short' }),
+        scheduledAt: new Date(scheduledAt).toLocaleString('ru-RU', { dateStyle: 'full', timeStyle: 'short' }),
       },
     };
   } catch (error) {

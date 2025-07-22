@@ -20,7 +20,8 @@ const exampleCampaigns: Campaign[] = [
         id: "in_progress_1",
         name: "Весенняя акция для клиентов",
         status: "Активна",
-        text: "Рассылка запущена и отправляется клиентам."
+        text: "Рассылка запущена и отправляется клиентам.",
+        scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
     },
     {
         id: "in_progress_2",

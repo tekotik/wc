@@ -17,7 +17,8 @@ export interface Campaign {
         sent: number;
         replies: number;
       }>
-    }
+    },
+    scheduledAt?: string;
 }
 
 export interface Reply {

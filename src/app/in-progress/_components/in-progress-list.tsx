@@ -1,12 +1,59 @@
 
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, PauseCircle, CheckCircle2, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Campaign, CampaignStatus } from "@/lib/mock-data";
+
+const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
+    const calculateTimeLeft = () => {
+        const difference = +new Date(targetDate) - +new Date();
+        let timeLeft: { [key: string]: number } = {};
+
+        if (difference > 0) {
+            timeLeft = {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60),
+            };
+        }
+
+        return timeLeft;
+    };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setTimeLeft(calculateTimeLeft());
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    });
+
+    const timerComponents = Object.keys(timeLeft).map((interval) => {
+        if (!timeLeft[interval as keyof typeof timeLeft] && ['days', 'hours', 'minutes'].includes(interval)) {
+            return null;
+        }
+        const unit = interval === 'days' ? 'д' : interval === 'hours' ? 'ч' : interval === 'minutes' ? 'м' : 'с';
+        return (
+            <span key={interval}>
+                {String(timeLeft[interval as keyof typeof timeLeft]).padStart(2, '0')}{unit}
+            </span>
+        );
+    });
+
+    return (
+        <div className="text-sm font-mono text-primary font-semibold flex gap-1.5">
+            {Object.keys(timeLeft).length ? timerComponents.filter(Boolean).slice(0, 3).reduce((prev: any, curr: any) => [prev, ':', curr]) : <span>Запущено!</span>}
+        </div>
+    );
+};
+
 
 const statusConfig: Record<string, {
     icon: React.ElementType,
@@ -70,9 +117,14 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
                     <div className="flex items-start gap-4 flex-1">
                         <config.icon className="h-8 w-8 text-muted-foreground mt-1 flex-shrink-0" />
                         <div className="flex-1">
-                            <div className="flex items-center gap-3">
-                                <h3 className="font-semibold font-headline">{campaign.name}</h3>
-                                <Badge className={config.badgeClass}>{config.label}</Badge>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <h3 className="font-semibold font-headline">{campaign.name}</h3>
+                                    <Badge className={config.badgeClass}>{config.label}</Badge>
+                                </div>
+                                {campaign.status === "Активна" && campaign.scheduledAt && (
+                                   <CountdownTimer targetDate={campaign.scheduledAt} />
+                                )}
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">{campaign.text}</p>
                         </div>
