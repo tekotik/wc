@@ -12,44 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, KeyRound, Loader2, UserPlus, AtSign } from "lucide-react";
+import { User, KeyRound, Loader2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import React, { useState, useEffect } from 'react';
 import { login, signup } from './actions';
 import { getSessionUser } from "./actions";
-
-function EmailInput({ value, onChange }: { value: string, onChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) {
-  const [localPart, setLocalPart] = useState(value.split('@')[0] || '');
-  const domainPart = 'example.com';
-
-  const handleLocalPartChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalPart(e.target.value);
-    // Synthesize the full email for the parent component's state
-    const syntheticEvent = {
-      ...e,
-      target: { ...e.target, value: `${e.target.value}@${domainPart}`, id: 'email' }
-    };
-    onChange(syntheticEvent as React.ChangeEvent<HTMLInputElement>);
-  };
-
-  return (
-    <div className="flex items-center rounded-md border border-input focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-      <AtSign className="h-5 w-5 ml-3 text-muted-foreground" />
-      <Input
-        id="email-local"
-        type="text"
-        placeholder="логин"
-        value={localPart}
-        onChange={handleLocalPartChange}
-        className="border-0 shadow-none focus-visible:ring-0 !p-2"
-        required
-      />
-      <span className="bg-secondary px-3 py-2 text-muted-foreground text-sm">@{domainPart}</span>
-    </div>
-  );
-}
-
 
 function LoginForm() {
   const { toast } = useToast();
@@ -75,8 +43,8 @@ function LoginForm() {
     <form onSubmit={handleSubmit}>
       <div className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="email-local">Email</Label>
-          <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+           <Label htmlFor="email"><User className="inline-block mr-2 h-4 w-4" />Email</Label>
+           <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -122,8 +90,8 @@ function SignupForm() {
             <Input id="name" placeholder="Ваше имя" required value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="email-local">Email</Label>
-          <EmailInput value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Label htmlFor="email"><User className="inline-block mr-2 h-4 w-4" />Email</Label>
+            <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password"><KeyRound className="inline-block mr-2 h-4 w-4" />Пароль</Label>

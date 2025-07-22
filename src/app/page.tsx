@@ -212,9 +212,14 @@ export default function LandingPage() {
         <Link href="#features" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Возможности</Link>
         <Link href="#pricing" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Тарифы</Link>
         <Link href="/dashboard" className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 menu-link">Документация</Link>
-        <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg menu-link">
-            Начать работу
-        </Link>
+        <div className="flex flex-col items-center gap-6">
+            <Link href="/login" className="text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-700 transition-colors menu-link">
+                Войти
+            </Link>
+            <Link href="/login" className="btn-gradient text-white font-semibold py-3 px-8 rounded-lg text-lg menu-link">
+                Регистрация
+            </Link>
+        </div>
     </div>
 
       <main>
