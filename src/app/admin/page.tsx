@@ -13,6 +13,7 @@ import ModerationList from "./_components/moderation-list";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import { getUnreadRepliesCount } from "@/lib/replies-service";
+import CreateCampaignForm from "@/components/dashboard/create-campaign-form";
 
 
 export default async function AdminPage() {
@@ -34,7 +35,8 @@ export default async function AdminPage() {
       <SidebarInset>
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="max-w-7xl mx-auto w-full">
+          <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
+            <CreateCampaignForm />
             <ModerationList initialCampaigns={moderationCampaigns} />
           </div>
         </main>

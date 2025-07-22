@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/sidebar";
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
-import CreateCampaignForm from "@/components/dashboard/create-campaign-form";
 import { getCampaigns } from "@/lib/campaign-service";
 import { getAllReplies, getUnreadRepliesCount } from "@/lib/replies-service";
 import Dashboard from "@/components/dashboard/dashboard";
@@ -41,7 +40,6 @@ export default async function DashboardPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
-            <CreateCampaignForm />
             <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
           </div>
         </main>
