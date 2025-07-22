@@ -7,10 +7,15 @@ const publicRoutes = ['/login', '/'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const session = await getSession();
-
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   
+  // Skip middleware for API routes, static files, and image optimization
+  if (pathname.startsWith('/api') || pathname.startsWith('/_next/static') || pathname.startsWith('/_next/image') || pathname === '/favicon.ico') {
+    return NextResponse.next();
+  }
+
+  const session = await getSession();
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
   // If user is not logged in and tries to access a protected route
   if (!session?.user && isProtectedRoute) {
     const url = request.nextUrl.clone();
@@ -37,6 +42,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * This ensures that internal Next.js requests for server actions are not blocked.
      */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
