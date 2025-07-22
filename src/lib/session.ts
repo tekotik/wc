@@ -46,4 +46,9 @@ export async function getSession(): Promise<{ user: User } | null> {
   const session = sessionCookie.value;
   const decrypted = await decrypt(session);
   
-  return decrypted ? { user: decrypted
+  return decrypted ? { user: decrypted.user } : null;
+}
+
+export async function deleteSession() {
+  cookies().set('session', '', { expires: new Date(0) });
+}
