@@ -1,53 +1,70 @@
 
 'use server';
 
+import 'server-only';
 import { z } from 'zod';
-import { createUser } from '@/lib/user-service';
+import { findUserByEmail, verifyPassword } from '@/lib/user-service';
 import { createSession, deleteSession, getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
 import type { User } from '@/lib/user-service';
 
-const signupSchema = z.object({
-  name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
+const loginSchema = z.object({
   email: z.string().email({ message: "Неверный формат email." }),
-  password: z.string().min(6, { message: "Пароль должен содержать не менее 6 символов." }),
+  password: z.string().min(1, { message: "Пароль не может быть пустым." }),
 });
 
-export type SignupFormState = {
+export type LoginFormState = {
     message: string;
     errors?: {
-        name?: string[];
         email?: string[];
         password?: string[];
     };
     success: boolean;
 }
 
-export async function signupAction(
-  prevState: SignupFormState,
+export async function loginAction(
+  prevState: LoginFormState,
   formData: FormData
-): Promise<SignupFormState> {
-  const validatedFields = signupSchema.safeParse(Object.fromEntries(formData));
+): Promise<LoginFormState> {
+    const validatedFields = loginSchema.safeParse(Object.fromEntries(formData));
 
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: "Пожалуйста, исправьте ошибки в форме.",
-    };
-  }
+    if (!validatedFields.success) {
+        return {
+            success: false,
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Пожалуйста, исправьте ошибки в форме.",
+        };
+    }
 
-  try {
-    const user = await createUser(validatedFields.data);
-    await createSession(user);
-    // Redirect must be called outside of try/catch
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
-    return { success: false, message };
-  }
-  
-  redirect('/dashboard');
+    const { email, password } = validatedFields.data;
+
+    try {
+        const user = await findUserByEmail(email);
+
+        if (!user || !user.passwordHash) {
+            return { success: false, message: "Неверный email или пароль." };
+        }
+
+        const passwordsMatch = await verifyPassword(password, user.passwordHash);
+
+        if (!passwordsMatch) {
+            return { success: false, message: "Неверный email или пароль." };
+        }
+        
+        // Remove password hash from the user object before creating the session
+        const { passwordHash, ...sessionUser } = user;
+
+        await createSession(sessionUser);
+
+    } catch (error) {
+        console.error(error);
+        const message = "Произошла внутренняя ошибка. Пожалуйста, попробуйте снова.";
+        return { success: false, message };
+    }
+
+    redirect('/dashboard');
 }
+
 
 export async function getSessionUser(): Promise<User | null> {
     const session = await getSession();

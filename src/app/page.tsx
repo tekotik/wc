@@ -191,7 +191,7 @@ export default function LandingPage() {
                 <Link href="/login" className="text-white font-semibold py-2 px-5 rounded-lg hover:bg-gray-700 transition-colors">
                     Войти
                 </Link>
-                <Link href="/login" className="btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
+                <Link href="/signup" className="btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
                     Регистрация
                 </Link>
             </div>
@@ -216,7 +216,7 @@ export default function LandingPage() {
             <Link href="/login" className="text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-700 transition-colors menu-link">
                 Войти
             </Link>
-            <Link href="/login" className="btn-gradient text-white font-semibold py-3 px-8 rounded-lg text-lg menu-link">
+            <Link href="/signup" className="btn-gradient text-white font-semibold py-3 px-8 rounded-lg text-lg menu-link">
                 Регистрация
             </Link>
         </div>
@@ -232,7 +232,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                     <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                     <Link href="/signup" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                         Начать работу
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -477,7 +477,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                 <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                 <Link href="/signup" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                     Начать работу
                 </Link>
             </div>
