@@ -35,7 +35,7 @@ export async function findUserByEmail(email: string): Promise<UserWithPassword |
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
-        balance: userData.balance ?? 0, // Ensure balance always has a value
+        balance: userData.balance ?? 0,
         passwordHash: userData.passwordHash
     };
 }
@@ -53,7 +53,7 @@ export async function findUserById(id: string): Promise<UserWithPassword | undef
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
-        balance: userData.balance ?? 0, // Ensure balance always has a value
+        balance: userData.balance ?? 0,
         passwordHash: userData.passwordHash
     };
 }

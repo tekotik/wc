@@ -87,19 +87,19 @@ function SignupForm() {
       <div className="grid gap-4">
         <div className="grid gap-2">
             <Label htmlFor="name"><UserPlus className="inline-block mr-2 h-4 w-4" />Имя</Label>
-            <Input id="name" placeholder="Ваше имя" required value={name} onChange={(e) => setName(e.target.value)} />
+            <Input id="name" placeholder="Ваше имя" required value={name} onChange={(e) => setName(e.target.value)} disabled={isSubmitting} />
         </div>
         <div className="grid gap-2">
             <Label htmlFor="email"><User className="inline-block mr-2 h-4 w-4" />Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isSubmitting} />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password"><KeyRound className="inline-block mr-2 h-4 w-4" />Пароль</Label>
-          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting} />
         </div>
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Создать аккаунт
+          {isSubmitting ? 'Создание...' : 'Создать аккаунт'}
         </Button>
       </div>
     </form>
