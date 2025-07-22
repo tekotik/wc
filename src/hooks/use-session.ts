@@ -2,37 +2,31 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
-import { createBrowserClient } from "@/lib/supabase/client";
-import { usePathname } from "next/navigation";
+
+// This is a mock user. In a real app, you'd get this from your session management.
+const mockUser = {
+    id: '1',
+    email: 'test@example.com',
+    user_metadata: {
+        name: 'Тестовый Пользователь',
+        balance: 1000
+    }
+};
+
 
 export function useSession() {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<any | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const pathname = usePathname();
-    const supabase = createBrowserClient();
 
     useEffect(() => {
-        const getSession = async () => {
-            setIsLoading(true);
-            const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user ?? null);
+        // Simulate an async session fetch
+        const timer = setTimeout(() => {
+            setUser(mockUser);
             setIsLoading(false);
-        };
+        }, 500);
 
-        getSession();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                setUser(session?.user ?? null);
-            }
-        );
-
-        return () => {
-            subscription.unsubscribe();
-        };
-
-    }, [pathname, supabase]); // Re-run on path change
+        return () => clearTimeout(timer);
+    }, []);
 
     return { user, isLoading };
 }

@@ -5,7 +5,7 @@ import 'server-only';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createServerClient } from '@/lib/supabase/server';
+import { getUser, verifyPassword } from '@/lib/user-service';
 
 
 const loginSchema = z.object({
@@ -37,28 +37,36 @@ export async function loginAction(
         };
     }
     
-    const supabase = createServerClient();
     const { email, password } = validatedFields.data;
+    const user = await getUser(email);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
+    if (!user) {
         return {
             success: false,
-            errors: { server: error.message },
-            message: "Ошибка входа. Пожалуйста, проверьте свои данные."
+            message: "Пользователь с таким email не найден.",
+            errors: { server: "Пользователь не найден."}
         }
     }
+
+    const passwordsMatch = await verifyPassword(password, user.password);
+
+    if (!passwordsMatch) {
+         return {
+            success: false,
+            message: "Неверный пароль.",
+            errors: { server: "Неверный пароль."}
+        }
+    }
+
+    // This is where you would typically set a session cookie.
+    // For simplicity in this mock, we are just redirecting.
+    // In a real app, you would use a library like next-auth or iron-session.
     
     revalidatePath('/', 'layout');
     redirect('/dashboard');
 }
 
 export async function logout() {
-    const supabase = createServerClient();
-    await supabase.auth.signOut();
+    // Here you would clear the session cookie
     redirect('/login');
 }

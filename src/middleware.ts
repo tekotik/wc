@@ -1,10 +1,33 @@
 
-import { type NextRequest } from 'next/server';
-import { updateSession } from '@/lib/supabase/middleware';
+import { type NextRequest, NextResponse } from 'next/server';
 
+// This is a simplified middleware. In a real app, you would verify a session cookie.
 export async function middleware(request: NextRequest) {
-  // update user's auth session
-  return await updateSession(request);
+  const { pathname } = request.nextUrl;
+
+  // Assume a user is logged in for simplicity. 
+  // A real implementation would check for a valid session cookie.
+  const isAuthenticated = true; 
+
+  const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress'];
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+
+  if (!isAuthenticated && isProtectedRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+   if (isAuthenticated && (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname === '/')) {
+    // Allow access to the landing page even if "authenticated"
+    if (pathname === '/') return NextResponse.next();
+    
+    const url = request.nextUrl.clone();
+    url.pathname = '/dashboard';
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

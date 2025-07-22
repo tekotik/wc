@@ -5,7 +5,7 @@ import 'server-only';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createServerClient } from '@/lib/supabase/server';
+import { createUser } from '@/lib/user-service';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -38,28 +38,19 @@ export async function signupAction(
     };
   }
   
-  const supabase = createServerClient();
   const { name, email, password } = validatedFields.data;
   
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        name: name,
-        balance: 1000 // Starting balance for new users
-      },
-    },
-  });
-
-  if (error) {
-    console.error("Supabase signup error:", error);
-    return {
+  try {
+    await createUser({ name, email, password });
+  } catch (error) {
+     const message = error instanceof Error ? error.message : "Неизвестная ошибка";
+     return {
         success: false,
-        errors: { server: error.message },
-        message: "Ошибка регистрации. Возможно, пользователь с таким email уже существует."
+        errors: { server: message },
+        message: message
     }
   }
+
 
   revalidatePath('/', 'layout');
   redirect('/dashboard');
