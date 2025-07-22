@@ -8,11 +8,11 @@ import { Play, Pause, Trash2, Link as LinkIcon, Calendar, List, Clock, History, 
 import { Badge } from "@/components/ui/badge";
 import type { Campaign, CampaignStatus } from "@/lib/mock-data";
 import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { updateCampaignAction, deleteCampaignAction } from "@/app/campaigns/actions";
-import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
     const calculateTimeLeft = () => {
@@ -61,16 +61,19 @@ const getMessageCount = (text: string) => {
     return match ? match[1] : 'N/A';
 };
 
+const getCsvUrlFromCampaign = (text: string): string | null => {
+    const match = text.match(/База: (https?:\/\/[^\s]+)/);
+    return match ? match[1] : null;
+}
+
 interface InProgressListProps {
     initialCampaigns: Campaign[];
 }
 
 export default function InProgressList({ initialCampaigns }: InProgressListProps) {
     const [campaigns, setCampaigns] = useState(initialCampaigns);
-    const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
-    const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
-    const [copied, setCopied] = useState(false);
     const { toast } = useToast();
+    const router = useRouter();
 
     useEffect(() => {
         setCampaigns(initialCampaigns);
@@ -98,15 +101,6 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
             toast({ variant: "destructive", title: "Ошибка", description: result.message });
         }
     };
-
-    const handleCopyLink = (link: string) => {
-        navigator.clipboard.writeText(link).then(() => {
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        });
-    };
-    
-    const clientLink = selectedCampaign ? `${window.location.origin}/c/${selectedCampaign.id}` : "";
 
     const statusConfig: Record<string, {
         badgeClass: string,
@@ -205,6 +199,7 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
           const config = statusConfig[campaign.status] || statusConfig["Активна"];
           const messageCount = getMessageCount(campaign.text);
           const scheduledDate = campaign.scheduledAt ? new Date(campaign.scheduledAt).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
+          const csvUrl = getCsvUrlFromCampaign(campaign.text);
           
           return (
             <Card key={campaign.id} className="flex flex-col">
@@ -228,9 +223,11 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
               <CardFooter className="flex-col items-start p-0">
                   <Separator className="mb-2" />
                   <div className="flex items-center justify-between w-full px-4 pb-2">
-                      <Button variant="link" className="p-0 h-auto" onClick={() => { setSelectedCampaign(campaign); setIsLinkDialogOpen(true); }}>
-                          <LinkIcon className="mr-2 h-4 w-4" />
-                          Получить ссылку
+                      <Button variant="link" className="p-0 h-auto" asChild>
+                          <Link href={`/replies-live?url=${encodeURIComponent(csvUrl || '')}`} target="_blank">
+                             <LinkIcon className="mr-2 h-4 w-4" />
+                             Посмотреть ответы
+                          </Link>
                       </Button>
                       <div className="flex items-center">
                         {config.actions(campaign)}
@@ -248,31 +245,6 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
             </div>
           )}
       </div>
-       <Dialog open={isLinkDialogOpen} onOpenChange={setIsLinkDialogOpen}>
-        <DialogContent>
-            <DialogHeader>
-                <DialogTitle>Ссылка для клиента</DialogTitle>
-                <DialogDescription>
-                   Поделитесь этой ссылкой с вашим клиентом для отслеживания рассылки "{selectedCampaign?.name}".
-                </DialogDescription>
-            </DialogHeader>
-            <div className="py-4">
-               <div className="flex w-full items-center space-x-2">
-                    <Input
-                        id="clientLink"
-                        value={clientLink}
-                        readOnly
-                    />
-                    <Button type="button" size="icon" onClick={() => handleCopyLink(clientLink)}>
-                        {copied ? <ClipboardCheck className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />}
-                    </Button>
-                </div>
-            </div>
-            <DialogFooter>
-                <DialogClose asChild><Button>Закрыть</Button></DialogClose>
-            </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }
