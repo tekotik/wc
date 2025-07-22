@@ -15,7 +15,6 @@ export async function middleware(request: NextRequest) {
 
   const session = await getSession();
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   if (!session?.user && isProtectedRoute) {
     // User is not logged in and tries to access a protected route
