@@ -27,42 +27,43 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = async (isInitialLoad = false) => {
-    if (!isInitialLoad && isLoading) return; // Не обновлять, если идет начальная загрузка
-
-    try {
-      const response = await fetch(`/api/campaign/${campaignId}`);
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Ошибка при загрузке данных');
-      }
-
-      const result: CampaignDataResponse = await response.json();
-      
-      setData(result);
-      setLastUpdated(new Date());
-
-      if (error) {
-        setError(null);
-      }
-    } catch (e) {
-       const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
-       console.error(errorMessage);
-       if (!data) { // Показать ошибку только если данных еще нет
-         setError(errorMessage);
-       }
-    } finally {
-      if (isInitialLoad) {
-        setIsLoading(false);
-      }
-    }
-  };
-
   // Запускаем начальную загрузку и интервал
   useEffect(() => {
-    fetchData(true); // Начальная загрузка
+    const fetchData = async () => {
+        try {
+          const response = await fetch(`/api/campaign/${campaignId}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Ошибка при загрузке данных');
+          }
 
-    const intervalId = setInterval(() => fetchData(false), 60000); // Обновление каждую минуту
+          const result: CampaignDataResponse = await response.json();
+          setData(result);
+          setLastUpdated(new Date());
+
+          if (error) {
+            setError(null);
+          }
+        } catch (e) {
+           const errorMessage = e instanceof Error ? e.message : 'Не удалось загрузить данные.';
+           console.error(errorMessage);
+           // Показываем ошибку только если данных еще нет.
+           // Если данные уже есть, мы не будем показывать ошибку при фоновом обновлении,
+           // чтобы не мешать пользователю.
+           if (!data) { 
+             setError(errorMessage);
+           }
+        } finally {
+          // Отключаем индикатор загрузки только после первого запроса
+          if (isLoading) {
+            setIsLoading(false);
+          }
+        }
+    };
+    
+    fetchData(); // Начальная загрузка
+
+    const intervalId = setInterval(fetchData, 60000); // Обновление каждую минуту
 
     return () => clearInterval(intervalId); // Очистка при размонтировании компонента
     // eslint-disable-next-line react-hooks/exhaustive-deps
