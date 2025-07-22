@@ -2,9 +2,10 @@
 'use server';
 
 import { z } from 'zod';
-import { createUser, findUserByEmail, verifyPassword, type User } from '@/lib/user-service';
+import { createUser } from '@/lib/user-service';
 import { createSession, deleteSession, getSession } from '@/lib/session';
 import { redirect } from 'next/navigation';
+import type { User } from '@/lib/user-service';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -12,22 +13,28 @@ const signupSchema = z.object({
   password: z.string().min(6, { message: "Пароль должен содержать не менее 6 символов." }),
 });
 
-const loginSchema = z.object({
-  email: z.string().email({ message: "Неверный формат email." }),
-  password: z.string().min(1, { message: "Пароль не может быть пустым." }),
-});
-
-type FormState = {
-    success: boolean;
+export type SignupFormState = {
     message: string;
+    errors?: {
+        name?: string[];
+        email?: string[];
+        password?: string[];
+    };
+    success: boolean;
 }
 
-export async function signupAction(data: z.infer<typeof signupSchema>): Promise<FormState> {
-  const validatedFields = signupSchema.safeParse(data);
+export async function signupAction(
+  prevState: SignupFormState,
+  formData: FormData
+): Promise<SignupFormState> {
+  const validatedFields = signupSchema.safeParse(Object.fromEntries(formData));
 
   if (!validatedFields.success) {
-    const firstError = validatedFields.error.errors[0]?.message || 'Неверные данные.';
-    return { success: false, message: firstError };
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Пожалуйста, исправьте ошибки в форме.",
+    };
   }
 
   try {
@@ -42,48 +49,12 @@ export async function signupAction(data: z.infer<typeof signupSchema>): Promise<
   redirect('/dashboard');
 }
 
-export async function loginAction(data: z.infer<typeof loginSchema>): Promise<FormState> {
-    const validatedFields = loginSchema.safeParse(data);
-
-    if (!validatedFields.success) {
-        const firstError = validatedFields.error.errors[0]?.message || 'Неверные данные.';
-        return { success: false, message: firstError };
-    }
-
-    const { email, password } = validatedFields.data;
-
-    try {
-        const user = await findUserByEmail(email);
-
-        if (!user) {
-            return { success: false, message: 'Пользователь не найден.' };
-        }
-
-        const isPasswordCorrect = await verifyPassword(password, user.passwordHash);
-
-        if (!isPasswordCorrect) {
-            return { success: false, message: 'Неверный пароль.' };
-        }
-        
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { passwordHash: _, ...userWithoutPassword } = user;
-
-        await createSession(userWithoutPassword);
-
-    } catch (error) {
-        const message = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
-        return { success: false, message };
-    }
-    redirect('/dashboard');
+export async function getSessionUser(): Promise<User | null> {
+    const session = await getSession();
+    return session?.user ?? null;
 }
-
 
 export async function logout() {
     await deleteSession();
     redirect('/login');
-}
-
-export async function getSessionUser(): Promise<User | null> {
-    const session = await getSession();
-    return session?.user ?? null;
 }

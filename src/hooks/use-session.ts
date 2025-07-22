@@ -19,7 +19,7 @@ export function useSession() {
                 const sessionUser = await getSessionUser();
                 setUser(sessionUser);
             } catch (e) {
-                console.error("Failed to fetch session", e);
+                // This can happen if the server action fails, good to log but not block UI
                 setUser(null);
             } finally {
                 // Only set loading to false after the first fetch
@@ -31,7 +31,7 @@ export function useSession() {
 
         fetchSession();
     // We only want to re-run this when the pathname changes to reflect login/logout actions.
-    }, [pathname]);
+    }, [pathname, isLoading]);
 
     return { user, isLoading };
 }
