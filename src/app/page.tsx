@@ -187,9 +187,14 @@ export default function LandingPage() {
                 <Link href="#pricing" className="text-gray-300 hover:text-white transition">Тарифы</Link>
                 <Link href="/dashboard" className="text-gray-300 hover:text-white transition">Документация</Link>
             </div>
-            <Link href="/dashboard" className="hidden md:block btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
-                Войти
-            </Link>
+            <div className="hidden md:flex items-center gap-4">
+                <Link href="/login" className="text-white font-semibold py-2 px-5 rounded-lg hover:bg-gray-700 transition-colors">
+                    Войти
+                </Link>
+                <Link href="/login" className="btn-gradient text-white font-semibold py-2 px-5 rounded-lg">
+                    Регистрация
+                </Link>
+            </div>
             <div className="md:hidden">
                 <button id="mobile-menu-button" className="text-white focus:outline-none">
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -207,8 +212,8 @@ export default function LandingPage() {
         <Link href="#features" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Возможности</Link>
         <Link href="#pricing" className="text-3xl font-bold text-white mb-8 hover:text-green-400 transition-colors duration-300 menu-link">Тарифы</Link>
         <Link href="/dashboard" className="text-3xl font-bold text-white mb-12 hover:text-green-400 transition-colors duration-300 menu-link">Документация</Link>
-        <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg menu-link">
-            Войти
+        <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg menu-link">
+            Начать работу
         </Link>
     </div>
 
@@ -222,7 +227,7 @@ export default function LandingPage() {
                     L-Sender — это сервис для запуска эффективных и простых WhatsApp-рассылок без лишней сложности и технических препятствий. Всё, что нужно — загрузить базу, отправить текст и выбрать время. Мы берём на себя остальное.
                 </p>
                 <div className="flex justify-center items-center space-x-4">
-                     <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                     <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                         Начать работу
                     </Link>
                     <Link href="#pricing" className="bg-gray-700 text-white font-semibold py-3 px-8 rounded-lg text-lg hover:bg-gray-600 transition">
@@ -467,7 +472,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto mb-10">
                     Присоединяйтесь к сотням компаний, которые уже используют Elsender для роста своего бизнеса.
                 </p>
-                 <Link href="/dashboard" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
+                 <Link href="/login" className="btn-gradient text-white font-bold py-3 px-8 rounded-lg text-lg">
                     Начать работу
                 </Link>
             </div>
