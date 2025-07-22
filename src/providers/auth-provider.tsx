@@ -2,7 +2,7 @@
 "use client";
 
 import { createContext, useContext } from 'react';
-import type { User } from '@/lib/user-service'; // Changed import
+import type { User } from '@/lib/user-service';
 import { Loader2 } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
 
@@ -16,10 +16,8 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
-const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress'];
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading, error } = useSession();
+  const { user, isLoading } = useSession();
   
   if (isLoading) {
      return (

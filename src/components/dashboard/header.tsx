@@ -37,13 +37,14 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = '/login'; // Force a full page reload to clear state
+    // A full page reload is often better after logout to ensure all state is cleared.
+    window.location.href = '/login'; 
   };
 
   const getInitials = (name?: string | null) => {
     if (!name) return <User className="h-5 w-5 text-foreground" />;
     const names = name.split(' ');
-    if (names.length > 1) {
+    if (names.length > 1 && names[0] && names[1]) {
       return `${names[0][0]}${names[1][0]}`.toUpperCase();
     }
     return name.substring(0, 2).toUpperCase();

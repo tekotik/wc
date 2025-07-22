@@ -1,2 +1,8 @@
-
-[]
+[
+  {
+    "id": "user_1753196425646_jwgly21",
+    "name": "terikotij@gmail.com",
+    "email": "terikotij@gmail.com",
+    "passwordHash": "$2a$10$nqCSq/7Jn9dXZCz8ukwWFe1NiYmFV.hFzp6UFv06vAdNgoS.4NBri"
+  }
+]
