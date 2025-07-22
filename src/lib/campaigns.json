@@ -1,5 +1,19 @@
 [
   {
+    "id": "campaign_1753168365083",
+    "name": "ука",
+    "status": "Активна",
+    "text": "Рассылка на 55 сообщений. База: https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv'",
+    "scheduledAt": "2025-07-21T21:06:00.000Z"
+  },
+  {
+    "id": "campaign_1753168326369",
+    "name": "всвс",
+    "status": "Активна",
+    "text": "Рассылка на 5566 сообщений. База: https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv'",
+    "scheduledAt": "2025-07-21T21:06:00.000Z"
+  },
+  {
     "id": "campaign_1753168216245",
     "name": "DON",
     "status": "Активна",
