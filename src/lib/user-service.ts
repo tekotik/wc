@@ -1,10 +1,9 @@
 
 'use server';
 
-import bcrypt from 'bcryptjs';
-import { sql } from './db';
+// FAKE USER SERVICE FOR DEMO PURPOSES
+// In a real application, you would replace this with a database call.
 
-// Define the user type, excluding the password for security
 export interface User {
     id: string;
     name: string;
@@ -12,57 +11,57 @@ export interface User {
     balance: number;
 }
 
-// Internal type that includes the hashed password
-interface UserWithPassword extends User {
-    passwordHash: string;
-}
+// This is a mock user. In a real app, you'd fetch this from a session/database.
+const MOCK_USER: User = {
+    id: 'user_12345',
+    name: 'Роман Авдеев',
+    email: 'roman@example.com',
+    balance: 15300,
+};
 
-export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
-    try {
-        const result = await sql<UserWithPassword[]>`
-            SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE email = ${email.toLowerCase()}
-        `;
-        return result[0];
-    } catch (error) {
-        console.error('Database error while finding user by email:', error);
-        throw new Error('Could not find user.');
+
+export async function findUserByEmail(email: string): Promise<User | undefined> {
+    // In a real app, you would query your database:
+    // e.g., `return await db.users.findUnique({ where: { email } });`
+    if (email.toLowerCase() === MOCK_USER.email) {
+        return MOCK_USER;
     }
+    return undefined;
 }
 
-export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-   try {
-        const result = await sql<UserWithPassword[]>`
-            SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE id = ${id}
-        `;
-        return result[0];
-    } catch (error) {
-        console.error('Database error while finding user by id:', error);
-        throw new Error('Could not find user.');
-    }
+export async function findUserById(id: string): Promise<User | undefined> {
+   if (id === MOCK_USER.id) {
+       return MOCK_USER;
+   }
+   return undefined;
 }
 
 
-export async function createUser(userData: Pick<User, 'name' | 'email'> & {password: string}): Promise<Omit<User, 'id'> & { id?: number | string }> {
-    const existingUser = await findUserByEmail(userData.email);
-    if (existingUser) {
+export async function createUser(userData: Pick<User, 'name' | 'email'> & {password: string}): Promise<User> {
+    // This is a mock implementation. It doesn't actually save the user.
+    // It just returns a user object as if it were created.
+    console.log("Mock createUser called with:", userData.email);
+    if (userData.email.toLowerCase() === MOCK_USER.email) {
         throw new Error('Пользователь с таким email уже существует.');
     }
-
-    const passwordHash = await bcrypt.hash(userData.password, 10);
     
-    try {
-         const result = await sql<(Omit<User, 'id'> & { id?: number | string })[]>`
-            INSERT INTO users (name, email, password_hash, balance)
-            VALUES (${userData.name}, ${userData.email.toLowerCase()}, ${passwordHash}, 0)
-            RETURNING id, name, email, balance
-        `;
-        return result[0];
-    } catch (error) {
-        console.error('Database error during user creation:', error);
-        throw new Error('Could not create user.');
-    }
+    const newUser: User = {
+        id: `user_${Date.now()}`,
+        name: userData.name,
+        email: userData.email,
+        balance: 0, // New users start with 0 balance
+    };
+    
+    // In a real app, you would save `newUser` to the database here.
+    
+    return newUser;
 }
 
+// Mock password verification
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    // In a real app with bcrypt, you'd do:
+    // return await bcrypt.compare(password, hash);
+    // For this mock, we'll just accept any password if the email is correct.
+    // This is NOT secure and is for demo purposes ONLY.
+    return true; 
 }

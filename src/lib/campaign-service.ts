@@ -2,69 +2,78 @@
 'use server';
 
 import type { Campaign } from './mock-data';
-import { sql } from './db';
+import allCampaignsData from './campaigns.json';
+import fs from 'fs/promises';
+import path from 'path';
 
-export async function getCampaigns(): Promise<Campaign[]> {
+// Path to the JSON file
+const campaignsFilePath = path.join(process.cwd(), 'src/lib/campaigns.json');
+
+// Helper function to read campaigns from the file
+async function readCampaigns(): Promise<Campaign[]> {
     try {
-        const campaigns = await sql<Campaign[]>`SELECT * FROM campaigns ORDER BY created_at DESC`;
-        return campaigns;
+        const fileContent = await fs.readFile(campaignsFilePath, 'utf8');
+        return JSON.parse(fileContent) as Campaign[];
     } catch (error) {
-        console.error("Failed to fetch campaigns:", error);
-        return [];
+        console.error("Failed to read campaigns file:", error);
+        // If the file doesn't exist or is empty, start with the initial data
+        return allCampaignsData as Campaign[];
     }
 }
 
-export async function addCampaign(newCampaign: Omit<Campaign, 'id' | 'createdAt'>): Promise<Campaign> {
+// Helper function to write campaigns to the file
+async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
     try {
-        const [campaign] = await sql<Campaign[]>`
-            INSERT INTO campaigns (name, status, text, rejection_reason, base_file, stats, scheduled_at)
-            VALUES (${newCampaign.name}, ${newCampaign.status}, ${newCampaign.text}, ${newCampaign.rejectionReason || null}, ${newCampaign.baseFile ? JSON.stringify(newCampaign.baseFile) : null}, ${newCampaign.stats ? JSON.stringify(newCampaign.stats) : null}, ${newCampaign.scheduledAt || null})
-            RETURNING *
-        `;
-        return campaign;
+        await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf8');
     } catch (error) {
-        console.error("Failed to add campaign:", error);
-        throw new Error("Could not add campaign.");
+        console.error("Failed to write campaigns file:", error);
+        throw new Error("Could not save campaigns.");
     }
+}
+
+
+export async function getCampaigns(): Promise<Campaign[]> {
+    const campaigns = await readCampaigns();
+    return campaigns.sort((a, b) => new Date(b.id.split('_')[1]).getTime() - new Date(a.id.split('_')[1]).getTime());
+}
+
+export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {
+    const campaigns = await readCampaigns();
+    // Check for duplicate ID
+    if (campaigns.some(c => c.id === newCampaign.id)) {
+        // Handle error or generate a new ID
+        throw new Error("Campaign with this ID already exists.");
+    }
+    const updatedCampaigns = [...campaigns, newCampaign];
+    await writeCampaigns(updatedCampaigns);
+    return newCampaign;
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
-    try {
-        const [campaign] = await sql<Campaign[]>`SELECT * FROM campaigns WHERE id = ${id}`;
-        return campaign || null;
-    } catch (error) {
-        console.error("Failed to fetch campaign by id:", error);
-        return null;
-    }
+    const campaigns = await readCampaigns();
+    return campaigns.find(campaign => campaign.id === id) || null;
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
-    try {
-        await sql`
-            UPDATE campaigns
-            SET
-                name = ${updatedCampaign.name},
-                status = ${updatedCampaign.status},
-                text = ${updatedCampaign.text},
-                rejection_reason = ${updatedCampaign.rejectionReason || null},
-                base_file = ${updatedCampaign.baseFile ? JSON.stringify(updatedCampaign.baseFile) : null},
-                stats = ${updatedCampaign.stats ? JSON.stringify(updatedCampaign.stats) : null},
-                scheduled_at = ${updatedCampaign.scheduledAt || null}
-            WHERE id = ${updatedCampaign.id}
-        `;
-    } catch (error) {
-        console.error("Failed to update campaign:", error);
-        throw new Error("Could not update campaign.");
+    let campaigns = await readCampaigns();
+    const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
+
+    if (campaignIndex === -1) {
+        throw new Error("Campaign not found.");
     }
+    
+    campaigns[campaignIndex] = updatedCampaign;
+    await writeCampaigns(campaigns);
 }
 
 export async function deleteCampaign(campaignId: string): Promise<void> {
-     try {
-        await sql`
-            DELETE FROM campaigns WHERE id = ${campaignId}
-        `;
-    } catch (error) {
-        console.error("Failed to delete campaign:", error);
-        throw new Error("Could not delete campaign.");
+    let campaigns = await readCampaigns();
+    const updatedCampaigns = campaigns.filter(c => c.id !== campaignId);
+
+    if (campaigns.length === updatedCampaigns.length) {
+        // No campaign was deleted, maybe it didn't exist
+        console.warn(`Attempted to delete non-existent campaign with ID: ${campaignId}`);
     }
+
+    await writeCampaigns(updatedCampaigns);
 }

@@ -27,7 +27,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Sync balance when user data changes
   useEffect(() => {
     if (user) {
-      setBalance(user.balance);
+      // In a real app, the user object from the session would have the balance.
+      // For the mock, we can set a default or use the one from the user object.
+      setBalance(user.balance || 15300);
     }
   }, [user]);
   
