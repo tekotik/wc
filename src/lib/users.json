@@ -10,5 +10,17 @@
     "name": "teri",
     "email": "terij@gmail.com",
     "passwordHash": "$2a$10$mJNVyvnfxa/pCTxtXq0KDeBoKT0wYRME029j5co2CqN3QlGl2OVH."
+  },
+  {
+    "id": "user_1753196947391_f0gr4le",
+    "name": "enot",
+    "email": "enot@mail.com",
+    "passwordHash": "$2a$10$Iuld4y8g3Ml7DoianohqqOv0aHjGyNnnkZqfys8gAG5AL0YsXBBUi"
+  },
+  {
+    "id": "user_1753197328601_9kdox6w",
+    "name": "skot@gmail.com",
+    "email": "skot@gmail.com",
+    "passwordHash": "$2a$10$TVDuUhLA81LIXr8nBzY/6u/ZBQu1QpkMhBcv5Ra5WgO9gTw9/byoa"
   }
 ]
