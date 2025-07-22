@@ -26,7 +26,8 @@ export async function signupAction(data: z.infer<typeof signupSchema>): Promise<
   const validatedFields = signupSchema.safeParse(data);
 
   if (!validatedFields.success) {
-    return { success: false, message: 'Неверные данные.' };
+    const firstError = validatedFields.error.errors[0]?.message || 'Неверные данные.';
+    return { success: false, message: firstError };
   }
 
   try {
@@ -45,7 +46,8 @@ export async function loginAction(data: z.infer<typeof loginSchema>): Promise<Fo
     const validatedFields = loginSchema.safeParse(data);
 
     if (!validatedFields.success) {
-        return { success: false, message: 'Неверные данные.' };
+        const firstError = validatedFields.error.errors[0]?.message || 'Неверные данные.';
+        return { success: false, message: firstError };
     }
 
     const { email, password } = validatedFields.data;
