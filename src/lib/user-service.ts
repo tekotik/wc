@@ -4,6 +4,9 @@
 import bcrypt from 'bcryptjs';
 import { db } from './firebase';
 import { collection, query, where, getDocs, addDoc, limit, doc, getDoc } from 'firebase/firestore';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 // Define the user type, excluding the password for security
 export interface User {
