@@ -1,8 +1,6 @@
 
 'use server';
 
-import fs from 'fs/promises';
-import path from 'path';
 import bcrypt from 'bcryptjs';
 
 // Define the user type, excluding the password for security
@@ -17,78 +15,32 @@ interface UserWithPassword extends User {
     passwordHash: string;
 }
 
-const usersFilePath = path.join(process.cwd(), 'src', 'lib', 'users.json');
+// Hardcoded admin user. In a real application, this would come from a database.
+const adminUser: UserWithPassword = {
+    id: 'admin_user',
+    name: 'Admin',
+    email: 'admin@example.com',
+    // Hash for "password". Generate with: await bcrypt.hash('password', 10)
+    passwordHash: '$2a$10$f.74s6A.G03GOv0iC72M5.ElHnCjL02r5aDQsN9VzSSTfVzscuO.C'
+};
 
-// In-memory store for users to support read-only filesystems.
-let inMemoryUsers: UserWithPassword[] | null = null;
+const inMemoryUsers: UserWithPassword[] = [adminUser];
 
-async function readUsersFromFile(): Promise<UserWithPassword[]> {
-  try {
-    const data = await fs.readFile(usersFilePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    // If the file doesn't exist, create it with an empty array
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      await writeUsersToFile([]);
-      return [];
-    }
-    console.error('Error reading users file:', error);
-    return [];
-  }
-}
-
-async function writeUsersToFile(users: UserWithPassword[]): Promise<void> {
-    try {
-        await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), 'utf-8');
-    } catch (error) {
-        console.error('Error writing to users file:', error);
-    }
-}
-
-async function getUsers(): Promise<UserWithPassword[]> {
-    if (inMemoryUsers === null) {
-        inMemoryUsers = await readUsersFromFile();
-    }
-    return inMemoryUsers;
-}
 
 export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
-    const users = await getUsers();
-    return users.find(user => user.email.toLowerCase() === email.toLowerCase());
+    return inMemoryUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    const users = await getUsers();
-    return users.find(user => user.id === id);
+    return inMemoryUsers.find(user => user.id === id);
 }
 
+// Signup functionality is disabled in this simplified version.
+// You could re-enable this if you connect to a persistent database.
 export async function createUser(userData: Pick<User, 'name' | 'email'> & {password: string}): Promise<User> {
-    const users = await getUsers();
-    const existingUser = await findUserByEmail(userData.email);
-
-    if (existingUser) {
-        throw new Error('Пользователь с таким email уже существует.');
-    }
-
-    const passwordHash = await bcrypt.hash(userData.password, 10);
-    
-    const newUser: UserWithPassword = {
-        id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-        name: userData.name,
-        email: userData.email,
-        passwordHash: passwordHash
-    };
-
-    const newUsers = [...users, newUser];
-    await writeUsersToFile(newUsers);
-    inMemoryUsers = newUsers;
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { passwordHash: _, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    throw new Error('User creation is disabled.');
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
 }
-
