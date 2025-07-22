@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Ban, Link as LinkIcon, Calendar, List, Clock } from "lucide-react";
+import { Play, Pause, Ban, Link as LinkIcon, Calendar, List, Clock, History } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Campaign, CampaignStatus } from "@/lib/mock-data";
 import { Separator } from "@/components/ui/separator";
