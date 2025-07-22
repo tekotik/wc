@@ -14,91 +14,60 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { User, KeyRound, Loader2 } from "lucide-react";
-import { auth } from "@/lib/firebase";
-import { 
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  onAuthStateChanged
-} from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { login, signup } from './actions';
+import { useSession } from "@/hooks/use-session";
 
 export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
+  const { user, isLoading } = useSession();
+
   const [isLoginView, setIsLoginView] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    // If session is loaded and user exists, redirect to dashboard
+    if (!isLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, isLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    if (!auth) {
-      toast({ variant: 'destructive', title: 'Ошибка', description: 'Сервис аутентификации не доступен.' });
-      setIsSubmitting(false);
-      return;
-    }
     
+    let response;
     if (isLoginView) {
-      // Handle Login
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        toast({ title: 'Вход выполнен успешно!', description: 'Добро пожаловать!' });
-        router.push('/dashboard');
-      } catch (error: any) {
-        toast({ variant: 'destructive', title: 'Ошибка входа', description: 'Неверный email или пароль.' });
-      }
-
+      response = await login({ email, password });
     } else {
-      // Handle Sign Up
       if (password.length < 6) {
         toast({ variant: 'destructive', title: 'Ошибка регистрации', description: 'Пароль должен содержать не менее 6 символов.' });
         setIsSubmitting(false);
         return;
       }
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCredential.user, { displayName: name });
-        toast({ title: 'Регистрация успешна!', description: `Добро пожаловать, ${name}!` });
-        router.push('/dashboard');
-      } catch (error: any) {
-        if (error.code === 'auth/email-already-in-use') {
-          toast({ variant: 'destructive', title: 'Ошибка регистрации', description: 'Этот email уже зарегистрирован.' });
-        } else {
-          toast({ variant: 'destructive', title: 'Ошибка регистрации', description: error.message });
-        }
-      }
+      response = await signup({ name, email, password });
+    }
+
+    if (response.success) {
+      toast({ title: response.message });
+      router.push('/dashboard');
+      // router.refresh() will be called internally by Next.js navigation
+    } else {
+      toast({ variant: 'destructive', title: 'Ошибка', description: response.message });
     }
 
     setIsSubmitting(false);
   }
-
-  // Redirect if user is already logged in
-  useEffect(() => {
-    if (auth) {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          router.push('/dashboard');
-        } else {
-          setIsLoading(false);
-        }
-      });
-      return () => unsubscribe();
-    } else {
-      setIsLoading(false);
-    }
-  }, [router]);
-
-
-  if (isLoading) {
-    return (
+  
+  // Render loading state or nothing if user is already logged in and redirecting
+  if (isLoading || user) {
+     return (
       <div className="flex items-center justify-center min-h-screen">
           <Loader2 className="h-8 w-8 animate-spin" />
       </div>
@@ -173,3 +142,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

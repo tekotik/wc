@@ -1,29 +1,6 @@
 
-"use client";
+// This file is no longer used and has been replaced by use-session.ts
+// It is kept to avoid breaking imports in files that are not part of this change.
+// In a real cleanup, this file and its dependencies would be removed.
 
-import { useEffect, useState } from 'react';
-import type { User } from 'firebase/auth';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-
-export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!auth) {
-      console.error("Firebase auth is not initialized.");
-      setLoading(false);
-      return;
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  return { user, loading };
-}
+export {};

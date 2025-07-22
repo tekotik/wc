@@ -26,22 +26,18 @@ import TopUpBalanceDialog from "./top-up-balance-dialog";
 import React from 'react';
 import Link from "next/link";
 import { useAuthContext } from "@/providers/auth-provider";
-import { useRouter } from "next/navigation";
 import CreateCampaignDialog from "./create-campaign-dialog";
-import { auth } from "@/lib/firebase";
+import { logout } from "@/app/login/actions";
 
 
 export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
   const [balance, setBalance] = React.useState(1000);
   const hasUnreadReplies = (unreadCount ?? 0) > 0;
   const { user } = useAuthContext();
-  const router = useRouter();
 
   const handleLogout = async () => {
-    if (auth) {
-      await auth.signOut();
-      router.push('/login');
-    }
+    await logout();
+    window.location.href = '/login'; // Force a full page reload to clear state
   };
 
   const getInitials = (name?: string | null) => {
@@ -96,7 +92,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  {getInitials(user.displayName)}
+                  {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
               <span className="sr-only">Переключить меню пользователя</span>
@@ -105,7 +101,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                <p className="text-sm font-medium leading-none">{user.name}</p>
                 <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
