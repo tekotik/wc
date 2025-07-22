@@ -5,6 +5,22 @@ This is a NextJS starter in Firebase Studio.
 
 To get started, take a look at src/app/page.tsx.
 
+## Deploying to Vercel
+
+When deploying this project to Vercel, you need to set up the `SESSION_SECRET` environment variable for authentication to work correctly.
+
+### Required Environment Variable
+
+1.  **Find your `SESSION_SECRET`**: Open the `.env` file in the root of your project. You will find a line like `SESSION_SECRET=...`.
+2.  **Copy the secret value**: Copy the long string of characters after the equals sign.
+3.  **Add to Vercel**:
+    *   Go to your project on Vercel.
+    *   Navigate to **Settings > Environment Variables**.
+    *   Create a new variable with the **Name** `SESSION_SECRET` and paste the copied string into the **Value** field.
+    *   Ensure the variable is available for all environments (Production, Preview, Development).
+4.  **Redeploy**: Go to the **Deployments** tab and redeploy your latest deployment to apply the changes.
+
+
 ## GitHub Actions Deployment
 
 This project is configured to automatically deploy a preview version to Firebase Hosting when you create a pull request.
@@ -17,3 +33,4 @@ To enable this, you need to add a secret to your GitHub repository settings:
 2.  **Value:** The JSON content of your Firebase service account key.
 
 You can generate a new service account key from your **Firebase Project Settings > Service accounts**.
+
