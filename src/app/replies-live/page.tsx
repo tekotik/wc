@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
@@ -113,8 +112,7 @@ export default function RepliesLivePage() {
                     <CardDescription>
                        Просмотр ответов из Google Sheets с автоматическим обновлением каждую минуту.
                        {lastUpdated && ` Последнее обновление: ${lastUpdated}`}
-                    </Page>
-                </CardDescription>
+                    </CardDescription>
                 <div className="flex w-full max-w-xl items-center space-x-2 pt-4">
                     <div className="relative flex-grow">
                         <Link2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
