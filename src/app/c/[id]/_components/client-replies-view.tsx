@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useTransition, useCallback } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -28,7 +28,10 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isInitialLoading, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(async (isBackground = false) => {
+  const fetchData = async (isBackground = false) => {
+    if (!isBackground) {
+        // We only want the loading spinner on the initial load, not for background updates.
+    }
     try {
       // Используем прямой fetch к нашему новому API-маршруту
       const response = await fetch(`/api/campaign/${campaignId}`);
@@ -48,14 +51,14 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
          setError(errorMessage);
        }
     }
-  }, [campaignId]); // Зависимости для useCallback
+  };
 
   // Начальная загрузка данных
   useEffect(() => {
     startTransition(() => {
       fetchData(false);
     });
-  }, [fetchData]);
+  }, [campaignId]);
 
   // Настройка интервала для фонового обновления
   useEffect(() => {
@@ -64,7 +67,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
     }, 60000); // 60 секунд
 
     return () => clearInterval(intervalId); // Очистка при размонтировании
-  }, [fetchData]);
+  }, [campaignId]); // Зависимость от campaignId, чтобы таймер перезапустился, если ID изменится.
 
 
   if (isInitialLoading && !data) {
