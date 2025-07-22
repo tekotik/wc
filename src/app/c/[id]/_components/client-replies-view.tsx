@@ -24,34 +24,35 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [isPending, startTransition] = useTransition();
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  const fetchData = useCallback(() => {
-    // No need to wrap in startTransition for background polling
-    getCampaignDataAction(campaignId).then(result => {
-        if (result.success && result.campaign) {
-            setData({ campaign: result.campaign, replies: result.replies || [] });
-            setLastUpdated(new Date()); // Update the time on successful fetch
-            setError(null);
-        } else {
-            // Only set error if it's the first fetch, otherwise keep showing old data
-            if (!data.campaign) {
-                setError(result.error || 'Не удалось загрузить данные.');
+  const fetchData = useCallback((isInitialLoad = false) => {
+    const fetchAction = () => {
+        getCampaignDataAction(campaignId).then(result => {
+            if (result.success && result.campaign) {
+                setData({ campaign: result.campaign, replies: result.replies || [] });
+                setLastUpdated(new Date()); 
+                if (error) setError(null);
+            } else {
+                if (!data.campaign) {
+                    setError(result.error || 'Не удалось загрузить данные.');
+                }
             }
-        }
-    });
-  }, [campaignId, data.campaign]);
+        });
+    };
+    
+    if (isInitialLoad) {
+        startTransition(fetchAction);
+    } else {
+        fetchAction();
+    }
 
-  // Effect for the initial data load with a loading state
-  useEffect(() => {
-    startTransition(() => {
-        fetchData();
-    });
-  }, [fetchData]);
+  }, [campaignId, error, data.campaign]);
 
-  // Effect for polling every minute
   useEffect(() => {
-    const intervalId = setInterval(fetchData, 60000); // 60 seconds
+    fetchData(true);
+    const intervalId = setInterval(() => fetchData(false), 60000); 
     return () => clearInterval(intervalId);
-  }, [fetchData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [campaignId]); // We only want this to run once when the campaignId changes.
 
   if (isPending && !data.campaign) {
     return (
@@ -63,7 +64,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
     );
   }
 
-  if (error) {
+  if (error && !data.campaign) {
      return (
         <div className="flex items-center justify-center min-h-screen p-4">
             <Alert variant="destructive" className="max-w-md">

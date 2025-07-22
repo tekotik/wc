@@ -7,7 +7,7 @@ import type { Campaign, Reply } from '@/lib/mock-data';
 
 export async function getCampaignDataAction(
   campaignId: string
-): Promise<{ success: boolean; campaign?: Campaign; replies?: Reply[]; error?: string; lastUpdated?: Date }> {
+): Promise<{ success: boolean; campaign?: Campaign; replies?: Reply[]; error?: string }> {
   try {
     const campaign = await getCampaignById(campaignId);
 
@@ -16,18 +16,15 @@ export async function getCampaignDataAction(
     }
 
     // The "csvUrl" is stored in the `text` field for campaigns created via the admin form.
+    // Example: "Рассылка на 1500 сообщений. База: https://..."
     const csvUrlMatch = campaign.text.match(/База: (https?:\/\/[^\s]+)/);
     const csvUrl = csvUrlMatch ? csvUrlMatch[1] : null;
-
-    if (!csvUrl) {
-       // Return the campaign but with empty replies if there is no CSV URL associated.
-       return { success: true, campaign, replies: [], lastUpdated: new Date() };
-    }
-
-    // We pass the extracted URL to the service
+    
+    // We pass the extracted URL to the service to fetch replies.
+    // The service itself will handle caching, ensuring we get fresh data.
     const { replies } = await getRepliesFromCsvUrl(csvUrl);
 
-    return { success: true, campaign, replies, lastUpdated: new Date() };
+    return { success: true, campaign, replies };
   } catch (error) {
     console.error(`Error getting campaign data for ${campaignId}:`, error);
     const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка.';

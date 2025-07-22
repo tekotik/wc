@@ -52,7 +52,7 @@ async function fetchAndParseReplies(url: string | null): Promise<Reply[]> {
       }))
       .filter(reply => reply.reply); // Filter out rows with empty replies
 
-    return replies;
+    return replies.reverse(); // Show newest replies first
 
   } catch (error) {
     console.error(`Error fetching or parsing CSV from ${url}:`, error);
