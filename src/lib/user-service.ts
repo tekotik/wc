@@ -3,7 +3,7 @@
 
 import bcrypt from 'bcryptjs';
 import { db } from './firebase';
-import { collection, query, where, getDocs, addDoc, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, limit, doc, getDoc } from 'firebase/firestore';
 
 // Define the user type, excluding the password for security
 export interface User {
@@ -35,25 +35,25 @@ export async function findUserByEmail(email: string): Promise<UserWithPassword |
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
-        balance: userData.balance || 0,
+        balance: userData.balance ?? 0, // Ensure balance always has a value
         passwordHash: userData.passwordHash
     };
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    const q = query(usersCollection, where("__name__", "==", id), limit(1));
-    const querySnapshot = await getDocs(q);
+    const userDocRef = doc(db, "users", id);
+    const userDoc = await getDoc(userDocRef);
 
-    if (querySnapshot.empty) {
+    if (!userDoc.exists()) {
         return undefined;
     }
-    const userDoc = querySnapshot.docs[0];
+    
     const userData = userDoc.data();
     return {
         id: userDoc.id,
         name: userData.name,
         email: userData.email,
-        balance: userData.balance || 0,
+        balance: userData.balance ?? 0, // Ensure balance always has a value
         passwordHash: userData.passwordHash
     };
 }

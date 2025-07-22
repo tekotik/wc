@@ -1,7 +1,7 @@
 
 "use client";
 
-import { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '@/lib/user-service';
 import { Loader2 } from 'lucide-react';
 import { useSession } from '@/hooks/use-session';
@@ -22,14 +22,14 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, isLoading } = useSession();
-  const [balance, setBalance] = useState(user?.balance ?? 0);
+  const [balance, setBalance] = useState(0);
 
   // Sync balance when user data changes
-  useState(() => {
-    if(user?.balance) {
+  useEffect(() => {
+    if (user) {
       setBalance(user.balance);
     }
-  });
+  }, [user]);
   
   if (isLoading) {
      return (
