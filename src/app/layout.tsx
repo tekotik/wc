@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDashboard = !pathname.startsWith('/login') && pathname !== '/';
+  const isDashboard = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && pathname !== '/';
 
   React.useEffect(() => {
     if (isDashboard) {

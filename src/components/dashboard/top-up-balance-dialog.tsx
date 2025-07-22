@@ -21,12 +21,13 @@ import { useAuthContext } from '@/providers/auth-provider';
 
 interface TopUpBalanceDialogProps {
     children: React.ReactNode;
+    balance: number;
+    setBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const quickAmounts = [1000, 3000, 5000];
 
-export default function TopUpBalanceDialog({ children }: TopUpBalanceDialogProps) {
-  const { balance, setBalance } = useAuthContext();
+export default function TopUpBalanceDialog({ children, balance, setBalance }: TopUpBalanceDialogProps) {
   const [amount, setAmount] = useState(1000);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();

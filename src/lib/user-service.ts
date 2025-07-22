@@ -42,7 +42,7 @@ export async function findUserById(id: string): Promise<UserWithPassword | undef
 }
 
 
-export async function createUser(userData: Pick<User, 'name' | 'email'> & {password: string}): Promise<User> {
+export async function createUser(userData: Pick<User, 'name' | 'email'> & {password: string}): Promise<Omit<User, 'id'> & { id?: number | string }> {
     const existingUser = await findUserByEmail(userData.email);
     if (existingUser) {
         throw new Error('Пользователь с таким email уже существует.');
@@ -51,7 +51,7 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
     const passwordHash = await bcrypt.hash(userData.password, 10);
     
     try {
-         const result = await sql<User[]>`
+         const result = await sql<(Omit<User, 'id'> & { id?: number | string })[]>`
             INSERT INTO users (name, email, password_hash, balance)
             VALUES (${userData.name}, ${userData.email.toLowerCase()}, ${passwordHash}, 0)
             RETURNING id, name, email, balance
