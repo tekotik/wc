@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { useEffect, useState, useTransition, useCallback } from 'react';
 import { getCampaignDataAction } from '../actions';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,7 +23,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     startTransition(async () => {
       setError(null);
       const result = await getCampaignDataAction(campaignId);
@@ -33,11 +33,20 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
         setError(result.error || 'Не удалось загрузить данные.');
       }
     });
-  };
+  }, [campaignId]);
 
   useEffect(() => {
-    fetchData();
-  }, [campaignId]);
+    fetchData(); // Initial fetch
+    
+    // Set up polling to fetch data every 15 seconds
+    const intervalId = setInterval(() => {
+      console.log('Polling for new replies...');
+      fetchData();
+    }, 15000); // 15 seconds
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [fetchData]);
 
   if (isPending && !data.campaign) {
     return (

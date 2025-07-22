@@ -1,5 +1,12 @@
 [
   {
+    "id": "campaign_1753171242315",
+    "name": "HTC",
+    "status": "Активна",
+    "text": "Рассылка на 676 сообщений. База: https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv'",
+    "scheduledAt": "2025-07-22T11:03:00.000Z"
+  },
+  {
     "id": "campaign_1753170717178",
     "name": "RRRRR",
     "status": "Активна",
