@@ -16,7 +16,7 @@ async function fetchAndParseReplies(url: string | null): Promise<Reply[]> {
 
   try {
     // Add { cache: 'no-store' } to prevent Next.js from caching the fetch request
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { next: { revalidate: 60 } });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch sheet: ${response.statusText}`);
