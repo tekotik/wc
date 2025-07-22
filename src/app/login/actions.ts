@@ -22,7 +22,7 @@ type FormState = {
     message: string;
 }
 
-export async function signup(data: z.infer<typeof signupSchema>): Promise<FormState> {
+export async function signupAction(data: z.infer<typeof signupSchema>): Promise<FormState> {
   const validatedFields = signupSchema.safeParse(data);
 
   if (!validatedFields.success) {
@@ -32,14 +32,16 @@ export async function signup(data: z.infer<typeof signupSchema>): Promise<FormSt
   try {
     const user = await createUser(validatedFields.data);
     await createSession(user);
-    return { success: true, message: `Добро пожаловать, ${user.name}!` };
+    // Redirect must be called outside of try/catch
   } catch (error) {
     const message = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
     return { success: false, message };
   }
+  
+  redirect('/dashboard');
 }
 
-export async function login(data: z.infer<typeof loginSchema>): Promise<FormState> {
+export async function loginAction(data: z.infer<typeof loginSchema>): Promise<FormState> {
     const validatedFields = loginSchema.safeParse(data);
 
     if (!validatedFields.success) {
@@ -65,12 +67,12 @@ export async function login(data: z.infer<typeof loginSchema>): Promise<FormStat
         const { passwordHash: _, ...userWithoutPassword } = user;
 
         await createSession(userWithoutPassword);
-        return { success: true, message: 'Вход выполнен успешно!' };
 
     } catch (error) {
         const message = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
         return { success: false, message };
     }
+    redirect('/dashboard');
 }
 
 

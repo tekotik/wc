@@ -15,47 +15,48 @@ import { Label } from "@/components/ui/label";
 import { User, KeyRound, Loader2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import React, { useState, useEffect } from 'react';
-import { login, signup } from './actions';
+import React, { useState, useEffect, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { loginAction, signupAction } from './actions';
 import { getSessionUser } from "./actions";
+
+function SubmitButton({ isLogin }: { isLogin: boolean }) {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            {pending ? (isLogin ? 'Вход...' : 'Создание...') : (isLogin ? 'Войти' : 'Создать аккаунт')}
+        </Button>
+    );
+}
 
 function LoginForm() {
   const { toast } = useToast();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const response = await login({ email, password });
-    if (response.success) {
-      toast({ title: response.message });
-      // Full page reload to ensure session is picked up
-      window.location.href = '/dashboard'; 
-    } else {
-      toast({ variant: 'destructive', title: 'Ошибка входа', description: response.message });
-      setIsSubmitting(false);
+  const [state, formAction] = useActionState(async (_prevState: any, formData: FormData) => {
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const result = await loginAction({ email, password });
+    if (!result.success) {
+      toast({ variant: 'destructive', title: 'Ошибка входа', description: result.message });
     }
-  };
+    return result;
+  }, { success: false, message: '' });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={formAction}>
       <div className="grid gap-4">
         <div className="grid gap-2">
            <Label htmlFor="email"><User className="inline-block mr-2 h-4 w-4" />Email</Label>
-           <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+           <Input id="email" name="email" type="email" placeholder="m@example.com" required />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
             <Label htmlFor="password"><KeyRound className="inline-block mr-2 h-4 w-4" />Пароль</Label>
           </div>
-          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input id="password" name="password" type="password" required />
         </div>
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Войти
-        </Button>
+        <SubmitButton isLogin={true} />
       </div>
     </form>
   );
@@ -63,44 +64,34 @@ function LoginForm() {
 
 function SignupForm() {
   const { toast } = useToast();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const response = await signup({ name, email, password });
-    if (response.success) {
-      toast({ title: response.message });
-      // Full page reload to ensure session is picked up and user is logged in
-      window.location.href = '/dashboard'; 
-    } else {
-      toast({ variant: 'destructive', title: 'Ошибка регистрации', description: response.message });
-      setIsSubmitting(false);
+  const [state, formAction] = useActionState(async (_prevState: any, formData: FormData) => {
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const result = await signupAction({ name, email, password });
+     if (!result.success) {
+      toast({ variant: 'destructive', title: 'Ошибка регистрации', description: result.message });
     }
-  };
+    return result;
+  }, { success: false, message: '' });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={formAction}>
       <div className="grid gap-4">
         <div className="grid gap-2">
             <Label htmlFor="name"><UserPlus className="inline-block mr-2 h-4 w-4" />Имя</Label>
-            <Input id="name" placeholder="Ваше имя" required value={name} onChange={(e) => setName(e.target.value)} disabled={isSubmitting} />
+            <Input id="name" name="name" placeholder="Ваше имя" required />
         </div>
         <div className="grid gap-2">
             <Label htmlFor="email"><User className="inline-block mr-2 h-4 w-4" />Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} disabled={isSubmitting} />
+            <Input id="email" name="email" type="email" placeholder="m@example.com" required />
         </div>
         <div className="grid gap-2">
           <Label htmlFor="password"><KeyRound className="inline-block mr-2 h-4 w-4" />Пароль</Label>
-          <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} disabled={isSubmitting} />
+          <Input id="password" name="password" type="password" required />
         </div>
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isSubmitting ? 'Создание...' : 'Создать аккаунт'}
-        </Button>
+        <SubmitButton isLogin={false} />
       </div>
     </form>
   );
