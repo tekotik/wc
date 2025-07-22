@@ -1,33 +1,38 @@
 // @/app/actions.ts
 "use server";
 
-import { generateMessageVariations } from "@/ai/flows/generate-message-variations";
 import { z } from "zod";
+import { addCampaign } from "@/lib/campaign-service";
 
 const inputSchema = z.object({
-  details: z.string().min(10, {
-    message: "Детали рассылки должны содержать не менее 10 символов.",
-  }),
-  numberOfVariations: z.coerce.number().int().min(1).max(5).default(3),
+  csvUrl: z.string().min(1, { message: "Ссылка на CSV обязательна." }),
+  campaignName: z.string().min(3, { message: "Название должно содержать не менее 3 символов." }),
+  messageCount: z.coerce.number().int().positive({ message: "Количество сообщений должно быть положительным числом." }),
 });
 
-export type FormState = {
+export type ClientLinkFormState = {
   message: string | null;
   errors: {
-    details?: string[];
-    numberOfVariations?: string[];
+    csvUrl?: string[];
+    campaignName?: string[];
+    messageCount?: string[];
     server?: string;
   } | null;
-  data: string[] | null;
+  data: {
+    clientLink: string;
+    campaignName: string;
+    scheduledAt: string;
+  } | null;
 };
 
-export async function generateMessagesAction(
-  prevState: FormState,
+export async function generateClientLinkAction(
+  prevState: ClientLinkFormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<ClientLinkFormState> {
   const validatedFields = inputSchema.safeParse({
-    details: formData.get("details"),
-    numberOfVariations: formData.get("numberOfVariations"),
+    csvUrl: formData.get("csvUrl"),
+    campaignName: formData.get("campaignName"),
+    messageCount: formData.get("messageCount"),
   });
 
   if (!validatedFields.success) {
@@ -37,27 +42,41 @@ export async function generateMessagesAction(
       data: null,
     };
   }
+  
+  const { campaignName, csvUrl, messageCount } = validatedFields.data;
 
   try {
-    const result = await generateMessageVariations(validatedFields.data);
-    if (!result.messageVariations || result.messageVariations.length === 0) {
-      return {
-        message: "ИИ не смог сгенерировать сообщения на основе вашего ввода. Пожалуйста, попробуйте еще раз с более конкретными деталями.",
-        errors: { server: "Варианты не сгенерированы." },
-        data: null,
-      }
-    }
+    const campaignId = `campaign_${Date.now()}`;
+    const newCampaign = {
+      id: campaignId,
+      name: campaignName,
+      status: "Активна",
+      text: `Рассылка на ${messageCount} сообщений. База: ${csvUrl}`,
+    };
+    
+    // In a real app, you would save this campaign to a database.
+    // For now, let's just use the mock service.
+    await addCampaign(newCampaign);
+
+    const clientLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/c/${campaignId}`;
+    const scheduledAt = new Date();
+    scheduledAt.setHours(scheduledAt.getHours() + 1);
+
     return {
-      message: "Успех!",
+      message: "Ссылка успешно сгенерирована!",
       errors: null,
-      data: result.messageVariations,
+      data: {
+        clientLink,
+        campaignName,
+        scheduledAt: scheduledAt.toLocaleString('ru-RU', { dateStyle: 'full', timeStyle: 'short' }),
+      },
     };
   } catch (error) {
     console.error(error);
     const errorMessage = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
     return {
       message: "Произошла непредвиденная ошибка.",
-      errors: { server: `Не удалось подключиться к сервису ИИ: ${errorMessage}` },
+      errors: { server: `Не удалось создать ссылку: ${errorMessage}` },
       data: null,
     };
   }

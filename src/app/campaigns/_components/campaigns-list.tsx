@@ -129,7 +129,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
         <div>
           <CardTitle className="font-headline">Все рассылки</CardTitle>
           <CardDescription>
-            Создавайте, управляйте, модерируйте и запускайте ваши рассылки.
+            Просмотр всех рассылок, созданных в системе.
           </CardDescription>
         </div>
       </CardHeader>
@@ -168,7 +168,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
               <div className="text-center py-12 text-muted-foreground">
                   <FileText className="mx-auto h-12 w-12" />
                   <h3 className="mt-2 text-lg font-semibold">Рассылок пока нет</h3>
-                  <p className="mt-1 text-sm">Нажмите "Создать рассылку", чтобы начать.</p>
+                  <p className="mt-1 text-sm">Начните с создания новой рассылки на панели управления.</p>
               </div>
             )}
         </div>

@@ -15,6 +15,7 @@ import {
   Shield,
   MessagesSquare,
   BarChart3,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,17 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
+       <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={isActive("/in-progress")}
+        >
+          <Link href="/in-progress">
+            <History />
+            В работе
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton
           asChild
@@ -45,7 +57,7 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
         >
           <Link href="/campaigns">
             <MessageSquareQuote />
-            Рассылки
+            Все рассылки
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
