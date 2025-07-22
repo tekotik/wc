@@ -36,7 +36,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
             }
         }
     });
-  }, [campaignId, data.campaign]);
+  }, [campaignId]);
 
   // Effect for the initial data load with a loading state
   useEffect(() => {
@@ -113,6 +113,7 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
                         Статус рассылки: <span className="font-medium text-primary">{campaign.status}</span>. 
                         Запланировано на: {scheduledDate}.
                         Всего сообщений: {messageCount}.
+                        Последнее обновление: {new Date().toLocaleTimeString()}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
