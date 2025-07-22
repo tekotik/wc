@@ -3,10 +3,9 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { findUserByEmail, verifyPassword } from '@/lib/user-service';
-import { createSession, deleteSession, getSession } from '@/lib/session';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import type { User } from '@/lib/user-service';
+import { createServerActionClient } from '@/lib/supabase/server';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Неверный формат email." }),
@@ -37,41 +36,23 @@ export async function loginAction(
     }
 
     const { email, password } = validatedFields.data;
+    const supabase = createServerActionClient();
 
-    try {
-        const user = await findUserByEmail(email);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-        if (!user) {
-            return { success: false, message: "Неверный email или пароль." };
-        }
-
-        // In the mock service, verifyPassword is a stub.
-        // In a real app, you'd pass the stored hash.
-        const passwordsMatch = await verifyPassword(password, 'any_hash_since_it_is_mocked');
-
-        if (!passwordsMatch) {
-            return { success: false, message: "Неверный email или пароль." };
-        }
-        
-        await createSession(user);
-
-    } catch (error) {
-        console.error(error);
-        const message = "Произошла внутренняя ошибка. Пожалуйста, попробуйте снова.";
-        return { success: false, message };
+    if (error) {
+        return { success: false, message: "Неверный email или пароль." };
     }
 
-    // Instead of redirecting, return a success state
-    return { success: true, message: "Вход выполнен успешно." };
-}
-
-
-export async function getSessionUser(): Promise<User | null> {
-    const session = await getSession();
-    return session?.user ?? null;
+    revalidatePath('/', 'layout');
+    redirect('/dashboard');
 }
 
 export async function logout() {
-    await deleteSession();
+    const supabase = createServerActionClient();
+    await supabase.auth.signOut();
     redirect('/login');
 }

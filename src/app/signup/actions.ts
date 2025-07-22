@@ -3,8 +3,9 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { createUser } from '@/lib/user-service';
-import { createSession } from '@/lib/session';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { createServerActionClient } from '@/lib/supabase/server';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -35,14 +36,28 @@ export async function signupAction(
       message: "Пожалуйста, исправьте ошибки в форме.",
     };
   }
+  
+  const { name, email, password } = validatedFields.data;
+  const supabase = createServerActionClient();
 
-  try {
-    const user = await createUser(validatedFields.data);
-    await createSession(user);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Произошла неизвестная ошибка.";
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        name,
+        balance: 15300 // Set initial balance
+      },
+    },
+  });
+
+  if (error) {
+    const message = error.code === 'user_already_exists' 
+        ? 'Пользователь с таким email уже существует.'
+        : `Произошла ошибка: ${error.message}`;
     return { success: false, message };
   }
   
-  return { success: true, message: "Аккаунт успешно создан." };
+  revalidatePath('/', 'layout');
+  redirect('/dashboard');
 }

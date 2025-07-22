@@ -36,8 +36,6 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
 
   const handleLogout = async () => {
     await logout();
-    // A full page reload is often better after logout to ensure all state is cleared.
-    window.location.href = '/login'; 
   };
 
   const getInitials = (name?: string | null) => {
@@ -92,7 +90,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  {getInitials(user.name)}
+                  {getInitials(user.user_metadata.name)}
                 </AvatarFallback>
               </Avatar>
               <span className="sr-only">Переключить меню пользователя</span>
@@ -101,7 +99,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.name}</p>
+                <p className="text-sm font-medium leading-none">{user.user_metadata.name}</p>
                 <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
@@ -109,7 +107,11 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
             <DropdownMenuItem><Settings className="mr-2"/>Настройки</DropdownMenuItem>
             <DropdownMenuItem><LifeBuoy className="mr-2"/>Поддержка</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}><LogOut className="mr-2"/>Выйти</DropdownMenuItem>
+            <form action={logout}>
+                <button type="submit" className="w-full">
+                    <DropdownMenuItem><LogOut className="mr-2"/>Выйти</DropdownMenuItem>
+                </button>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
