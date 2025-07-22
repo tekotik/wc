@@ -41,8 +41,8 @@ export default async function DashboardPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
-            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
             <CreateCampaignForm />
+            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
           </div>
         </main>
       </SidebarInset>
