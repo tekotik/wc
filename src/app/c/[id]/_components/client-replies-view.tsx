@@ -38,11 +38,11 @@ export default function ClientRepliesView({ campaignId }: ClientRepliesViewProps
   useEffect(() => {
     fetchData(); // Initial fetch
     
-    // Set up polling to fetch data every 15 seconds
+    // Set up polling to fetch data every 60 seconds
     const intervalId = setInterval(() => {
       console.log('Polling for new replies...');
       fetchData();
-    }, 15000); // 15 seconds
+    }, 60000); // 60 seconds
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
