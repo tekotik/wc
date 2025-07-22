@@ -2,8 +2,7 @@
 'use server';
 
 import bcrypt from 'bcryptjs';
-import { db } from './firebase';
-import { collection, query, where, getDocs, addDoc, limit, doc, getDoc } from 'firebase/firestore';
+import { sql } from './db';
 
 // Define the user type, excluding the password for security
 export interface User {
@@ -18,45 +17,34 @@ interface UserWithPassword extends User {
     passwordHash: string;
 }
 
-// Use the collection name 'bd' as created by the user
-const usersCollection = collection(db, 'bd');
-
 export async function findUserByEmail(email: string): Promise<UserWithPassword | undefined> {
-    const q = query(usersCollection, where("email", "==", email.toLowerCase()), limit(1));
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty) {
-        return undefined;
+    try {
+        const result = await sql`
+            SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE email = ${email.toLowerCase()}
+        `;
+        if (result.count === 0) {
+            return undefined;
+        }
+        return result[0] as UserWithPassword;
+    } catch (error) {
+        console.error('Database error while finding user by email:', error);
+        throw new Error('Could not find user.');
     }
-
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
-
-    return {
-        id: userDoc.id,
-        name: userData.name,
-        email: userData.email,
-        balance: userData.balance ?? 0,
-        passwordHash: userData.passwordHash
-    };
 }
 
 export async function findUserById(id: string): Promise<UserWithPassword | undefined> {
-    const userDocRef = doc(db, "bd", id);
-    const userDoc = await getDoc(userDocRef);
-
-    if (!userDoc.exists()) {
-        return undefined;
+   try {
+        const result = await sql`
+            SELECT id, name, email, balance, password_hash as "passwordHash" FROM users WHERE id = ${id}
+        `;
+        if (result.count === 0) {
+            return undefined;
+        }
+        return result[0] as UserWithPassword;
+    } catch (error) {
+        console.error('Database error while finding user by id:', error);
+        throw new Error('Could not find user.');
     }
-    
-    const userData = userDoc.data();
-    return {
-        id: userDoc.id,
-        name: userData.name,
-        email: userData.email,
-        balance: userData.balance ?? 0,
-        passwordHash: userData.passwordHash
-    };
 }
 
 
@@ -68,19 +56,17 @@ export async function createUser(userData: Pick<User, 'name' | 'email'> & {passw
 
     const passwordHash = await bcrypt.hash(userData.password, 10);
     
-    const newUserDoc = await addDoc(usersCollection, {
-        name: userData.name,
-        email: userData.email.toLowerCase(),
-        passwordHash: passwordHash,
-        balance: 0 
-    });
-
-    return {
-        id: newUserDoc.id,
-        name: userData.name,
-        email: userData.email,
-        balance: 0
-    };
+    try {
+         const result = await sql`
+            INSERT INTO users (name, email, password_hash, balance)
+            VALUES (${userData.name}, ${userData.email.toLowerCase()}, ${passwordHash}, 0)
+            RETURNING id, name, email, balance
+        `;
+        return result[0] as User;
+    } catch (error) {
+        console.error('Database error during user creation:', error);
+        throw new Error('Could not create user.');
+    }
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {

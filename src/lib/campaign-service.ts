@@ -1,79 +1,70 @@
 
 'use server';
 
-import fs from 'fs/promises';
-import path from 'path';
 import type { Campaign } from './mock-data';
-
-// Note: In a real-world application, you would use a proper database.
-// Using a JSON file for simplicity and an in-memory array for Vercel compatibility.
-const campaignsFilePath = path.join(process.cwd(), 'src', 'lib', 'campaigns.json');
-
-// In-memory store for campaigns, primarily for Vercel's read-only filesystem.
-let inMemoryCampaigns: Campaign[] | null = null;
-
-async function readCampaignsFromFile(): Promise<Campaign[]> {
-  try {
-    const data = await fs.readFile(campaignsFilePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
-      // If the file doesn't exist, create it with empty array
-      await writeCampaigns([]);
-      return [];
-    }
-    console.error('Error reading campaigns file:', error);
-    // Fallback to empty array on other errors
-    return [];
-  }
-}
-
-async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
-    try {
-        await fs.writeFile(campaignsFilePath, JSON.stringify(campaigns, null, 2), 'utf-8');
-    } catch (error) {
-        console.error('Error writing to campaigns file:', error);
-        // This might fail on read-only filesystems like Vercel, which is expected.
-    }
-}
-
+import { sql } from './db';
 
 export async function getCampaigns(): Promise<Campaign[]> {
-    // Always read from the file to get the latest state.
-    inMemoryCampaigns = await readCampaignsFromFile();
-    return inMemoryCampaigns;
+    try {
+        const campaigns = await sql<Campaign[]>`SELECT * FROM campaigns ORDER BY created_at DESC`;
+        return campaigns;
+    } catch (error) {
+        console.error("Failed to fetch campaigns:", error);
+        return [];
+    }
 }
 
-export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {
-    const campaigns = await getCampaigns();
-    const newCampaigns = [newCampaign, ...campaigns];
-    await writeCampaigns(newCampaigns);
-    inMemoryCampaigns = newCampaigns; // Update in-memory cache
-    return newCampaign;
+export async function addCampaign(newCampaign: Omit<Campaign, 'id' | 'createdAt'>): Promise<Campaign> {
+    try {
+        const [campaign] = await sql<Campaign[]>`
+            INSERT INTO campaigns (name, status, text, rejection_reason, base_file, stats, scheduled_at)
+            VALUES (${newCampaign.name}, ${newCampaign.status}, ${newCampaign.text}, ${newCampaign.rejectionReason || null}, ${newCampaign.baseFile ? JSON.stringify(newCampaign.baseFile) : null}, ${newCampaign.stats ? JSON.stringify(newCampaign.stats) : null}, ${newCampaign.scheduledAt || null})
+            RETURNING *
+        `;
+        return campaign;
+    } catch (error) {
+        console.error("Failed to add campaign:", error);
+        throw new Error("Could not add campaign.");
+    }
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
-    const campaigns = await getCampaigns();
-    const campaign = campaigns.find(c => c.id === id);
-    return campaign || null;
+    try {
+        const [campaign] = await sql<Campaign[]>`SELECT * FROM campaigns WHERE id = ${id}`;
+        return campaign || null;
+    } catch (error) {
+        console.error("Failed to fetch campaign by id:", error);
+        return null;
+    }
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
-    let campaigns = await getCampaigns();
-    const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
-
-    if (campaignIndex !== -1) {
-        campaigns[campaignIndex] = updatedCampaign;
-    } else {
-        campaigns.unshift(updatedCampaign);
+    try {
+        await sql`
+            UPDATE campaigns
+            SET
+                name = ${updatedCampaign.name},
+                status = ${updatedCampaign.status},
+                text = ${updatedCampaign.text},
+                rejection_reason = ${updatedCampaign.rejectionReason || null},
+                base_file = ${updatedCampaign.baseFile ? JSON.stringify(updatedCampaign.baseFile) : null},
+                stats = ${updatedCampaign.stats ? JSON.stringify(updatedCampaign.stats) : null},
+                scheduled_at = ${updatedCampaign.scheduledAt || null}
+            WHERE id = ${updatedCampaign.id}
+        `;
+    } catch (error) {
+        console.error("Failed to update campaign:", error);
+        throw new Error("Could not update campaign.");
     }
-    await writeCampaigns(campaigns);
-    inMemoryCampaigns = campaigns;
 }
 
 export async function deleteCampaign(campaignId: string): Promise<void> {
-    let campaigns = await getCampaigns();
-    const newCampaigns = campaigns.filter(c => c.id !== campaignId);
-    await writeCampaigns(newCampaigns);
-    inMemoryCampaigns = newCampaigns;
+     try {
+        await sql`
+            DELETE FROM campaigns WHERE id = ${campaignId}
+        `;
+    } catch (error) {
+        console.error("Failed to delete campaign:", error);
+        throw new Error("Could not delete campaign.");
+    }
 }

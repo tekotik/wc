@@ -3,6 +3,7 @@
 
 import type { Reply } from './mock-data';
 import Papa from 'papaparse';
+import { sql } from './db';
 
 // The correct URL to export the Google Sheet as CSV
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv';
@@ -63,9 +64,14 @@ async function fetchAndParseReplies(url: string | null): Promise<Reply[]> {
   }
 }
 
+// NOTE: The functions below still use the Google Sheet as the source of truth for replies.
+// This could be migrated to the database as well if needed.
+// For now, we'll keep it simple and focus on users and campaigns in the DB.
+
 export async function getRepliesFromCsvUrl(url: string | null): Promise<{ replies: Reply[] }> {
     try {
         const replies = await fetchAndParseReplies(url);
+        // Here you could also write the fetched replies to your database
         return { replies };
     } catch (error) {
         // Re-throwing the error to be caught by the action
