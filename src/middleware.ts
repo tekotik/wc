@@ -75,6 +75,7 @@ export async function middleware(request: NextRequest) {
   return supabaseResponse;
 }
 
+
 export const config = {
   matcher: [
     /*
