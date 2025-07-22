@@ -8,10 +8,10 @@ import Papa from 'papaparse';
 // The correct URL to export the Google Sheet as CSV
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1ZWOfOyo2E_aCUri_Pa8M9D0azFGiaA9fuaszyAdpnfI/export?format=csv&gid=0';
 
-async function fetchAndParseReplies(): Promise<Reply[]> {
+async function fetchAndParseReplies(url: string = GOOGLE_SHEET_CSV_URL): Promise<Reply[]> {
   try {
-    const response = await fetch(GOOGLE_SHEET_CSV_URL, {
-      next: { revalidate: 600 }, // Cache for 10 minutes
+    const response = await fetch(url, {
+      next: { revalidate: 0 }, // Disable cache for dynamic URLs
     });
 
     if (!response.ok) {
@@ -34,26 +34,28 @@ async function fetchAndParseReplies(): Promise<Reply[]> {
     const replies: Reply[] = allRows
       .slice(1) // Skip header row
       .map((row, index) => ({
-        // Columns are 0-indexed. C is 2, D is 3.
-        campaignId: 'summer_sale_24', // Default campaign ID as it's not in C or D
-        name: row[2] || `Пользователь ${index + 1}`,
-        reply: row[3] || '',
-        time: new Date().toLocaleTimeString(), // Default time as it's not in C or D
+        // Assuming columns are: campaignId, name, reply, time, unread
+        campaignId: row[0] || 'default_campaign',
+        name: row[1] || `Пользователь ${index + 1}`,
+        reply: row[2] || '',
+        time: row[3] || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         avatar: {
           src: "https://placehold.co/40x40.png",
-          fallback: (row[2] || 'П').charAt(0).toUpperCase(),
+          fallback: (row[1] || 'П').charAt(0).toUpperCase(),
           hint: "person user",
         },
-        // The "unread" messages have 'unread' in the 'unread' column (E, index 4)
-        unread: row[4] === 'unread',
+        unread: row[4]?.toLowerCase() === 'true' || row[4]?.toLowerCase() === 'unread',
       }))
       .filter(reply => reply.reply); // Filter out rows with empty replies
 
     return replies;
 
   } catch (error) {
-    console.error('Error fetching or parsing Google Sheet:', error);
-    return []; // Return empty array on error
+    console.error(`Error fetching or parsing CSV from ${url}:`, error);
+    if (error instanceof Error) {
+        throw new Error(`Не удалось загрузить или обработать CSV: ${error.message}`);
+    }
+    throw new Error('Произошла неизвестная ошибка при обработке CSV.');
   }
 }
 
@@ -76,4 +78,14 @@ export async function markAllRepliesAsRead(): Promise<void> {
     // and makes the app aware of any changes made directly in the sheet.
     // The actual revalidation is now handled in the server action that calls this.
     console.log("Simulating marking all replies as read. Revalidation will occur in the server action.");
+}
+
+export async function getRepliesFromCsvUrl(url: string): Promise<{ replies: Reply[] }> {
+    try {
+        const replies = await fetchAndParseReplies(url);
+        return { replies };
+    } catch (error) {
+        // Re-throwing the error to be caught by the action
+        throw error;
+    }
 }

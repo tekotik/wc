@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import type { Reply } from '@/lib/mock-data';
 import {
   Card,
@@ -12,10 +12,13 @@ import {
 } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { MessageCircleReply, MessagesSquare } from 'lucide-react';
+import { MessageCircleReply, MessagesSquare, RefreshCw } from 'lucide-react';
 import { WhatsAppIcon } from '@/components/icons';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { loadRepliesFromUrlAction } from '../actions';
 
 interface RepliesViewProps {
   initialReplies: Reply[];
@@ -23,14 +26,45 @@ interface RepliesViewProps {
 }
 
 export default function RepliesView({ initialReplies, lastFetched }: RepliesViewProps) {
-  const [replies, setReplies] = React.useState(initialReplies);
-  const [displayTime, setDisplayTime] = React.useState<string | null>(null);
+  const [replies, setReplies] = useState(initialReplies);
+  const [displayTime, setDisplayTime] = useState<string | null>(null);
+  const [csvUrl, setCsvUrl] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
 
   useEffect(() => {
     setReplies(initialReplies);
     // Set time string only on the client to avoid hydration mismatch
     setDisplayTime(new Date(lastFetched).toLocaleTimeString());
   }, [initialReplies, lastFetched]);
+
+  const handleLoadFromUrl = () => {
+    if (!csvUrl) {
+      toast({
+        variant: 'destructive',
+        title: 'URL не указан',
+        description: 'Пожалуйста, вставьте ссылку на CSV файл.',
+      });
+      return;
+    }
+
+    startTransition(async () => {
+      const result = await loadRepliesFromUrlAction(csvUrl);
+      if (result.success && result.replies) {
+        setReplies(result.replies);
+        toast({
+          title: 'Успешно!',
+          description: `Загружено ${result.replies.length} ответов.`,
+        });
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка загрузки',
+          description: result.error || 'Не удалось загрузить данные по ссылке.',
+        });
+      }
+    });
+  };
 
   return (
     <Card>
@@ -46,9 +80,25 @@ export default function RepliesView({ initialReplies, lastFetched }: RepliesView
             </CardDescription>
           </div>
         </div>
+        <div className="flex w-full max-w-md items-center space-x-2 pt-4">
+            <Input
+                type="url"
+                placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv"
+                value={csvUrl}
+                onChange={(e) => setCsvUrl(e.target.value)}
+                disabled={isPending}
+            />
+            <Button type="button" onClick={handleLoadFromUrl} disabled={isPending}>
+                {isPending ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                    'Загрузить'
+                )}
+            </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[calc(100vh-220px)]">
+        <ScrollArea className="h-[calc(100vh-280px)]">
           <div className="space-y-6 pr-4">
             {replies.length > 0 ? (
               replies.map((reply, index) => (
