@@ -3,6 +3,7 @@
 
 import { z } from "zod";
 import { addCampaign } from "@/lib/campaign-service";
+import { revalidatePath } from "next/cache";
 
 const inputSchema = z.object({
   csvUrl: z.string().min(1, { message: "Ссылка на CSV обязательна." }),
@@ -58,9 +59,12 @@ export async function generateClientLinkAction(
       scheduledAt: new Date(scheduledAt).toISOString(), // Store as ISO string
     };
     
-    // In a real app, you would save this campaign to a database.
-    // For now, let's just use the mock service.
     await addCampaign(newCampaign);
+
+    // Revalidate paths to show the new campaign immediately
+    revalidatePath('/dashboard');
+    revalidatePath('/in-progress');
+
 
     const clientLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/c/${campaignId}`;
 

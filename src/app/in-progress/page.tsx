@@ -12,34 +12,22 @@ import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import { getUnreadRepliesCount } from "@/lib/replies-service";
 import InProgressList from "./_components/in-progress-list";
-import type { Campaign } from "@/lib/mock-data";
+import { getCampaigns } from "@/lib/campaign-service";
 
 
-const exampleCampaigns: Campaign[] = [
-    {
-        id: "in_progress_1",
-        name: "Весенняя акция для клиентов",
-        status: "Активна",
-        text: "Рассылка запущена и отправляется клиентам.",
-        scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 hours from now
-    },
-    {
-        id: "in_progress_2",
-        name: "Опрос удовлетворенности",
-        status: "Отклонено", // Using "Отклонено" to represent "Остановлена"
-        text: "Рассылка была остановлена вручную."
-    },
-    {
-        id: "in_progress_3",
-        name: "Информирование о новых функциях",
-        status: "Завершена",
-        text: "Все сообщения были успешно отправлены."
-    }
-]
-
+export const dynamic = 'force-dynamic';
 
 export default async function InProgressPage() {
   const unreadCount = await getUnreadRepliesCount();
+  const allCampaigns = await getCampaigns();
+
+  // Filter campaigns that should be displayed on the "In Progress" page
+  const inProgressCampaigns = allCampaigns.filter(c => 
+    c.status === "Активна" || 
+    c.status === "Отклонено" || // "Отклонено" is used for "Остановлена"
+    c.status === "Завершена"
+  );
+
 
   return (
     <SidebarProvider>
@@ -56,7 +44,7 @@ export default async function InProgressPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full">
-            <InProgressList initialCampaigns={exampleCampaigns} />
+            <InProgressList initialCampaigns={inProgressCampaigns} />
           </div>
         </main>
       </SidebarInset>
