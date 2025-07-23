@@ -51,10 +51,6 @@ export async function updateCampaignAction(campaign: Campaign) {
         await saveCampaign(campaign);
         revalidatePath('/campaigns');
         revalidatePath(`/campaigns/${campaign.id}/edit`);
-        revalidatePath(`/admin/edit/${campaign.id}`);
-        revalidatePath('/admin');
-        revalidatePath('/dashboard');
-        revalidatePath('/in-progress');
         return { success: true, campaign };
     } catch (error) {
         return { success: false, message: 'Не удалось сохранить рассылку.' };
@@ -65,10 +61,6 @@ export async function deleteCampaignAction(campaignId: string) {
     try {
         await removeCampaign(campaignId);
         revalidatePath('/campaigns');
-        revalidatePath('/admin');
-        revalidatePath('/dashboard');
-        revalidatePath('/in-progress');
-        revalidatePath('/');
         return { success: true };
     } catch (error) {
         return { success: false, message: 'Не удалось удалить рассылку.' };

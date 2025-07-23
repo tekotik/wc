@@ -28,7 +28,20 @@ export async function loginAction(
   formData: FormData
 ): Promise<LoginFormState> {
     console.log("[Login Action] Started.");
-    const validatedFields = loginSchema.safeParse(Object.fromEntries(formData));
+    const rawFormData = Object.fromEntries(formData);
+
+    // Special case for admin login, checked BEFORE validation
+    if (rawFormData.email === 'admin@admin.com' && rawFormData.password === 'admin@admin.com') {
+        console.log("[Login Action] Admin login successful. Creating admin session.");
+        const session = await getSession();
+        session.userId = 'admin_user';
+        session.isLoggedIn = true;
+        session.userRole = 'admin';
+        await session.save();
+        redirect('/admin');
+    }
+
+    const validatedFields = loginSchema.safeParse(rawFormData);
 
     if (!validatedFields.success) {
         console.error("[Login Action] Form validation failed:", validatedFields.error.flatten().fieldErrors);
@@ -41,17 +54,6 @@ export async function loginAction(
     
     const { email, password } = validatedFields.data;
     console.log("[Login Action] Attempting login for:", email);
-
-    // Special case for admin login
-    if (email === 'admin@admin.com' && password === 'admin@admin.com') {
-        console.log("[Login Action] Admin login successful. Creating admin session.");
-        const session = await getSession();
-        session.userId = 'admin_user';
-        session.isLoggedIn = true;
-        session.userRole = 'admin';
-        await session.save();
-        redirect('/admin');
-    }
 
     const user = await getUser(email);
 
