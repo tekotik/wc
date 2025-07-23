@@ -29,11 +29,14 @@ export async function loginAction(
 ): Promise<LoginFormState> {
     const rawFormData = Object.fromEntries(formData);
     
+    // Correctly read 'login' and 'password' from the form data.
     const { login, password } = rawFormData as { login: string, password: string };
 
     // 1. Check if it's an admin
+    // We use the 'login' value to check against the admin's email/username field.
     const admin = await getAdminByEmail(login);
     if (admin) {
+        // Direct password comparison for manually added admins.
         const passwordsMatch = password === admin.password;
         if (passwordsMatch) {
             const session = await getSession();
@@ -41,7 +44,7 @@ export async function loginAction(
             session.isLoggedIn = true;
             session.userRole = 'admin';
             await session.save();
-            redirect('/admin');
+            redirect('/admin'); // Redirect admin to their specific dashboard
         }
     }
     
@@ -58,7 +61,7 @@ export async function loginAction(
     
     const { login: validatedLogin, password: validatedPassword } = validatedFields.data;
     
-    // Check if the login is for a regular user (assuming email is used as login for users)
+    // Check if the login is for a regular user
     const user = await getUser(validatedLogin);
     if (user) {
         const passwordsMatch = await verifyPassword(validatedPassword, user.password);
@@ -72,7 +75,7 @@ export async function loginAction(
         }
     }
 
-    // 3. If neither, return error
+    // 3. If neither admin nor user matches, return error
     return {
         success: false,
         message: "Неверный логин или пароль.",
