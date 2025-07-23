@@ -20,8 +20,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Paperclip } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { createCampaignAction } from "@/app/campaigns/actions";
-import type { Campaign } from "@/lib/mock-data";
+import { createCampaignRequestAction } from "@/app/campaigns/actions";
 
 
 export default function CreateCampaignDialog({ children }: { children: React.ReactNode }) {
@@ -81,21 +80,23 @@ export default function CreateCampaignDialog({ children }: { children: React.Rea
         baseFile: campaignBaseFile,
     };
     
-    const result = await createCampaignAction(newCampaignData);
+    // This now creates a request, not a campaign
+    const result = await createCampaignRequestAction(newCampaignData);
 
     if (result.success) {
         toast({
             title: "Успех!",
-            description: `Рассылка "${campaignName}" отправлена на модерацию.`
+            description: result.message
         });
         resetForm();
         setIsOpen(false);
-        router.push('/campaigns'); // Redirect to see all campaigns
+        // Maybe redirect to a page where the user can see their requests
+        router.push('/campaigns'); 
     } else {
          toast({
             variant: "destructive",
             title: "Ошибка",
-            description: result.message || "Не удалось создать рассылку."
+            description: result.message || "Не удалось создать заявку."
         });
     }
     setIsSubmitting(false);

@@ -10,17 +10,16 @@ import {
 } from "@/components/ui/sidebar";
 import SidebarNav from "@/components/dashboard/sidebar-nav";
 import DashboardHeader from "@/components/dashboard/header";
-import { getCampaigns } from "@/lib/campaign-service";
 import ModerationList from "./_components/moderation-list";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
-import { getUnreadRepliesCount } from "@/lib/replies-service";
 import CreateCampaignFormForAdmin from "./_components/create-campaign-form-admin";
+import { getRequests } from "@/lib/request-service";
 
 
 export default async function AdminPage() {
-  const allCampaigns = await getCampaigns();
-  const moderationCampaigns = allCampaigns.filter(c => c.status === "На модерации");
+  const allRequests = await getRequests();
+  const moderationRequests = allRequests.filter(r => r.status === 'pending');
   const unreadCount = 0; // Admin doesn't need unread count for user replies
 
 
@@ -40,7 +39,7 @@ export default async function AdminPage() {
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CreateCampaignFormForAdmin />
-            <ModerationList initialCampaigns={moderationCampaigns} />
+            <ModerationList initialRequests={moderationRequests} />
           </div>
         </main>
       </SidebarInset>

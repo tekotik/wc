@@ -1,14 +1,14 @@
 
 'use server';
 
-import { addCampaign, updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
+import { addRequest } from '@/lib/request-service';
 import type { Campaign } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
 import { getUserById } from '@/lib/user-service';
 
 
-export async function createCampaignAction(newCampaign: Omit<Campaign, 'id' | 'status' | 'submittedAt' | 'userId' | 'userName' | 'userEmail'>) {
+export async function createCampaignRequestAction(newCampaignData: Omit<Campaign, 'id' | 'status' | 'submittedAt' | 'userId' | 'userName' | 'userEmail'>) {
   try {
     const session = await getSession();
     if (!session.isLoggedIn || !session.userId) {
@@ -16,26 +16,35 @@ export async function createCampaignAction(newCampaign: Omit<Campaign, 'id' | 's
     }
     const user = await getUserById(session.userId);
 
-    const campaignToCreate: Campaign = {
-        ...newCampaign,
-        id: `draft_${Date.now()}`,
-        status: "На модерации",
-        submittedAt: new Date().toISOString(),
-        userId: session.userId,
-        userName: user?.name,
-        userEmail: user?.email,
+    // Create a request instead of a campaign directly
+    const newRequest = {
+        user_id: session.userId,
+        // Let's store campaign details in the description for now.
+        // A better approach might be to serialize the campaign data.
+        description: JSON.stringify({
+            name: newCampaignData.name,
+            text: newCampaignData.text,
+            baseFile: newCampaignData.baseFile,
+        }),
     };
+    
+    await addRequest(newRequest);
 
-    const createdCampaign = await addCampaign(campaignToCreate);
-    revalidatePath('/campaigns');
-    revalidatePath('/dashboard');
     revalidatePath('/admin');
-    return { success: true, campaign: createdCampaign };
+    revalidatePath('/campaigns');
+    
+    return { success: true, message: "Заявка на рассылку успешно отправлена на модерацию." };
+
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Не удалось создать рассылку.';
+    const message = error instanceof Error ? error.message : 'Не удалось создать заявку.';
     return { success: false, message };
   }
 }
+
+// The following actions are now mostly for admin use or internal state changes
+// and need to be secured or refactored.
+
+import { updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
 
 export async function updateCampaignAction(campaign: Campaign) {
     try {

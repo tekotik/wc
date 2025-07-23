@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, CheckCircle2, XCircle, ShieldQuestion, Download, Pencil, User } from "lucide-react";
@@ -10,24 +10,45 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import type { Campaign, CampaignStatus } from "@/lib/mock-data";
-import { updateCampaignAction } from "@/app/campaigns/actions";
+import type { Request as RequestType } from "@/lib/request-service";
+import { updateRequestAction } from "@/app/admin/actions"; // We'll create this action
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 interface ModerationListProps {
-    initialCampaigns: Campaign[];
+    initialRequests: RequestType[];
 }
 
-export default function ModerationList({ initialCampaigns }: ModerationListProps) {
-  const [campaigns, setCampaigns] = useState(initialCampaigns);
+export default function ModerationList({ initialRequests }: ModerationListProps) {
+  const [requests, setRequests] = useState(initialRequests);
+  const [selectedRequest, setSelectedRequest] = useState<RequestType | null>(null);
+  const [adminComment, setAdminComment] = useState("");
   const { toast } = useToast();
+  
+  useEffect(() => {
+    setRequests(initialRequests);
+  }, [initialRequests]);
 
-  const handleAction = async (id: string) => {
-    // This will now just navigate to the edit page
-    // The approve/reject logic is handled there
+  const handleAction = async (id: number, status: 'approved' | 'rejected', comment?: string) => {
+    const result = await updateRequestAction({ id, status, admin_comment: comment });
+
+    if (result.success && result.request) {
+        setRequests(requests.filter(r => r.id !== id));
+        toast({
+            title: "Успех!",
+            description: `Заявка ${id} была ${status === 'approved' ? 'одобрена' : 'отклонена'}.`
+        });
+    } else {
+        toast({
+            variant: "destructive",
+            title: "Ошибка",
+            description: result.message || "Не удалось обновить заявку."
+        });
+    }
+    setSelectedRequest(null);
+    setAdminComment("");
   };
 
   const getFormattedDate = (dateString?: string) => {
@@ -40,6 +61,15 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
           minute: '2-digit'
       });
   }
+  
+  const getRequestDetails = (description: string) => {
+      try {
+        const parsed = JSON.parse(description);
+        return { name: parsed.name || 'Без названия', text: parsed.text || 'Нет текста', fileName: parsed.baseFile?.name || 'Файл не прикреплен' };
+      } catch(e) {
+          return { name: 'Ошибка парсинга', text: description, fileName: 'Н/Д' }
+      }
+  }
 
   return (
       <Card>
@@ -47,9 +77,9 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
             <div className="flex items-center gap-3">
                 <ShieldQuestion className="h-8 w-8 text-primary" />
                 <div>
-                    <CardTitle className="font-headline">Рассылки на модерацию</CardTitle>
+                    <CardTitle className="font-headline">Заявки на модерацию</CardTitle>
                     <CardDescription>
-                        Здесь показаны все новые рассылки от клиентов, ожидающие вашей проверки.
+                        Новые заявки от клиентов, ожидающие вашей проверки.
                     </CardDescription>
                 </div>
             </div>
@@ -58,57 +88,86 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Пользователь ID</TableHead>
                 <TableHead>Название</TableHead>
-                <TableHead>Клиент</TableHead>
-                <TableHead>Дата поступления</TableHead>
-                <TableHead>Статус</TableHead>
-                <TableHead className="text-right">Действие</TableHead>
+                <TableHead className="text-right">Действия</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {campaigns.map((campaign) => (
-                <TableRow key={campaign.id}>
-                  <TableCell className="font-medium">{campaign.name}</TableCell>
-                  <TableCell>
-                     <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <span className="flex items-center gap-2">
-                                    <User className="h-4 w-4 text-muted-foreground" />
-                                    {campaign.userName || 'Unknown User'}
-                                </span>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{campaign.userEmail || 'no-email@provided.com'}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                  </TableCell>
-                  <TableCell>{getFormattedDate(campaign.submittedAt)}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="bg-yellow-100 text-yellow-800">{campaign.status}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                     <Button variant="link" asChild className="text-primary hover:text-primary/80">
-                         <Link href={`/admin/edit/${campaign.id}`}>
-                            Проверить
-                         </Link>
+              {requests.map((request) => {
+                const details = getRequestDetails(request.description);
+                return (
+                <TableRow key={request.id}>
+                  <TableCell className="font-medium">{request.id}</TableCell>
+                  <TableCell>{request.user_id}</TableCell>
+                  <TableCell>{details.name}</TableCell>
+                  <TableCell className="text-right space-x-2">
+                     <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
+                        Проверить
                      </Button>
                   </TableCell>
                 </TableRow>
-              ))}
-               {campaigns.length === 0 && (
+              )})}
+               {requests.length === 0 && (
                 <TableRow>
-                    <TableCell colSpan={5} className="text-center text-muted-foreground py-12">
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-12">
                          <ShieldQuestion className="mx-auto h-12 w-12" />
-                         <h3 className="mt-2 text-lg font-semibold">Ожидающих рассылок нет</h3>
-                         <p className="mt-1 text-sm">Все рассылки отмодерированы.</p>
+                         <h3 className="mt-2 text-lg font-semibold">Ожидающих заявок нет</h3>
+                         <p className="mt-1 text-sm">Все заявки отмодерированы.</p>
                     </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </CardContent>
+
+         {selectedRequest && (
+            <Dialog open={!!selectedRequest} onOpenChange={() => { setSelectedRequest(null); setAdminComment(""); }}>
+                <DialogContent className="sm:max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Проверка заявки #{selectedRequest.id}</DialogTitle>
+                         <DialogDescription>
+                            Пользователь ID: {selectedRequest.user_id}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>{getRequestDetails(selectedRequest.description).name}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <Label>Текст рассылки:</Label>
+                                <Textarea readOnly rows={8} value={getRequestDetails(selectedRequest.description).text} className="mt-2" />
+                                <p className="text-sm mt-4">
+                                   <span className="font-semibold">Прикрепленный файл:</span> {getRequestDetails(selectedRequest.description).fileName}
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <div>
+                            <Label htmlFor="admin_comment">Комментарий для отклонения (необязательно)</Label>
+                            <Textarea 
+                                id="admin_comment" 
+                                value={adminComment}
+                                onChange={(e) => setAdminComment(e.target.value)}
+                                placeholder="Укажите причину, если отклоняете заявку..."
+                                className="mt-2"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => handleAction(selectedRequest.id, 'rejected', adminComment)}>
+                            <XCircle className="mr-2 h-4 w-4" />
+                            Отклонить
+                        </Button>
+                        <Button onClick={() => handleAction(selectedRequest.id, 'approved')}>
+                           <CheckCircle2 className="mr-2 h-4 w-4" />
+                           Одобрить
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+         )}
       </Card>
   );
 }
