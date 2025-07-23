@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchSession = useCallback(async () => {
     const publicRoutes = ['/', '/login', '/signup'];
-     if (publicRoutes.includes(pathname) || pathname.startsWith('/c/')) {
+     if (publicRoutes.includes(pathname) || pathname.startsWith('/c/') || pathname.startsWith('/api/')) {
         setLoading(false);
         return;
     }
@@ -54,25 +54,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
         const data = await getSessionData();
-        
-        let finalUser: User | null = null;
-        // This is the critical fix. We forcefully create the admin user object
-        // to ensure its role is correctly identified throughout the app.
-        if (data.isLoggedIn && data.user?.id === 'admin_user') {
-             finalUser = {
-                id: 'admin_user',
-                name: 'Admin',
-                email: 'admin@admin.com',
-                role: 'admin'
-            };
-        } else {
-            finalUser = data.user;
-        }
-
-        setUser(finalUser);
+        setUser(data.user);
         setBalance(data.balance ?? 0);
         setIsLoggedIn(data.isLoggedIn);
-
     } catch (error) {
         console.error("Failed to fetch session", error);
         setUser(null);
@@ -86,7 +70,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchSession();
   }, [fetchSession]);
   
-  if (loading) {
+  const publicRoutes = ['/', '/login', '/signup'];
+  const isPublicPage = publicRoutes.includes(pathname) || pathname.startsWith('/c/') || pathname.startsWith('/api/');
+
+  if (loading && !isPublicPage) {
      return (
         <div className="flex h-screen w-full items-center justify-center bg-background">
             <Loader2 className="h-8 w-8 animate-spin" />

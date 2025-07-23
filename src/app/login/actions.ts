@@ -10,7 +10,7 @@ import { getSession } from '@/lib/session';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Неверный формат email." }),
-  password: z.string().min(6, { message: "Пароль должен содержать не менее 6 символов." }),
+  password: z.string().min(1, { message: "Пароль не может быть пустым." }),
 });
 
 export type LoginFormState = {
