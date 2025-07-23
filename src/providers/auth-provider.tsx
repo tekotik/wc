@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const fetchSession = useCallback(async () => {
-    // No need to fetch session for public/auth pages, middleware handles redirects
     const publicRoutes = ['/', '/login', '/signup'];
      if (publicRoutes.includes(pathname) || pathname.startsWith('/c/')) {
         setLoading(false);
@@ -58,6 +57,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(data.user);
         setBalance(data.balance ?? 0);
         setIsLoggedIn(data.isLoggedIn);
+
+        // Special handling for admin user to ensure role is always set.
+        if (data.user?.id === 'admin_user') {
+            setUser({
+                id: 'admin_user',
+                name: 'Admin',
+                email: 'admin@admin.com',
+                role: 'admin'
+            });
+        }
+
     } catch (error) {
         console.error("Failed to fetch session", error);
         setUser(null);

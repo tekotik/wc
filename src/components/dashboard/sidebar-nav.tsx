@@ -31,12 +31,8 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const isAdmin = user?.role === 'admin';
   
   const isActive = (path: string) => {
-    // Exact match for admin's main page
-    if (path === '/admin') {
-        return pathname === '/admin';
-    }
-    // For other paths, check if the pathname starts with it
-    return pathname.startsWith(path) && path !== '/';
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
   };
   
   const hasUnread = unreadCount > 0;
