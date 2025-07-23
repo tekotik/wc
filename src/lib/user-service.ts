@@ -49,8 +49,16 @@ async function releaseLock() {
 }
 
 export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
+    let retries = 0;
+    const maxRetries = 100; // Wait for max 5 seconds
+    const waitTime = 50;
+
     while (!(await acquireLock())) {
-        await new Promise(resolve => setTimeout(resolve, 50)); // Wait and retry
+        if (retries >= maxRetries) {
+            throw new Error('Could not acquire file lock, operation timed out.');
+        }
+        await new Promise(resolve => setTimeout(resolve, waitTime)); // Wait and retry
+        retries++;
     }
 
     try {
@@ -129,15 +137,20 @@ async function readAdmins(): Promise<Admin[]> {
 
 // Helper function to append a user to the CSV file
 async function appendUser(user: User): Promise<void> {
-    const csvRow = Papa.unparse([user], { header: false });
-    await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
+    try {
+        const csvRow = Papa.unparse([user], { header: false });
+        await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
+    } catch (error) {
+        console.error("Error appending user to file:", error);
+        throw new Error("Не удалось записать пользователя в базу данных.");
+    }
 }
 
 export async function getUser(email: string): Promise<User | undefined> {
     return withFileLock(async () => {
         const users = await readUsers();
-        const user = users.find(user => user.email === email);
-        return user;
+        // Return the full user object including password for verification
+        return users.find(user => user.email === email);
     });
 }
 
@@ -171,6 +184,7 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {
+        // Prevent argon2 from crashing on undefined/null inputs
         if (!password || !hash) return false;
         const result = await argon2.verify(hash, password);
         return result;
@@ -189,7 +203,14 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
             throw new Error('Пользователь с таким email уже существует.');
         }
 
-        const hashedPassword = await argon2.hash(userData.password_raw);
+        let hashedPassword;
+        try {
+            hashedPassword = await argon2.hash(userData.password_raw);
+        } catch (error) {
+            console.error("Error hashing password:", error);
+            throw new Error("Произошла ошибка при регистрации. Пожалуйста, попробуйте снова.");
+        }
+
 
         const newUser: User = {
             id: `user_${Date.now()}`,
