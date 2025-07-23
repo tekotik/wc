@@ -8,44 +8,51 @@ export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
   const { isLoggedIn, userRole } = session;
 
-  const isAuthRoute = ['/login', '/signup'].includes(pathname);
+  const isAuthRoute = pathname === '/login' || pathname === '/signup';
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
+  const isPublicApiRoute = pathname.startsWith('/c/'); // Public link for clients
 
-  // If user is not logged in, redirect to login for any protected route
+  // --- Rule 1: Handle users who are NOT logged in ---
   if (!isLoggedIn) {
-    const isPublicRoute = isAuthRoute || pathname === '/' || pathname.startsWith('/c/');
-    if (!isPublicRoute) {
-      console.log(`[Middleware] Unauthorized access to ${pathname}, redirecting to login.`);
-      return NextResponse.redirect(new URL('/login', request.url));
+    const isPublicRoute = isAuthRoute || pathname === '/' || isPublicApiRoute;
+    if (isPublicRoute) {
+      return NextResponse.next(); // Allow access to public and auth routes
     }
-    return NextResponse.next();
+    // For any other route, redirect to login
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // --- At this point, user is logged in ---
-
-  // If a logged in user tries to access login/signup/landing pages
-  if (isAuthRoute || pathname === '/') {
-    const destination = userRole === 'admin' ? '/admin' : '/dashboard';
-    console.log(`[Middleware] Logged in user on auth route, redirecting to ${destination}.`);
-    return NextResponse.redirect(new URL(destination, request.url));
-  }
+  // --- At this point, the user IS logged in. ---
   
-  // If a non-admin user tries to access admin-only routes
-  if (isAdminRoute && userRole !== 'admin') {
-    console.log(`[Middleware] Non-admin user trying to access ${pathname}, redirecting to dashboard.`);
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-  
-  // If an admin user tries to access a non-admin protected route, redirect them to the admin dashboard.
-  if (userRole === 'admin' && !isAdminRoute) {
-    const nonAdminProtectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/replies'];
-    if (nonAdminProtectedRoutes.some(p => pathname.startsWith(p))) {
-        console.log(`[Middleware] Admin trying to access user page ${pathname}. Redirecting to /admin.`);
+  // --- Rule 2: Handle ADMIN users ---
+  if (userRole === 'admin') {
+    // If admin is on an auth route, redirect to admin home
+    if (isAuthRoute || pathname === '/') {
+      return NextResponse.redirect(new URL('/admin', request.url));
+    }
+    // If admin is on an admin route, allow them
+    if (isAdminRoute) {
+      return NextResponse.next();
+    }
+    // If admin is on ANY OTHER route (e.g., user dashboard), redirect to admin home
+    if (!isPublicApiRoute) { // Allow admins to view client links
         return NextResponse.redirect(new URL('/admin', request.url));
     }
   }
-  
-  // All other cases are allowed (admin on admin routes, user on user routes)
+
+  // --- Rule 3: Handle regular USERS ---
+  if (userRole === 'user') {
+    // If user is on an auth route, redirect to user dashboard
+    if (isAuthRoute || pathname === '/') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    // If user tries to access an admin route, redirect to user dashboard
+    if (isAdminRoute) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  }
+
+  // For any other case, allow the request to proceed.
   return NextResponse.next();
 }
 
