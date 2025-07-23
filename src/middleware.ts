@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
        return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     
-    // If an admin user tries to access the user dashboard, redirect them to admin
+    // If an admin user tries to access the USER dashboard, redirect them to admin dashboard
     if (isDashboardRoute && userRole === 'admin') {
         return NextResponse.redirect(new URL('/admin', request.url));
     }

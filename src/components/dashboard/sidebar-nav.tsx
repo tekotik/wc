@@ -29,33 +29,58 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const pathname = usePathname();
   const { user } = useAuthContext();
   const isAdmin = user?.role === 'admin';
-  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard') && (path !== '/admin' || pathname === '/admin');
+  const isActive = (path: string) => {
+    // Exact match for /admin or /dashboard
+    if (path === '/admin' || path === '/dashboard') {
+        return pathname === path;
+    }
+    // Starts with for other paths
+    return pathname.startsWith(path);
+  };
   const hasUnread = unreadCount > 0;
 
 
   if (isAdmin) {
     return (
       <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-            asChild
-            isActive={isActive("/admin")}
-            >
-            <Link href="/admin">
-                <Shield />
-                Админка
-            </Link>
+        <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive("/admin")}>
+                <Link href="/admin">
+                    <Shield />
+                    Админка
+                </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
         <SidebarMenuItem>
-            <SidebarMenuButton
-            asChild
-            isActive={isActive("/campaigns")}
-            >
-            <Link href="/campaigns">
-                <MessageSquareQuote />
-                Все рассылки
-            </Link>
+            <SidebarMenuButton asChild isActive={isActive("/campaigns")}>
+                <Link href="/campaigns">
+                    <MessageSquareQuote />
+                    Все рассылки
+                </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+         <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive("/in-progress")}>
+                <Link href="/in-progress">
+                    <History />
+                    В работе
+                </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive("/analytics")}>
+                <Link href="/analytics">
+                    <BarChart3 />
+                    Аналитика
+                </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive("/replies")}>
+                <Link href="/replies">
+                    <MessagesSquare />
+                    Ответы
+                </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
