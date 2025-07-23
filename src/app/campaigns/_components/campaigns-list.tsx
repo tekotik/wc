@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Pencil, Rocket, XCircle, Eye, BarChart3, Send } from "lucide-react";
+import { FileText, Pencil, Rocket, XCircle, Eye, BarChart3, Send, Check, Calendar, Sparkles } from "lucide-react";
 import Link from 'next/link';
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -64,8 +64,8 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
           <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button size="sm">
-                    <Rocket className="mr-2 h-4 w-4" />
-                    Запустить
+                    <Check className="mr-2 h-4 w-4" />
+                    Подтвердить
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -77,7 +77,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                 <AlertDialogCancel>Отмена</AlertDialogCancel>
-                <AlertDialogAction onClick={() => handleStatusChange(campaign.id, "Активна")}>Запустить</AlertDialogAction>
+                <AlertDialogAction onClick={() => handleStatusChange(campaign.id, "Активна")}>Подтвердить и запустить</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -122,6 +122,16 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
     }
   };
 
+  const getFormattedScheduledDate = (dateString?: string) => {
+      if (!dateString) return null;
+      return new Date(dateString).toLocaleString('ru-RU', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+      });
+  }
 
   return (
     <Card>
@@ -153,6 +163,18 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
               </CardHeader>
               {campaign.text && <CardContent>
                 <p className="text-sm text-card-foreground line-clamp-2">{campaign.text}</p>
+                 {campaign.status === 'Одобрено' && (
+                  <div className="mt-3 space-y-2">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 bg-secondary rounded-md">
+                          <Calendar className="h-4 w-4 text-blue-500" />
+                          <span><b>Дата и время вашего запуска:</b> {getFormattedScheduledDate(campaign.scheduledAt) || 'Не установлено'}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 bg-secondary rounded-md">
+                           <Sparkles className="h-4 w-4 text-yellow-500" />
+                           <span>Ваш текст будет <b>рандомизирован</b> для улучшения доставляемости.</span>
+                      </div>
+                  </div>
+                )}
                   {campaign.status === 'Отклонено' && campaign.rejectionReason && (
                   <div className="mt-2 flex items-start gap-2 rounded-md border border-destructive/50 bg-red-50 p-3 text-sm text-red-900">
                     <XCircle className="h-5 w-5 flex-shrink-0" />
