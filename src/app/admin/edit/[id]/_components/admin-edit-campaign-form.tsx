@@ -22,6 +22,11 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
     const { toast } = useToast();
     const router = useRouter();
     const [campaign, setCampaign] = useState(initialCampaign);
+    
+    // Extract initial message count from text and store it in separate state
+    const initialMessageCount = initialCampaign.text.match(/Рассылка на (\d+)/)?.[1] || "";
+    const [messageCount, setMessageCount] = useState(initialMessageCount);
+
     const [date, setDate] = useState<Date | undefined>(
         initialCampaign.scheduledAt ? new Date(initialCampaign.scheduledAt) : undefined
     );
@@ -45,8 +50,12 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        // Update the campaign text with the latest message count right before submission
+        const updatedText = campaign.text.replace(/Рассылка на (\d+) сообщений/, `Рассылка на ${messageCount} сообщений`);
+
         const updatedCampaign: Campaign = {
             ...campaign,
+            text: updatedText,
             status: "Одобрено"
         };
         
@@ -73,13 +82,8 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
     };
 
     const handleValidNumbersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const text = campaign.text;
-        const newCount = e.target.value;
-        const updatedText = text.replace(/Рассылка на (\d+) сообщений/, `Рассылка на ${newCount} сообщений`);
-        setCampaign({...campaign, text: updatedText });
+        setMessageCount(e.target.value);
     }
-
-    const currentMessageCount = campaign.text.match(/Рассылка на (\d+)/)?.[1] || "";
 
     return (
         <>
@@ -130,7 +134,7 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                                     id="validNumbers"
                                     name="validNumbers"
                                     type="number"
-                                    value={currentMessageCount}
+                                    value={messageCount}
                                     onChange={handleValidNumbersChange}
                                     placeholder="Например, 3425"
                                     required
