@@ -5,7 +5,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
-import { logDatabaseAction } from './log-service';
 
 interface BaseUser {
     id: string;
@@ -27,9 +26,13 @@ interface Admin extends BaseUser {
 // Path to the CSV file
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
 const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
+
+// --- GLOBAL FILE MUTEX ---
+// This single mutex will control all file operations across different services
+// to prevent race conditions and file access errors.
 const fileMutex = { isLocked: false };
 
-async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
+export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
     while (fileMutex.isLocked) {
         await new Promise(resolve => setTimeout(resolve, 50));
     }
@@ -40,6 +43,7 @@ async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
         fileMutex.isLocked = false;
     }
 }
+
 
 // Helper function to read users from the CSV file
 async function readUsers(): Promise<User[]> {
@@ -63,8 +67,18 @@ async function readAdmins(): Promise<Admin[]> {
     try {
         await fs.access(adminsFilePath);
     } catch (error) {
-        await fs.writeFile(adminsFilePath, 'id,name,email,password,role\n', 'utf8');
-        return [];
+        // Create the file with the header and the default admin
+        const defaultAdmin: Admin = {
+            id: 'admin_user',
+            name: 'Admin',
+            email: 'admin5',
+            password: 'admin5', // Plain text for manual admin
+            role: 'admin'
+        };
+        const csvHeader = 'id,name,email,password,role\n';
+        const adminRow = Papa.unparse([defaultAdmin], { header: false });
+        await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
+        return [defaultAdmin];
     }
 
     const fileContent = await fs.readFile(adminsFilePath, 'utf8');
@@ -72,6 +86,19 @@ async function readAdmins(): Promise<Admin[]> {
         header: true,
         skipEmptyLines: true,
     });
+     // Ensure the default admin exists if the file was somehow empty
+    if (result.data.length === 0) {
+         const defaultAdmin: Admin = {
+            id: 'admin_user',
+            name: 'Admin',
+            email: 'admin5',
+            password: 'admin5',
+            role: 'admin'
+        };
+        const adminRow = Papa.unparse([defaultAdmin], { header: false });
+        await fs.appendFile(adminsFilePath, `${adminRow}\n`);
+        return [defaultAdmin];
+    }
     return result.data;
 }
 
@@ -163,3 +190,4 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
         return admins.find(admin => admin.id === id);
     });
 }
+

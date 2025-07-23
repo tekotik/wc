@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import { getSession } from './session';
+import { withFileLock } from './user-service'; // Import the global lock
 
 export interface Request {
     id: number;
@@ -15,19 +16,6 @@ export interface Request {
 }
 
 const requestsFilePath = path.join(process.cwd(), 'src/lib/requests.csv');
-const fileMutex = { isLocked: false };
-
-async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    while (fileMutex.isLocked) {
-        await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    fileMutex.isLocked = true;
-    try {
-        return await fn();
-    } finally {
-        fileMutex.isLocked = false;
-    }
-}
 
 async function ensureFileExists(): Promise<void> {
     try {

@@ -4,6 +4,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
+import { withFileLock } from './user-service'; // Import the global lock
 
 interface LogEntry {
     timestamp: string;
@@ -12,19 +13,6 @@ interface LogEntry {
 }
 
 const logsFilePath = path.join(process.cwd(), 'src/lib/logs.csv');
-const logFileMutex = { isLocked: false };
-
-async function withLogFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    while (logFileMutex.isLocked) {
-        await new Promise(resolve => setTimeout(resolve, 50));
-    }
-    logFileMutex.isLocked = true;
-    try {
-        return await fn();
-    } finally {
-        logFileMutex.isLocked = false;
-    }
-}
 
 async function ensureLogFileExists(): Promise<void> {
     try {
@@ -35,7 +23,7 @@ async function ensureLogFileExists(): Promise<void> {
 }
 
 export async function logDatabaseAction(action: string, details: string): Promise<void> {
-    return withLogFileLock(async () => {
+    return withFileLock(async () => {
         await ensureLogFileExists();
         
         const newLog: LogEntry = {
@@ -50,7 +38,7 @@ export async function logDatabaseAction(action: string, details: string): Promis
 }
 
 export async function getLogs(): Promise<LogEntry[]> {
-     return withLogFileLock(async () => {
+     return withFileLock(async () => {
         await ensureLogFileExists();
         const fileContent = await fs.readFile(logsFilePath, 'utf8');
         const result = Papa.parse<LogEntry>(fileContent, {

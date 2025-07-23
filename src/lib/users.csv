@@ -12,3 +12,4 @@ user_1753248375831,admin@admin.com,admin@admin.com,"$argon2id$v=19$m=65536,t=3,p
 user_1753249065286,nextik@mail.com,nextik@mail.com,"$argon2id$v=19$m=65536,t=3,p=4$k96eT3thMMwMyNIy40xtGw$mY6GN9jITClosMvpv4a9gyhYmOCll4DqxyC8p/t6KJE",user
 user_1753252177425,Skotik@gmail.com,Skotik@gmail.com,"$argon2id$v=19$m=65536,t=3,p=4$AD3RxuoRPYHCyNZi2usakQ$adwdkmXBAsMtU26i3Ep3erHPuds73ylkBi2LY0qskE0",user
 user_1753253525863,prusik,prusik@mail.ru,"$argon2id$v=19$m=65536,t=3,p=4$ccSxxs3gE/7PGAzQExwzhg$Psr6XHu4Qy9Lv7msBim3cqgPeolN+HHXQCfPNyJioB4",user
+user_1753255236843,tupchik,tupchik@tupchik.ru,"$argon2id$v=19$m=65536,t=3,p=4$Eo+Hi58VfiQgTHbNAJOgoQ$7b531BAfQoJ+znvfhwvM9ag4N8KhaDxa3F6qkDluGX0",user
