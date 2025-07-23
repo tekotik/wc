@@ -49,7 +49,7 @@ export default function ActiveCampaigns({
       <CardHeader>
         <CardTitle className="font-headline">Активные рассылки</CardTitle>
         <CardDescription>
-          Выберите рассылку, чтобы посмотреть ответы.
+          Выберите рассылку для фильтрации ответов или сбросьте выбор для просмотра всех.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-2">
@@ -61,7 +61,7 @@ export default function ActiveCampaigns({
               onClick={() => onSelectCampaign(campaign.id)}
             >
               <div className="flex items-center justify-between w-full">
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-start">
                       <p className="font-semibold">{campaign.name}</p>
                       <p className="text-xs text-green-500">{campaign.status}</p>
                   </div>

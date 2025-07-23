@@ -11,9 +11,10 @@ import Link from "next/link";
 
 interface RecentRepliesProps {
   replies: Reply[];
+  selectedCampaignId: string | null;
 }
 
-export default function RecentReplies({ replies }: RecentRepliesProps) {
+export default function RecentReplies({ replies, selectedCampaignId }: RecentRepliesProps) {
   return (
     <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -40,6 +41,9 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
                   <p className="text-xs text-muted-foreground">{reply.time}</p>
               </div>
               <p className="text-sm text-muted-foreground p-2 bg-secondary rounded-md">{reply.reply}</p>
+               <div className="text-xs text-muted-foreground pt-1">
+                Из рассылки: «{reply.campaignId}»
+              </div>
             </div>
             <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
               <MessageCircleReply className="h-4 w-4" />
@@ -48,7 +52,7 @@ export default function RecentReplies({ replies }: RecentRepliesProps) {
          ))
        ) : (
         <div className="text-center text-muted-foreground py-8">
-            <p>Ответов для этой рассылки пока нет.</p>
+            <p>{selectedCampaignId ? "Ответов для этой рассылки пока нет." : "Новых ответов пока нет."}</p>
         </div>
        )}
       </CardContent>

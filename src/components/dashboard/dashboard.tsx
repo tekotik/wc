@@ -14,17 +14,20 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ initialCampaigns, allReplies, completedCampaigns }: DashboardProps) {
-    const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(initialCampaigns.find(c => c.id === 'summer_sale_24')?.id ?? initialCampaigns[0]?.id ?? null);
+    const [selectedCampaignId, setSelectedCampaignId] = useState<string | null>(null);
     
     const handleSelectCampaign = (id: string) => {
-        setSelectedCampaignId(id);
+        // Toggle selection off if the same campaign is clicked again
+        setSelectedCampaignId(prevId => prevId === id ? null : id);
     };
 
     const filteredReplies = useMemo(() => {
         if (!Array.isArray(allReplies)) return [];
         if (!selectedCampaignId) {
-            return allReplies.filter(r => r.unread).slice(0, 8); 
+            // If no campaign is selected, show the 8 most recent replies from all campaigns.
+            return allReplies.slice(0, 8);
         }
+        // If a campaign is selected, filter replies for that campaign.
         return allReplies.filter(reply => reply.campaignId === selectedCampaignId);
     }, [selectedCampaignId, allReplies]);
 
@@ -51,19 +54,20 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
     const sortedCampaigns = useMemo(() => {
         if (!Array.isArray(initialCampaigns)) return [];
         return [...initialCampaigns].sort((a, b) => {
-            // Priority for 'summer_sale_24'
-            if (a.id === 'summer_sale_24') return -1;
-            if (b.id === 'summer_sale_24') return 1;
-            
-            // Then sort by unread status
+            // Priority for campaigns with unread messages
             const aHasUnread = unreadRepliesByCampaign.has(a.id);
             const bHasUnread = unreadRepliesByCampaign.has(b.id);
             if (aHasUnread && !bHasUnread) return -1;
             if (!aHasUnread && bHasUnread) return 1;
             
+            // Then sort by total replies (more replies higher)
+            const aReplies = totalRepliesByCampaign.get(a.id) || 0;
+            const bReplies = totalRepliesByCampaign.get(b.id) || 0;
+            if (aReplies !== bReplies) return bReplies - aReplies;
+
             return 0; // Keep original order for the rest
         });
-    }, [initialCampaigns, unreadRepliesByCampaign]);
+    }, [initialCampaigns, unreadRepliesByCampaign, totalRepliesByCampaign]);
 
 
     return (
@@ -77,7 +81,7 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
             />
         </div>
         <div className="lg:col-span-4">
-            <RecentReplies replies={filteredReplies} />
+            <RecentReplies replies={filteredReplies} selectedCampaignId={selectedCampaignId} />
         </div>
       </div>
     );
