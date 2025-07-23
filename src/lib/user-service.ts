@@ -43,11 +43,9 @@ async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
 
 // Helper function to read users from the CSV file
 async function readUsers(): Promise<User[]> {
-    await logDatabaseAction('readUsers', 'Начало чтения базы пользователей.');
     try {
         await fs.access(usersFilePath);
     } catch (error) {
-        await logDatabaseAction('readUsers', 'Файл users.csv не найден, создается новый.');
         await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
         return [];
     }
@@ -57,7 +55,6 @@ async function readUsers(): Promise<User[]> {
         header: true,
         skipEmptyLines: true,
     });
-    await logDatabaseAction('readUsers', `Чтение завершено. Найдено ${result.data.length} пользователей.`);
     return result.data;
 }
 
@@ -89,14 +86,8 @@ async function appendUser(user: User): Promise<void> {
 
 export async function getUser(email: string): Promise<User | undefined> {
     return withFileLock(async () => {
-        await logDatabaseAction('getUser', `Поиск пользователя с email: ${email}.`);
         const users = await readUsers();
         const user = users.find(user => user.email === email);
-        if (user) {
-            await logDatabaseAction('getUser', `Пользователь ${email} найден.`);
-        } else {
-            await logDatabaseAction('getUser', `Пользователь ${email} не найден.`);
-        }
         return user;
     });
 }
@@ -110,12 +101,9 @@ export async function getAdminByEmail(email: string): Promise<Admin | undefined>
 
 export async function getUserById(id: string): Promise<Omit<User, 'password'> | Omit<Admin, 'password'> | null> {
     return withFileLock(async () => {
-        await logDatabaseAction('getUserById', `Поиск пользователя с ID: ${id}.`);
-        
         const admins = await readAdmins();
         const admin = admins.find(a => a.id === id);
         if (admin) {
-             await logDatabaseAction('getUserById', `Найден администратор с ID ${id}.`);
              const { password, ...adminWithoutPassword } = admin;
              return adminWithoutPassword;
         }
@@ -123,12 +111,10 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
         const users = await readUsers();
         const user = users.find(user => user.id === id);
         if (user) {
-            await logDatabaseAction('getUserById', `Пользователь с ID ${id} найден.`);
             const { password, ...userWithoutPassword } = user;
             return userWithoutPassword;
         }
         
-        await logDatabaseAction('getUserById', `Пользователь или админ с ID ${id} не найден.`);
         return null;
     });
 }
@@ -137,13 +123,10 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {
         if (!password || !hash) return false;
-        await logDatabaseAction('verifyPassword', 'Проверка хеша пароля.');
         const result = await argon2.verify(hash, password);
-        await logDatabaseAction('verifyPassword', `Результат проверки: ${result ? 'успешно' : 'неуспешно'}.`);
         return result;
     } catch (err) {
         console.error("Error verifying password:", err);
-        await logDatabaseAction('verifyPassword', `Ошибка при проверке пароля: ${err instanceof Error ? err.message : 'Unknown error'}`);
         return false;
     }
 }
