@@ -69,6 +69,6 @@ export async function loginAction(
 export async function logoutAction() {
     const { redirect } = await import('next/navigation');
     const session = await getSession();
-    session.destroy();
+    await session.destroy();
     redirect('/login');
 }
