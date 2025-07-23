@@ -3,16 +3,13 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { getUser, verifyPassword, getAdminByEmail } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
 
 export type LoginFormState = {
     message: string;
-    errors?: {
-        server?: string;
-    };
     success: boolean;
+    redirectUrl?: string;
 }
 
 export async function loginAction(
@@ -30,7 +27,6 @@ export async function loginAction(
     }
 
     try {
-        // 1. Check if it's an admin
         const admin = await getAdminByEmail(login);
         if (admin) {
             const passwordsMatch = (password === admin.password);
@@ -40,12 +36,10 @@ export async function loginAction(
                 session.isLoggedIn = true;
                 session.userRole = 'admin';
                 await session.save();
-                // We redirect from the action itself upon success
-                return redirect('/admin');
+                return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
             }
         }
         
-        // 2. If not admin, check for a regular user
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -55,12 +49,10 @@ export async function loginAction(
                 session.isLoggedIn = true;
                 session.userRole = 'user';
                 await session.save();
-                // Redirect from the action
-                return redirect('/dashboard');
+                return { success: true, message: 'Успешный вход!', redirectUrl: '/dashboard' };
             }
         }
 
-        // 3. If neither matches, return error
         return {
             success: false,
             message: "Неверный логин или пароль.",
@@ -75,6 +67,7 @@ export async function loginAction(
 }
 
 export async function logoutAction() {
+    const { redirect } = await import('next/navigation');
     const session = await getSession();
     session.destroy();
     redirect('/login');

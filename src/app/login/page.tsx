@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const initialState: LoginFormState = {
   message: "",
@@ -34,16 +35,20 @@ function SubmitButton() {
 export default function LoginPage() {
   const [state, formAction] = useActionState(loginAction, initialState);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
-    if (state.message && !state.success) {
+    if (state.success) {
+      // Redirect on success
+      router.push(state.redirectUrl || '/dashboard');
+    } else if (state.message) {
       toast({
         variant: "destructive",
         title: "Ошибка входа",
         description: state.message,
       });
     }
-  }, [state, toast]);
+  }, [state, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -62,12 +67,10 @@ export default function LoginPage() {
               <div className="grid gap-2">
                   <Label htmlFor="login">Логин</Label>
                   <Input id="login" name="login" type="text" placeholder="m@example.com" required/>
-                  {state.errors?.login && <p className="text-sm text-destructive">{state.errors.login[0]}</p>}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Пароль</Label>
                 <Input id="password" name="password" type="password" required/>
-                 {state.errors?.password && <p className="text-sm text-destructive">{state.errors.password[0]}</p>}
               </div>
               <SubmitButton />
             </div>
