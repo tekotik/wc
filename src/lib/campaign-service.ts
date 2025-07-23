@@ -130,10 +130,31 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
 
     if (campaignIndex === -1) {
-        throw new Error("Campaign not found.");
+        // If campaign not found, create a new one. This handles draft creation.
+        // Ensure that new campaigns get the necessary fields.
+        const session = await getSession();
+        if (!session.isLoggedIn || !session.userId) {
+            throw new Error("Authentication required to create a campaign.");
+        }
+        const user = await getUserById(session.userId);
+
+        const newCampaign: Campaign = {
+            id: updatedCampaign.id,
+            name: updatedCampaign.name,
+            text: updatedCampaign.text,
+            baseFile: updatedCampaign.baseFile,
+            status: updatedCampaign.status || 'Черновик',
+            submittedAt: new Date().toISOString(),
+            userId: session.userId,
+            userName: user?.name || 'N/A',
+            userEmail: user?.email || 'N/A',
+        };
+        campaigns.push(newCampaign);
+    } else {
+        // Otherwise, update the existing campaign
+        campaigns[campaignIndex] = updatedCampaign;
     }
     
-    campaigns[campaignIndex] = updatedCampaign;
     await writeCampaigns(campaigns);
   });
 }

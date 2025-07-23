@@ -27,21 +27,36 @@ interface Admin extends BaseUser {
 // Path to the CSV file
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
 const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
+const lockfilePath = path.join(process.cwd(), 'file.lock');
 
 // --- GLOBAL FILE MUTEX ---
-// This single mutex will control all file operations across different services
-// to prevent race conditions and file access errors.
-const fileMutex = { isLocked: false };
+async function acquireLock() {
+    try {
+        // 'wx' flag fails if the path exists. This is an atomic operation.
+        await fs.open(lockfilePath, 'wx');
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+async function releaseLock() {
+    try {
+        await fs.unlink(lockfilePath);
+    } catch (e) {
+        console.error('Failed to release lock:', e);
+    }
+}
 
 export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    while (fileMutex.isLocked) {
-        await new Promise(resolve => setTimeout(resolve, 50));
+    while (!(await acquireLock())) {
+        await new Promise(resolve => setTimeout(resolve, 50)); // Wait and retry
     }
-    fileMutex.isLocked = true;
+
     try {
         return await fn();
     } finally {
-        fileMutex.isLocked = false;
+        await releaseLock();
     }
 }
 
@@ -56,6 +71,10 @@ async function readUsers(): Promise<User[]> {
     }
 
     const fileContent = await fs.readFile(usersFilePath, 'utf8');
+    if (!fileContent.trim()) {
+         await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
+         return [];
+    }
     const result = Papa.parse<User>(fileContent, {
         header: true,
         skipEmptyLines: true,
