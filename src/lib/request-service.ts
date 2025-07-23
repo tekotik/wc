@@ -95,7 +95,6 @@ export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' |
             admin_comment: ''
         };
 
-        // requests.push(requestToAdd); <-- This is redundant with appendFile
         const csvRow = Papa.unparse([requestToAdd], { header: false });
         await fs.appendFile(requestsFilePath, `${csvRow}\n`);
         
