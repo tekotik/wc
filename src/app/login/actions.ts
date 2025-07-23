@@ -29,42 +29,34 @@ export async function loginAction(
 ): Promise<LoginFormState> {
     const rawFormData = Object.fromEntries(formData);
     
-    // Correctly read 'login' and 'password' from the form data.
     const { login, password } = rawFormData as { login: string, password: string };
 
+    if (!login || !password) {
+        return {
+            success: false,
+            message: "Логин и пароль не могут быть пустыми.",
+        }
+    }
+
     // 1. Check if it's an admin
-    // We use the 'login' value to check against the admin's email/username field.
     const admin = await getAdminByEmail(login);
     if (admin) {
         // Direct password comparison for manually added admins.
-        const passwordsMatch = password === admin.password;
+        const passwordsMatch = (password === admin.password);
         if (passwordsMatch) {
             const session = await getSession();
             session.userId = admin.id;
             session.isLoggedIn = true;
             session.userRole = 'admin';
             await session.save();
-            redirect('/admin'); // Redirect admin to their specific dashboard
+            redirect('/admin'); 
         }
     }
     
-    // 2. If not admin, proceed with standard validation and user check
-    const validatedFields = loginSchema.safeParse(rawFormData);
-
-    if (!validatedFields.success) {
-        return {
-            success: false,
-            errors: validatedFields.error.flatten().fieldErrors,
-            message: "Пожалуйста, исправьте ошибки в форме.",
-        };
-    }
-    
-    const { login: validatedLogin, password: validatedPassword } = validatedFields.data;
-    
-    // Check if the login is for a regular user
-    const user = await getUser(validatedLogin);
+    // 2. If not admin, check for a regular user
+    const user = await getUser(login);
     if (user) {
-        const passwordsMatch = await verifyPassword(validatedPassword, user.password);
+        const passwordsMatch = await verifyPassword(password, user.password);
         if (passwordsMatch) {
             const session = await getSession();
             session.userId = user.id;

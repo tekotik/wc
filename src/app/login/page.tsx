@@ -61,7 +61,7 @@ export default function LoginPage() {
             <div className="grid gap-4">
               <div className="grid gap-2">
                   <Label htmlFor="login">Логин</Label>
-                  <Input id="login" name="login" type="text" placeholder="m@example.com или admin5" required/>
+                  <Input id="login" name="login" type="text" placeholder="m@example.com" required/>
                   {state.errors?.login && <p className="text-sm text-destructive">{state.errors.login[0]}</p>}
               </div>
               <div className="grid gap-2">
