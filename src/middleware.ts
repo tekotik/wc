@@ -14,8 +14,11 @@ export async function middleware(request: NextRequest) {
 
   // If user is logged in
   if (isLoggedIn) {
-    // If they are on an auth route, redirect to dashboard
+    // If they are on an auth route, redirect to the appropriate dashboard
     if (isAuthRoute || pathname === '/') {
+      if (userRole === 'admin') {
+         return NextResponse.redirect(new URL('/admin', request.url));
+      }
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     // If a non-admin user tries to access admin routes, redirect them

@@ -1,3 +1,4 @@
+
 export const dynamic = 'force-dynamic';
 
 import React from "react";
@@ -20,13 +21,14 @@ import CreateCampaignFormForAdmin from "./_components/create-campaign-form-admin
 export default async function AdminPage() {
   const allCampaigns = await getCampaigns();
   const moderationCampaigns = allCampaigns.filter(c => c.status === "На модерации");
-  const unreadCount = await getUnreadRepliesCount();
+  // For admin, unread count can be considered 0 as it's a user-centric feature.
+  const unreadCount = 0;
 
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-           <Link href="/dashboard" className="flex items-center gap-2 text-sidebar-foreground">
+           <Link href="/admin" className="flex items-center gap-2 text-sidebar-foreground">
             <ElsenderLogo className="w-7 h-7 text-primary" />
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>
@@ -45,4 +47,3 @@ export default async function AdminPage() {
     </SidebarProvider>
   );
 }
-

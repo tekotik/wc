@@ -32,6 +32,36 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard');
   const hasUnread = unreadCount > 0;
 
+
+  if (isAdmin) {
+    return (
+      <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+            asChild
+            isActive={isActive("/admin")}
+            >
+            <Link href="/admin">
+                <Shield />
+                Админка
+            </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+            <SidebarMenuButton
+            asChild
+            isActive={isActive("/campaigns")}
+            >
+            <Link href="/campaigns">
+                <MessageSquareQuote />
+                Все рассылки
+            </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -53,19 +83,6 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-      {isAdmin && (
-        <SidebarMenuItem>
-            <SidebarMenuButton
-            asChild
-            isActive={isActive("/campaigns")}
-            >
-            <Link href="/campaigns">
-                <MessageSquareQuote />
-                Все рассылки
-            </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-      )}
        <SidebarMenuItem>
         <SidebarMenuButton
           asChild
@@ -77,19 +94,6 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-       {isAdmin && (
-        <SidebarMenuItem>
-            <SidebarMenuButton
-            asChild
-            isActive={isActive("/admin")}
-            >
-            <Link href="/admin">
-                <Shield />
-                Админка
-            </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-       )}
       <SidebarMenuItem>
         <SidebarMenuButton
           asChild
