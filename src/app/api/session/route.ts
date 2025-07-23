@@ -1,6 +1,6 @@
 
 import { getSession } from '@/lib/session';
-import { getUserById } from '@/lib/user-service'; // Changed from getUser
+import { getUserById } from '@/lib/user-service';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -16,7 +16,7 @@ export async function GET() {
   if (user) {
     return NextResponse.json({
       isLoggedIn: true,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: user,
       // Mock balance
       balance: 1500,
     });

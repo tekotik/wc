@@ -72,17 +72,19 @@ export async function getUser(email: string): Promise<User | undefined> {
     });
 }
 
-export async function getUserById(id: string): Promise<User | undefined> {
+export async function getUserById(id: string): Promise<Omit<User, 'password'> | null> {
     return withFileLock(async () => {
         await logDatabaseAction('getUserById', `Поиск пользователя с ID: ${id}.`);
         const users = await readUsers();
         const user = users.find(user => user.id === id);
         if (user) {
             await logDatabaseAction('getUserById', `Пользователь с ID ${id} найден.`);
+            const { password, ...userWithoutPassword } = user;
+            return userWithoutPassword;
         } else {
             await logDatabaseAction('getUserById', `Пользователь с ID ${id} не найден.`);
         }
-        return user;
+        return null;
     });
 }
 
