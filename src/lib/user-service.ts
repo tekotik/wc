@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
+import { logDatabaseAction } from './log-service';
 
 interface BaseUser {
     id: string;
@@ -176,6 +177,7 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
         };
 
         await appendUser(newUser);
+        await logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
         
         const { password, ...userToReturn } = newUser;
         return userToReturn;
@@ -190,4 +192,3 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
         return admins.find(admin => admin.id === id);
     });
 }
-
