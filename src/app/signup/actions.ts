@@ -58,8 +58,11 @@ export async function signupAction(
   session.userRole = newUser.role;
   await session.save();
   
-  // A redirect is more appropriate here than a success message
-  // because the component that shows the toast will handle the redirect.
-  // Let's redirect directly to ensure flow is correct.
-  redirect('/dashboard');
+  // Return a success state instead of redirecting from the action
+  return {
+    success: true,
+    message: "Вы успешно зарегистрированы!",
+    errors: null,
+  }
 }
+
