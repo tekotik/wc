@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckCircle, ArrowLeft, Link as LinkIcon, List, Calendar as CalendarIcon, User, Mail } from "lucide-react";
+import { CheckCircle, ArrowLeft, Link as LinkIcon, List, Calendar as CalendarIcon, User, Mail, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import type { Request as RequestType } from "@/lib/request-service";
@@ -33,7 +33,7 @@ export default function AdminEditCampaignForm({ request, user }: AdminEditCampai
 
     const [campaignName, setCampaignName] = useState(initialDetails.name);
     const [campaignText, setCampaignText] = useState(initialDetails.text);
-    const [baseFileName] = useState(initialDetails.baseFile?.name || 'Файл не прикреплен');
+    const [baseFile] = useState(initialDetails.baseFile);
     const [repliesCsvUrl, setRepliesCsvUrl] = useState('');
     const [validNumbers, setValidNumbers] = useState('');
 
@@ -51,6 +51,24 @@ export default function AdminEditCampaignForm({ request, user }: AdminEditCampai
             }
         }
     }, [date, time]);
+
+    const handleDownload = () => {
+        if (!baseFile || !baseFile.content) {
+            toast({
+                variant: 'destructive',
+                title: 'Ошибка',
+                description: 'Файл для скачивания не найден.',
+            });
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.href = baseFile.content;
+        link.download = baseFile.name || 'database.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -138,11 +156,16 @@ export default function AdminEditCampaignForm({ request, user }: AdminEditCampai
                         </div>
                          <div className="grid w-full gap-2">
                             <Label>Прикрепленный файл с базой</Label>
-                            <Input 
-                                value={baseFileName}
-                                disabled
-                                className="italic"
-                            />
+                            <div className="flex items-center gap-2">
+                                <Input 
+                                    value={baseFile?.name || 'Файл не прикреплен'}
+                                    disabled
+                                    className="italic flex-grow"
+                                />
+                                <Button type="button" variant="outline" size="icon" onClick={handleDownload} disabled={!baseFile}>
+                                    <Download className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </div>
                         <div className="grid w-full gap-2">
                             <Label htmlFor="repliesCsvUrl" className="flex items-center gap-2">
