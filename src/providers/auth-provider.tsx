@@ -55,18 +55,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
         const data = await getSessionData();
         
-        // Ensure that if it's the admin user, the role is correctly and forcefully set.
-        if (data.user?.id === 'admin_user') {
-            setUser({
+        let finalUser: User | null = null;
+        // This is the critical fix. We forcefully create the admin user object
+        // to ensure its role is correctly identified throughout the app.
+        if (data.isLoggedIn && data.user?.id === 'admin_user') {
+             finalUser = {
                 id: 'admin_user',
                 name: 'Admin',
                 email: 'admin@admin.com',
-                role: 'admin' // This is the crucial part
-            });
+                role: 'admin'
+            };
         } else {
-            setUser(data.user);
+            finalUser = data.user;
         }
 
+        setUser(finalUser);
         setBalance(data.balance ?? 0);
         setIsLoggedIn(data.isLoggedIn);
 

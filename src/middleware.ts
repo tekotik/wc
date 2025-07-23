@@ -10,12 +10,18 @@ export async function middleware(request: NextRequest) {
 
   const isAuthRoute = pathname === '/login' || pathname === '/signup';
   const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
-  const isPublicApiRoute = pathname.startsWith('/c/'); // Public link for clients
+  const isPublicApiRoute = pathname.startsWith('/c/') || pathname.startsWith('/api/');
+  const isPublicAsset = pathname.includes('.') || pathname.startsWith('/_next');
+
+  // Allow public assets and API routes to pass through
+  if (isPublicAsset || isPublicApiRoute) {
+      return NextResponse.next();
+  }
 
   // --- Rule 1: Handle users who are NOT logged in ---
   if (!isLoggedIn) {
-    const isPublicRoute = isAuthRoute || pathname === '/' || isPublicApiRoute;
-    if (isPublicRoute) {
+    const isPublicLanding = pathname === '/';
+    if (isAuthRoute || isPublicLanding) {
       return NextResponse.next(); // Allow access to public and auth routes
     }
     // For any other route, redirect to login
@@ -26,7 +32,7 @@ export async function middleware(request: NextRequest) {
   
   // --- Rule 2: Handle ADMIN users ---
   if (userRole === 'admin') {
-    // If admin is on an auth route, redirect to admin home
+    // If admin is on an auth route or landing page, redirect to admin home
     if (isAuthRoute || pathname === '/') {
       return NextResponse.redirect(new URL('/admin', request.url));
     }
@@ -34,10 +40,9 @@ export async function middleware(request: NextRequest) {
     if (isAdminRoute) {
       return NextResponse.next();
     }
-    // If admin is on ANY OTHER route (e.g., user dashboard), redirect to admin home
-    if (!isPublicApiRoute) { // Allow admins to view client links
-        return NextResponse.redirect(new URL('/admin', request.url));
-    }
+    // If admin is on ANY OTHER user-facing route, redirect to admin home
+    // This is the key change to prevent admins from seeing user dashboard pages
+    return NextResponse.redirect(new URL('/admin', request.url));
   }
 
   // --- Rule 3: Handle regular USERS ---
@@ -52,7 +57,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // For any other case, allow the request to proceed.
+  // For any other case (e.g., user is on their dashboard), allow the request to proceed.
   return NextResponse.next();
 }
 
@@ -60,12 +65,12 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - api (API routes) - This is now handled inside the middleware
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * This ensures the middleware runs only on pages and not on static assets or API endpoints.
+     * This ensures the middleware runs on pages.
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
