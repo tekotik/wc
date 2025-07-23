@@ -3,9 +3,9 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createUser } from '@/lib/user-service';
+import { getSession } from '@/lib/session';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -28,11 +28,11 @@ export async function signupAction(
   prevState: SignupFormState,
   formData: FormData
 ): Promise<SignupFormState> {
-  console.log("Signup action started.");
+  console.log("[Signup Action] Started.");
   const validatedFields = signupSchema.safeParse(Object.fromEntries(formData));
 
   if (!validatedFields.success) {
-    console.error("Form validation failed:", validatedFields.error.flatten().fieldErrors);
+    console.error("[Signup Action] Form validation failed:", validatedFields.error.flatten().fieldErrors);
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
@@ -42,13 +42,14 @@ export async function signupAction(
   
   const { name, email, password } = validatedFields.data;
   
+  let newUser;
   try {
-    console.log("Calling createUser for email:", email);
-    await createUser({ name, email, password_raw: password });
-    console.log("createUser successful for email:", email);
+    console.log("[Signup Action] Calling createUser for email:", email);
+    newUser = await createUser({ name, email, password_raw: password });
+    console.log("[Signup Action] createUser successful for email:", email);
   } catch (error) {
      const message = error instanceof Error ? error.message : "Неизвестная ошибка";
-     console.error("Error during createUser:", message);
+     console.error("[Signup Action] Error during createUser:", message);
      return {
         success: false,
         errors: { server: message },
@@ -56,9 +57,11 @@ export async function signupAction(
     }
   }
 
-  // This part is for session management, which we'll handle next.
-  // For now, just redirecting on successful creation.
-  console.log("User created, redirecting to dashboard.");
-  revalidatePath('/', 'layout');
+  const session = await getSession();
+  session.userId = newUser.id;
+  session.isLoggedIn = true;
+  await session.save();
+
+  console.log("[Signup Action] User created and session saved. Redirecting to dashboard.");
   redirect('/dashboard');
 }

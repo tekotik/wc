@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
+import { logDatabaseAction } from './log-service';
 
 interface User {
     id: string;
@@ -31,10 +32,11 @@ async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
 
 // Helper function to read users from the CSV file
 async function readUsers(): Promise<User[]> {
+    await logDatabaseAction('readUsers', 'Начало чтения базы пользователей.');
     try {
         await fs.access(usersFilePath);
     } catch (error) {
-        // If file doesn't exist, create it with headers
+        await logDatabaseAction('readUsers', 'Файл users.csv не найден, создается новый.');
         await fs.writeFile(usersFilePath, 'id,name,email,password\n', 'utf8');
         return [];
     }
@@ -44,45 +46,59 @@ async function readUsers(): Promise<User[]> {
         header: true,
         skipEmptyLines: true,
     });
+    await logDatabaseAction('readUsers', `Чтение завершено. Найдено ${result.data.length} пользователей.`);
     return result.data;
 }
 
 // Helper function to append a user to the CSV file
 async function appendUser(user: User): Promise<void> {
+    await logDatabaseAction('appendUser', `Начало добавления пользователя ${user.email}.`);
     const csvRow = Papa.unparse([user], { header: false });
     await fs.appendFile(usersFilePath, `\n${csvRow}`, 'utf8');
+    await logDatabaseAction('appendUser', `Пользователь ${user.email} успешно добавлен.`);
 }
 
 export async function getUser(email: string): Promise<User | undefined> {
     return withFileLock(async () => {
+        await logDatabaseAction('getUser', `Поиск пользователя с email: ${email}.`);
         const users = await readUsers();
-        return users.find(user => user.email === email);
+        const user = users.find(user => user.email === email);
+        if (user) {
+            await logDatabaseAction('getUser', `Пользователь ${email} найден.`);
+        } else {
+            await logDatabaseAction('getUser', `Пользователь ${email} не найден.`);
+        }
+        return user;
     });
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {
-        return await argon2.verify(hash, password);
+        await logDatabaseAction('verifyPassword', 'Проверка хеша пароля.');
+        const result = await argon2.verify(hash, password);
+        await logDatabaseAction('verifyPassword', `Результат проверки: ${result ? 'успешно' : 'неуспешно'}.`);
+        return result;
     } catch (err) {
         console.error("Error verifying password:", err);
+        await logDatabaseAction('verifyPassword', `Ошибка при проверке пароля: ${err instanceof Error ? err.message : 'Unknown error'}`);
         return false;
     }
 }
 
 export async function createUser(userData: Omit<User, 'id' | 'password'> & { password_raw: string }) {
     return withFileLock(async () => {
-        console.log("Attempting to create user for:", userData.email);
+        await logDatabaseAction('createUser', `Попытка создания пользователя: ${userData.email}.`);
         const users = await readUsers();
         const existingUser = users.find(user => user.email === userData.email);
 
         if (existingUser) {
-            console.error("User already exists:", userData.email);
+            await logDatabaseAction('createUser', `Ошибка: Пользователь ${userData.email} уже существует.`);
             throw new Error('Пользователь с таким email уже существует.');
         }
 
-        console.log("Hashing password for:", userData.email);
+        await logDatabaseAction('createUser', `Хеширование пароля для ${userData.email}.`);
         const hashedPassword = await argon2.hash(userData.password_raw);
-        console.log("Password hashed for:", userData.email);
+        await logDatabaseAction('createUser', `Пароль для ${userData.email} хеширован.`);
 
         const newUser: User = {
             id: `user_${Date.now()}`,
@@ -91,10 +107,12 @@ export async function createUser(userData: Omit<User, 'id' | 'password'> & { pas
             password: hashedPassword,
         };
 
-        console.log("Appending new user to CSV:", newUser.id);
         await appendUser(newUser);
-        console.log("Successfully created user:", newUser.id);
-
-        return { ...newUser, password: "" }; // Return user without password hash
+        await logDatabaseAction('createUser', `Пользователь ${newUser.email} успешно создан с ID: ${newUser.id}.`);
+        
+        // Clone user object to avoid returning the password hash
+        const userToReturn = { ...newUser };
+        delete (userToReturn as any).password;
+        return userToReturn;
     });
 }

@@ -86,6 +86,13 @@ export default function SignupPage() {
                     </Link>
                 </Button>
             </div>
+             <div className="mt-2 text-center text-xs">
+                <Button variant="link" asChild className="px-1 text-muted-foreground">
+                    <Link href="/logs">
+                       Посмотреть логи базы данных
+                    </Link>
+                </Button>
+            </div>
         </CardContent>
       </Card>
     </div>

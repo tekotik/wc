@@ -3,9 +3,9 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { getUser, verifyPassword } from '@/lib/user-service';
+import { getSession } from '@/lib/session';
 
 
 const loginSchema = z.object({
@@ -27,11 +27,11 @@ export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
-    console.log("Login action started.");
+    console.log("[Login Action] Started.");
     const validatedFields = loginSchema.safeParse(Object.fromEntries(formData));
 
     if (!validatedFields.success) {
-        console.error("Login form validation failed:", validatedFields.error.flatten().fieldErrors);
+        console.error("[Login Action] Form validation failed:", validatedFields.error.flatten().fieldErrors);
         return {
             success: false,
             errors: validatedFields.error.flatten().fieldErrors,
@@ -40,24 +40,24 @@ export async function loginAction(
     }
     
     const { email, password } = validatedFields.data;
-    console.log("Attempting login for:", email);
+    console.log("[Login Action] Attempting login for:", email);
 
     const user = await getUser(email);
 
     if (!user) {
-        console.warn("User not found for email:", email);
+        console.warn("[Login Action] User not found for email:", email);
         return {
             success: false,
             message: "Пользователь с таким email не найден.",
             errors: { server: "Пользователь не найден."}
         }
     }
-    console.log("User found:", user.id);
+    console.log("[Login Action] User found:", user.id);
 
     const passwordsMatch = await verifyPassword(password, user.password);
 
     if (!passwordsMatch) {
-         console.warn("Incorrect password for user:", user.id);
+         console.warn("[Login Action] Incorrect password for user:", user.id);
          return {
             success: false,
             message: "Неверный пароль.",
@@ -65,17 +65,21 @@ export async function loginAction(
         }
     }
     
-    console.log("Password verified for user:", user.id, ". Redirecting to dashboard.");
-    // This is where you would typically set a session cookie.
-    // For simplicity in this mock, we are just redirecting.
-    // In a real app, you would use a library like next-auth or iron-session.
+    console.log("[Login Action] Password verified for user:", user.id, ". Creating session.");
     
-    revalidatePath('/', 'layout');
+    const session = await getSession();
+    session.userId = user.id;
+    session.isLoggedIn = true;
+    await session.save();
+
+    console.log("[Login Action] Session saved. Redirecting to dashboard.");
     redirect('/dashboard');
 }
 
-export async function logout() {
-    // Here you would clear the session cookie
-    console.log("Logging out and redirecting to /login");
+export async function logoutAction() {
+    console.log("[Logout Action] Started.");
+    const session = await getSession();
+    session.destroy();
+    console.log("[Logout Action] Session destroyed. Redirecting to /login.");
     redirect('/login');
 }

@@ -1,33 +1,40 @@
-
 import { type NextRequest, NextResponse } from 'next/server';
+import { getIronSession } from 'iron-session';
+import { sessionOptions, type SessionData } from '@/lib/session';
 
-// This is a simplified middleware. In a real app, you would verify a session cookie.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Assume a user is logged in for simplicity. 
-  // A real implementation would check for a valid session cookie.
-  const isAuthenticated = true; 
+  // We need to get the session to check if the user is authenticated
+  const response = NextResponse.next();
+  const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
+  const { isLoggedIn } = session;
 
   const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  
+  console.log(`[Middleware] Path: ${pathname}, IsLoggedIn: ${isLoggedIn}, IsProtectedRoute: ${isProtectedRoute}`);
 
-  if (!isAuthenticated && isProtectedRoute) {
+  if (!isLoggedIn && isProtectedRoute) {
+    console.log(`[Middleware] Not logged in, redirecting from protected route to /login`);
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-   if (isAuthenticated && (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname === '/')) {
-    // Allow access to the landing page even if "authenticated"
-    if (pathname === '/') return NextResponse.next();
-    
+   if (isLoggedIn && (pathname.startsWith('/login') || pathname.startsWith('/signup'))) {
+    console.log(`[Middleware] Logged in, redirecting from auth page to /dashboard`);
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
   }
+  
+  // Allow access to landing page for everyone
+  if (pathname === '/') {
+    return NextResponse.next();
+  }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

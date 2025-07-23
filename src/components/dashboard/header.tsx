@@ -10,7 +10,6 @@ import {
   Settings,
   LifeBuoy
 } from "lucide-react";
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -27,16 +26,12 @@ import React from 'react';
 import Link from "next/link";
 import { useAuthContext } from "@/providers/auth-provider";
 import CreateCampaignDialog from "./create-campaign-dialog";
-import { logout } from "@/app/login/actions";
+import { logoutAction } from "@/app/login/actions";
 
 
 export default function DashboardHeader({ unreadCount }: { unreadCount?: number }) {
   const hasUnreadReplies = (unreadCount ?? 0) > 0;
   const { user, balance, setBalance } = useAuthContext();
-
-  const handleLogout = async () => {
-    await logout();
-  };
 
   const getInitials = (name?: string | null) => {
     if (!name) return <User className="h-5 w-5 text-foreground" />;
@@ -90,7 +85,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarFallback>
-                  {getInitials(user.user_metadata.name)}
+                  {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
               <span className="sr-only">Переключить меню пользователя</span>
@@ -99,7 +94,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user.user_metadata.name}</p>
+                <p className="text-sm font-medium leading-none">{user.name}</p>
                 <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
               </div>
             </DropdownMenuLabel>
@@ -107,7 +102,7 @@ export default function DashboardHeader({ unreadCount }: { unreadCount?: number 
             <DropdownMenuItem><Settings className="mr-2"/>Настройки</DropdownMenuItem>
             <DropdownMenuItem><LifeBuoy className="mr-2"/>Поддержка</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <form action={logout}>
+            <form action={logoutAction}>
                 <button type="submit" className="w-full">
                     <DropdownMenuItem><LogOut className="mr-2"/>Выйти</DropdownMenuItem>
                 </button>
