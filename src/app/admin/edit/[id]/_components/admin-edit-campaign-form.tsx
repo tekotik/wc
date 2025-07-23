@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, CheckCircle, List, Calendar as CalendarIcon } from "lucide-react";
+import { Save, ArrowLeft, CheckCircle, List, Calendar as CalendarIcon, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import type { Campaign } from "@/lib/mock-data";
@@ -122,6 +122,19 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                                 value={campaign.text}
                                 onChange={handleInputChange}
                                 required
+                            />
+                        </div>
+                        <div className="grid w-full gap-2">
+                            <Label htmlFor="repliesCsvUrl" className="flex items-center gap-2">
+                                <LinkIcon className="h-4 w-4 text-muted-foreground" />
+                                Ссылка на CSV с ответами
+                            </Label>
+                            <Input 
+                                id="repliesCsvUrl"
+                                name="repliesCsvUrl"
+                                value={campaign.repliesCsvUrl || ''}
+                                onChange={handleInputChange}
+                                placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv"
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

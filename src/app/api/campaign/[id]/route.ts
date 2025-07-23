@@ -1,7 +1,6 @@
 
 import { NextResponse } from 'next/server';
 import { getCampaignById } from '@/lib/campaign-service';
-import { getRepliesFromCsvUrl } from '@/lib/replies-service';
 
 // Отключаем кеширование для этого маршрута
 export const dynamic = 'force-dynamic';
@@ -21,16 +20,9 @@ export async function GET(
     if (!campaign) {
       return NextResponse.json({ error: 'Кампания не найдена' }, { status: 404 });
     }
-
-    // Извлекаем URL CSV-файла из текста кампании
-    const csvUrlMatch = campaign.text.match(/База: (https?:\/\/[^\s]+)/);
-    const csvUrl = csvUrlMatch ? csvUrlMatch[1] : null;
-
-    // Получаем ответы, используя этот URL
-    const { replies } = await getRepliesFromCsvUrl(csvUrl);
-
+    
     // Возвращаем данные в формате JSON
-    return NextResponse.json({ campaign, replies });
+    return NextResponse.json({ campaign });
 
   } catch (error) {
     console.error(`Ошибка в API-маршруте для кампании ${params.id}:`, error);

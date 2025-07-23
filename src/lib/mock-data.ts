@@ -19,6 +19,7 @@ export interface Campaign {
       }>
     },
     scheduledAt?: string;
+    repliesCsvUrl?: string;
 }
 
 export interface Reply {

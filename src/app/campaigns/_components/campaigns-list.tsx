@@ -95,7 +95,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
        case "Активна":
         return (
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/campaigns/${campaign.id}/edit`}>
+            <Link href={`/replies-live?url=${encodeURIComponent(campaign.repliesCsvUrl || '')}`} target="_blank">
               <Eye className="mr-2 h-4 w-4" />
               Просмотр
             </Link>
