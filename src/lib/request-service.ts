@@ -13,6 +13,7 @@ export interface Request {
     description: string;
     status: 'pending' | 'approved' | 'rejected';
     admin_comment: string;
+    campaignId: string;
 }
 
 const requestsFilePath = path.join(process.cwd(), 'src/lib/requests.csv');
@@ -21,7 +22,7 @@ async function ensureFileExists(): Promise<void> {
     try {
         await fs.access(requestsFilePath);
     } catch (error) {
-        await fs.writeFile(requestsFilePath, 'id,user_id,description,status,admin_comment\n', 'utf8');
+        await fs.writeFile(requestsFilePath, 'id,user_id,description,status,admin_comment,campaignId\n', 'utf8');
     }
 }
 

@@ -59,50 +59,46 @@ export async function getCampaigns(): Promise<Campaign[]> {
   });
 }
 
-export async function addCampaign(newCampaign: Omit<Campaign, 'id' | 'status'>): Promise<Campaign> {
+// This function is for Admins to create campaigns directly via their form
+export async function addCampaign(newCampaign: Omit<Campaign, 'id'>): Promise<Campaign> {
   return withFileLock(async () => {
     const campaigns = await readCampaigns();
-    const session = await getSession();
-
-    if (!session.isLoggedIn || !session.userId) {
-        throw new Error("Authentication required to create a campaign.");
-    }
-     const user = await getUserById(session.userId);
-
     const campaignToAdd: Campaign = {
         ...newCampaign,
         id: `campaign_${Date.now()}`,
-        status: "На модерации",
-        submittedAt: new Date().toISOString(),
-        userId: session.userId,
-        userName: user?.name,
-        userEmail: user?.email,
     };
     
-    // Check for duplicate ID - though timestamp-based should be unique
-    if (campaigns.some(c => c.id === campaignToAdd.id)) {
-        throw new Error("Campaign with this ID already exists.");
-    }
-
-    // Instead of adding directly, create a request for moderation
-    await addRequest({
-        user_id: campaignToAdd.userId!,
-        description: `Новая кампания: "${campaignToAdd.name}". Текст: ${campaignToAdd.text}`,
-    });
-
-    // We will no longer add the campaign directly here.
-    // It will be added by an admin action after approval.
-    // For now, let's just return the would-be campaign
-    // This part of the flow will need to be adjusted.
-    // The campaign is NOT being saved to campaigns.json here.
-    
-    // This function's callers need to be updated. For now, let's simulate it.
-    // In a real scenario, addCampaign would only be called by an admin.
     const updatedCampaigns = [...campaigns, campaignToAdd];
     await writeCampaigns(updatedCampaigns);
 
     return campaignToAdd;
   });
+}
+
+// This function is for Users submitting a campaign for moderation.
+// It creates a "draft" campaign that they can see in their list.
+export async function addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>) {
+    return withFileLock(async () => {
+        const session = await getSession();
+        if (!session.isLoggedIn || !session.userId) {
+            throw new Error("Authentication required.");
+        }
+        const user = await getUserById(session.userId);
+        const campaigns = await readCampaigns();
+        
+        const campaignDraft: Campaign = {
+            ...newCampaignData,
+            status: 'На модерации',
+            userId: session.userId,
+            userName: user?.name,
+            userEmail: user?.email,
+            submittedAt: new Date().toISOString(),
+        };
+
+        const updatedCampaigns = [...campaigns, campaignDraft];
+        await writeCampaigns(updatedCampaigns);
+        return campaignDraft;
+    });
 }
 
 export async function createCampaignAfterApproval(newCampaign: Campaign): Promise<Campaign> {

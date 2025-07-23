@@ -5,8 +5,10 @@ import { addRequest } from '@/lib/request-service';
 import type { Campaign } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
+import { addCampaignDraft, updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
 
-// This action now correctly creates a moderation request instead of a campaign.
+
+// This action now correctly creates a moderation request AND a draft campaign.
 export async function createCampaignRequestAction(newCampaignData: Omit<Campaign, 'id' | 'status' | 'submittedAt' | 'userId' | 'userName' | 'userEmail'>) {
   try {
     const session = await getSession();
@@ -14,16 +16,27 @@ export async function createCampaignRequestAction(newCampaignData: Omit<Campaign
         throw new Error("User is not authenticated.");
     }
     
-    // The description for the request will be a stringified JSON of the campaign details.
+    // 1. Generate a consistent ID for both request and campaign
+    const campaignId = `campaign_draft_${Date.now()}`;
+
+    // 2. Create the campaign draft that the user will see
+    await addCampaignDraft({
+        ...newCampaignData,
+        id: campaignId,
+        status: 'На модерации', // Set status immediately
+    });
+
+    // 3. Create the moderation request for the admin
     const requestDescription = JSON.stringify({
         name: newCampaignData.name,
         text: newCampaignData.text,
         baseFile: newCampaignData.baseFile,
     });
-
+    
     await addRequest({
         user_id: session.userId,
         description: requestDescription,
+        campaignId: campaignId, // Link request to the campaign draft
     });
 
     revalidatePath('/admin'); // Revalidate admin page to show new request
@@ -37,9 +50,6 @@ export async function createCampaignRequestAction(newCampaignData: Omit<Campaign
     return { success: false, message };
   }
 }
-
-// The following actions are for admin use or internal state changes.
-import { updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
 
 export async function updateCampaignAction(campaign: Campaign) {
     try {
