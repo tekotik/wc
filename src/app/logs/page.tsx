@@ -22,7 +22,7 @@ export default async function LogsPage() {
                         <div>
                             <CardTitle className="font-headline">Логи взаимодействия с БД</CardTitle>
                             <CardDescription>
-                                Здесь отображаются все операции чтения и записи в CSV-файл пользователей.
+                                Здесь отображаются все операции чтения и записи пользователей.
                             </CardDescription>
                         </div>
                     </div>

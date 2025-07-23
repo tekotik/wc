@@ -3,7 +3,6 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { createUser } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
 
@@ -62,6 +61,12 @@ export async function signupAction(
   session.isLoggedIn = true;
   await session.save();
 
-  console.log("[Signup Action] User created and session saved. Redirecting to dashboard.");
-  redirect('/dashboard');
+  console.log("[Signup Action] User created and session saved.");
+  
+  // Return a success state instead of redirecting
+  // The redirect will be handled by the client component after showing the toast
+  return {
+    success: true,
+    message: "Вы успешно зарегистрированы!",
+  };
 }

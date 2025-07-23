@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const initialState: SignupFormState = {
   message: "",
@@ -34,16 +35,24 @@ function SubmitButton() {
 export default function SignupPage() {
   const [state, formAction] = useActionState(signupAction, initialState);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
-    if (state.message && !state.success) {
+    if (state.success) {
+      toast({
+        title: "Успех!",
+        description: "Вы успешно зарегистрированы.",
+      });
+      // Redirect to dashboard after showing toast
+      router.push('/dashboard');
+    } else if (state.message) {
       toast({
         variant: "destructive",
         title: "Ошибка регистрации",
         description: state.message,
       });
     }
-  }, [state, toast]);
+  }, [state, toast, router]);
 
 
   return (
