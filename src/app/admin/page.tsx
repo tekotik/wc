@@ -16,6 +16,7 @@ import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import { getUnreadRepliesCount } from "@/lib/replies-service";
 import CreateCampaignFormForAdmin from "./_components/create-campaign-form-admin";
+import InProgressList from "../in-progress/_components/in-progress-list";
 
 
 export default async function AdminPage() {
@@ -23,6 +24,12 @@ export default async function AdminPage() {
   const moderationCampaigns = allCampaigns.filter(c => c.status === "На модерации");
   // For admin, unread count can be considered 0 as it's a user-centric feature.
   const unreadCount = 0;
+   const inProgressCampaigns = allCampaigns.filter(c => 
+    c.status === "Активна" || 
+    c.status === "Отклонено" || // "Отклонено" is used for "Остановлена"
+    c.status === "Завершена"
+  );
+
 
   return (
     <SidebarProvider>
@@ -39,8 +46,7 @@ export default async function AdminPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
-            <CreateCampaignFormForAdmin />
-            <ModerationList initialCampaigns={moderationCampaigns} />
+             <InProgressList initialCampaigns={inProgressCampaigns} />
           </div>
         </main>
       </SidebarInset>

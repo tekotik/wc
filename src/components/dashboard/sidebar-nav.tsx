@@ -44,14 +44,6 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/admin")}>
-                <Link href="/admin">
-                    <Shield />
-                    Админка
-                </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-         <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/in-progress")}>
                 <Link href="/in-progress">
                     <History />

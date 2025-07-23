@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   const { isLoggedIn, userRole } = session;
 
   const isAuthRoute = ['/login', '/signup'].includes(pathname);
-  const isAdminRoute = pathname.startsWith('/admin');
+  const isAdminOnlyRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
 
   // If user is not logged in, redirect to login for any protected route
   if (!isLoggedIn) {
@@ -22,16 +22,27 @@ export async function middleware(request: NextRequest) {
   }
 
   // If user is logged in
-  // Redirect away from auth pages or root
   if (isAuthRoute || pathname === '/') {
-    const destination = userRole === 'admin' ? '/admin' : '/dashboard';
+    const destination = userRole === 'admin' ? '/in-progress' : '/dashboard';
+    console.log(`[Middleware] Logged in user on auth route, redirecting to ${destination}.`);
     return NextResponse.redirect(new URL(destination, request.url));
   }
-
+  
   // If a non-admin tries to access admin routes, redirect to their dashboard
-  if (isAdminRoute && userRole !== 'admin') {
+  if (isAdminOnlyRoute && userRole !== 'admin') {
+    console.log(`[Middleware] Non-admin user trying to access ${pathname}, redirecting to dashboard.`);
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
+  
+  if (pathname === '/admin' && userRole === 'admin') {
+    return NextResponse.redirect(new URL('/in-progress', request.url));
+  }
+  
+  if (userRole === 'admin' && !isAdminOnlyRoute && pathname !== '/in-progress') {
+     console.log(`[Middleware] Admin on non-admin page ${pathname}, allowing access.`);
+     // To prevent redirection loop and allow access to other pages for admin if needed in future
+  }
+
 
   // All other cases for logged-in users are allowed
   return NextResponse.next();
