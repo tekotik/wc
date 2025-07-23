@@ -7,7 +7,7 @@ import Papa from 'papaparse';
 import * as argon2 from 'argon2';
 import { logDatabaseAction } from './log-service';
 
-interface User {
+interface BaseUser {
     id: string;
     name: string;
     email: string;
@@ -15,8 +15,18 @@ interface User {
     role: 'user' | 'admin';
 }
 
+interface User extends BaseUser {
+    role: 'user';
+}
+
+interface Admin extends BaseUser {
+    role: 'admin';
+}
+
+
 // Path to the CSV file
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
+const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
 const fileMutex = { isLocked: false };
 
 async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
@@ -51,6 +61,24 @@ async function readUsers(): Promise<User[]> {
     return result.data;
 }
 
+// Helper function to read admins from the CSV file
+async function readAdmins(): Promise<Admin[]> {
+    try {
+        await fs.access(adminsFilePath);
+    } catch (error) {
+        await fs.writeFile(adminsFilePath, 'id,name,email,password,role\n', 'utf8');
+        return [];
+    }
+
+    const fileContent = await fs.readFile(adminsFilePath, 'utf8');
+    const result = Papa.parse<Admin>(fileContent, {
+        header: true,
+        skipEmptyLines: true,
+    });
+    return result.data;
+}
+
+
 // Helper function to append a user to the CSV file
 async function appendUser(user: User): Promise<void> {
     await logDatabaseAction('appendUser', `Начало добавления пользователя ${user.email}.`);
@@ -73,22 +101,34 @@ export async function getUser(email: string): Promise<User | undefined> {
     });
 }
 
-export async function getUserById(id: string): Promise<Omit<User, 'password'> | null> {
+export async function getAdminByEmail(email: string): Promise<Admin | undefined> {
+    return withFileLock(async () => {
+        const admins = await readAdmins();
+        return admins.find(admin => admin.email === email);
+    });
+}
+
+export async function getUserById(id: string): Promise<Omit<User, 'password'> | Omit<Admin, 'password'> | null> {
     return withFileLock(async () => {
         await logDatabaseAction('getUserById', `Поиск пользователя с ID: ${id}.`);
-        if (id === 'admin_user') {
-             await logDatabaseAction('getUserById', `Найден специальный пользователь Admin.`);
-             return { id: 'admin_user', name: 'Admin', email: 'admin@admin.com', role: 'admin' };
+        
+        const admins = await readAdmins();
+        const admin = admins.find(a => a.id === id);
+        if (admin) {
+             await logDatabaseAction('getUserById', `Найден администратор с ID ${id}.`);
+             const { password, ...adminWithoutPassword } = admin;
+             return adminWithoutPassword;
         }
+
         const users = await readUsers();
         const user = users.find(user => user.id === id);
         if (user) {
             await logDatabaseAction('getUserById', `Пользователь с ID ${id} найден.`);
             const { password, ...userWithoutPassword } = user;
             return userWithoutPassword;
-        } else {
-            await logDatabaseAction('getUserById', `Пользователь с ID ${id} не найден.`);
         }
+        
+        await logDatabaseAction('getUserById', `Пользователь или админ с ID ${id} не найден.`);
         return null;
     });
 }
@@ -96,6 +136,7 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {
+        if (!password || !hash) return false;
         await logDatabaseAction('verifyPassword', 'Проверка хеша пароля.');
         const result = await argon2.verify(hash, password);
         await logDatabaseAction('verifyPassword', `Результат проверки: ${result ? 'успешно' : 'неуспешно'}.`);
@@ -135,5 +176,14 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
         
         const { password, ...userToReturn } = newUser;
         return userToReturn;
+    });
+}
+
+
+// --- Functions to get Admin for internal use ---
+export async function getAdmin(id: string): Promise<Admin | undefined> {
+    return withFileLock(async () => {
+        const admins = await readAdmins();
+        return admins.find(admin => admin.id === id);
     });
 }

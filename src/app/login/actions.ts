@@ -4,12 +4,12 @@
 import 'server-only';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
-import { getUser, verifyPassword } from '@/lib/user-service';
+import { getUser, verifyPassword, getAdmin, getAdminByEmail } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
 
 
 const loginSchema = z.object({
-  email: z.string().email({ message: "Неверный формат email." }),
+  email: z.string().min(1, { message: "Логин не может быть пустым."}),
   password: z.string().min(1, { message: "Пароль не может быть пустым." }),
 });
 
@@ -29,18 +29,7 @@ export async function loginAction(
 ): Promise<LoginFormState> {
     console.log("[Login Action] Started.");
     const rawFormData = Object.fromEntries(formData);
-
-    // Special case for admin login, checked BEFORE validation
-    if (rawFormData.email === 'admin@admin.com' && rawFormData.password === 'admin@admin.com') {
-        console.log("[Login Action] Admin login successful. Creating admin session.");
-        const session = await getSession();
-        session.userId = 'admin_user';
-        session.isLoggedIn = true;
-        session.userRole = 'admin';
-        await session.save();
-        redirect('/admin');
-    }
-
+    
     const validatedFields = loginSchema.safeParse(rawFormData);
 
     if (!validatedFields.success) {
@@ -55,39 +44,43 @@ export async function loginAction(
     const { email, password } = validatedFields.data;
     console.log("[Login Action] Attempting login for:", email);
 
+    // 1. Check if it's an admin
+    const admin = await getAdminByEmail(email);
+    if (admin) {
+        const passwordsMatch = await verifyPassword(password, admin.password);
+        if (passwordsMatch) {
+            console.log("[Login Action] Admin login successful. Creating admin session.");
+            const session = await getSession();
+            session.userId = admin.id;
+            session.isLoggedIn = true;
+            session.userRole = 'admin';
+            await session.save();
+            redirect('/admin');
+        }
+    }
+
+    // 2. If not an admin, check if it's a regular user
     const user = await getUser(email);
-
-    if (!user) {
-        console.warn("[Login Action] User not found for email:", email);
-        return {
-            success: false,
-            message: "Пользователь с таким email не найден.",
-            errors: { server: "Пользователь не найден."}
+    if (user) {
+        const passwordsMatch = await verifyPassword(password, user.password);
+        if (passwordsMatch) {
+            console.log("[Login Action] User login successful. Creating user session.");
+            const session = await getSession();
+            session.userId = user.id;
+            session.isLoggedIn = true;
+            session.userRole = 'user';
+            await session.save();
+            redirect('/dashboard');
         }
     }
-    console.log("[Login Action] User found:", user.id);
 
-    const passwordsMatch = await verifyPassword(password, user.password);
-
-    if (!passwordsMatch) {
-         console.warn("[Login Action] Incorrect password for user:", user.id);
-         return {
-            success: false,
-            message: "Неверный пароль.",
-            errors: { server: "Неверный пароль."}
-        }
+    // 3. If neither, return error
+    console.warn("[Login Action] User or admin not found, or password incorrect for:", email);
+    return {
+        success: false,
+        message: "Неверный логин или пароль.",
+        errors: { server: "Неверный логин или пароль."}
     }
-    
-    console.log("[Login Action] Password verified for user:", user.id, ". Creating session.");
-    
-    const session = await getSession();
-    session.userId = user.id;
-    session.isLoggedIn = true;
-    session.userRole = user.role;
-    await session.save();
-
-    console.log("[Login Action] Session saved. Redirecting to dashboard.");
-    redirect('/dashboard');
 }
 
 export async function logoutAction() {

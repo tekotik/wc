@@ -20,7 +20,8 @@ import { getRequests } from "@/lib/request-service";
 export default async function AdminPage() {
   const allRequests = await getRequests();
   const moderationRequests = allRequests.filter(r => r.status === 'pending');
-  const unreadCount = 0; // Admin doesn't need unread count for user replies
+  // Admin doesn't need unread count for user replies, but the component expects it
+  const unreadCount = 0; 
 
 
   return (
