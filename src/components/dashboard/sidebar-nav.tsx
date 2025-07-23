@@ -100,11 +100,11 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
        <SidebarMenuItem>
         <SidebarMenuButton
           asChild
-          isActive={isActive("/in-progress")}
+          isActive={isActive("/campaigns")}
         >
-          <Link href="/in-progress">
-            <History />
-            В работе
+          <Link href="/campaigns">
+            <MessageSquareQuote />
+            Все рассылки
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
