@@ -66,21 +66,25 @@ async function readUsers(): Promise<User[]> {
     try {
         await fs.access(usersFilePath);
     } catch (error) {
+        // If file doesn't exist, create it with a header and return empty array
         await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
         return [];
     }
 
     const fileContent = await fs.readFile(usersFilePath, 'utf8');
+    
+    // If file is empty or just whitespace, it's a valid state (no users)
     if (!fileContent.trim()) {
-         await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
-         return [];
+        return [];
     }
+
     const result = Papa.parse<User>(fileContent, {
         header: true,
         skipEmptyLines: true,
     });
     return result.data;
 }
+
 
 // Helper function to read admins from the CSV file
 async function readAdmins(): Promise<Admin[]> {
