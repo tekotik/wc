@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import {
   SidebarProvider,
@@ -22,6 +23,7 @@ export default async function InProgressPage() {
   const allCampaigns = await getCampaigns();
 
   // Filter campaigns that should be displayed on the "In Progress" page
+  // For admins, this shows all. For users, it will be filtered by their ID in getCampaigns.
   const inProgressCampaigns = allCampaigns.filter(c => 
     c.status === "Активна" || 
     c.status === "Отклонено" || // "Отклонено" is used for "Остановлена"

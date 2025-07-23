@@ -28,11 +28,11 @@ export default async function DashboardPage() {
     return null; // or a redirect
   }
   
-  const campaigns = await getCampaigns(session.userId);
-  const { replies: allReplies } = await getAllReplies(session.userId);
+  const campaigns = await getCampaigns();
+  const { replies: allReplies } = await getAllReplies();
   const activeCampaigns = campaigns.filter(c => c.status === "Активна");
   const completedCampaigns = campaigns.filter(c => c.status === 'Завершена' && c.stats);
-  const unreadCount = await getUnreadRepliesCount(session.userId);
+  const unreadCount = await getUnreadRepliesCount();
 
   return (
     <SidebarProvider>

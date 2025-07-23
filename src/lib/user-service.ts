@@ -76,6 +76,10 @@ export async function getUser(email: string): Promise<User | undefined> {
 export async function getUserById(id: string): Promise<Omit<User, 'password'> | null> {
     return withFileLock(async () => {
         await logDatabaseAction('getUserById', `Поиск пользователя с ID: ${id}.`);
+        if (id === 'admin_user') {
+             await logDatabaseAction('getUserById', `Найден специальный пользователь Admin.`);
+             return { id: 'admin_user', name: 'Admin', email: 'admin@admin.com', role: 'admin' };
+        }
         const users = await readUsers();
         const user = users.find(user => user.id === id);
         if (user) {
@@ -123,7 +127,7 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
             name: userData.name,
             email: userData.email,
             password: hashedPassword,
-            role: userData.email === 'admin@admin.com' ? 'admin' : 'user', // Assign role
+            role: 'user', // Always assign user role on creation
         };
 
         await appendUser(newUser);

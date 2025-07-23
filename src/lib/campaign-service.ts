@@ -45,10 +45,15 @@ export async function getCampaigns(userId?: string): Promise<Campaign[]> {
     if (session.isLoggedIn && session.userRole === 'admin') {
          return allCampaigns.sort((a, b) => new Date(b.submittedAt!).getTime() - new Date(a.submittedAt!).getTime());
     }
-
-    const campaigns = userId ? allCampaigns.filter(c => c.userId === userId) : [];
     
-    return campaigns.sort((a, b) => new Date(b.submittedAt!).getTime() - new Date(a.submittedAt!).getTime());
+    // For regular users, use the userId passed to the function, which should be their session.userId
+    if (session.isLoggedIn && session.userRole === 'user' && session.userId) {
+       const userCampaigns = allCampaigns.filter(c => c.userId === session.userId);
+       return userCampaigns.sort((a, b) => new Date(b.submittedAt!).getTime() - new Date(a.submittedAt!).getTime());
+    }
+
+    // If no user session, return empty array
+    return [];
 }
 
 export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {

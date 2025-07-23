@@ -4,6 +4,7 @@
 import type { Reply, Campaign } from './mock-data';
 import Papa from 'papaparse';
 import { getCampaigns } from './campaign-service';
+import { getSession } from './session';
 
 // The correct URL to export the Google Sheet as CSV
 const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTAt0QszK6G1ERwuRNwMsdCWzDPrUkL8wqEELkJaUT8mi6VtcPaDlC0bXWqiIt9Vbgu3ehIAgB0i2pc/pub?output=csv';
@@ -74,8 +75,13 @@ export async function getRepliesFromCsvUrl(url: string | null): Promise<{ replie
     }
 }
 
-async function getAllRepliesForUser(userId: string): Promise<Reply[]> {
-    const userCampaigns = await getCampaigns(userId);
+async function getRepliesForCurrentUser(): Promise<Reply[]> {
+    const session = await getSession();
+    if (!session.isLoggedIn || !session.userId) {
+        return [];
+    }
+    
+    const userCampaigns = await getCampaigns(); // getCampaigns is already role-aware
     const campaignReplyUrls = userCampaigns
       .map(c => c.repliesCsvUrl)
       .filter((url): url is string => !!url);
@@ -90,24 +96,13 @@ async function getAllRepliesForUser(userId: string): Promise<Reply[]> {
 }
 
 
-export async function getAllReplies(userId?: string): Promise<{ replies: Reply[], lastFetched: Date }> {
-    let replies: Reply[] = [];
-    if (userId) {
-        replies = await getAllRepliesForUser(userId);
-    } else {
-        // Fallback for admin or unauthenticated contexts
-        replies = await fetchAndParseReplies(GOOGLE_SHEET_CSV_URL);
-    }
+export async function getAllReplies(): Promise<{ replies: Reply[], lastFetched: Date }> {
+    const replies = await getRepliesForCurrentUser();
     return { replies, lastFetched: new Date() };
 }
 
-export async function getUnreadRepliesCount(userId?: string): Promise<number> {
-  let replies: Reply[] = [];
-   if (userId) {
-        replies = await getAllRepliesForUser(userId);
-    } else {
-        replies = await fetchAndParseReplies(GOOGLE_SHEET_CSV_URL);
-    }
+export async function getUnreadRepliesCount(): Promise<number> {
+  const replies = await getRepliesForCurrentUser();
   return replies.filter(r => r.unread).length;
 }
 
