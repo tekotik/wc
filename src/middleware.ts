@@ -8,77 +8,45 @@ export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
   const { isLoggedIn, userRole } = session;
 
-  const isPublicApiOrAsset = 
-    pathname.startsWith('/api/') || 
-    pathname.includes('.') || // Matches files with extensions (e.g., favicon.ico, logo.svg)
-    pathname.startsWith('/_next') || 
-    pathname.startsWith('/c/');
-    
-  const isPublicLanding = pathname === '/';
-  const isAuthRoute = pathname === '/login' || pathname === '/signup';
-  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
-  const isUserDashboardRoute = pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies');
+  const isPublicRoute = 
+    pathname === '/login' || 
+    pathname === '/signup' || 
+    pathname === '/' ||
+    pathname.startsWith('/c/') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.'); // Assets
 
-  // Allow all truly public assets and pages to pass through without checks
-  if (isPublicApiOrAsset || isPublicLanding) {
-      return NextResponse.next();
+  // If the user is logged in
+  if (isLoggedIn) {
+    // and tries to access login/signup/landing, redirect them based on role
+    if (pathname === '/login' || pathname === '/signup' || pathname === '/') {
+        const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard';
+        return NextResponse.redirect(new URL(redirectUrl, request.url));
+    }
+    // and is an admin trying to access a user page, redirect to admin page
+    if (userRole === 'admin' && (pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies'))){
+         return NextResponse.redirect(new URL('/admin', request.url));
+    }
+    // and is a user trying to access an admin page, redirect to dashboard
+    if (userRole === 'user' && pathname.startsWith('/admin')) {
+         return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    // Otherwise, allow the request
+    return NextResponse.next();
   }
 
-  // --- Rule 1: Handle users who are NOT logged in ---
-  if (!isLoggedIn) {
-    // If not logged in, only allow access to auth routes
-    if (isAuthRoute) {
-      return NextResponse.next();
-    }
-    // For any other route, redirect to login
+  // If the user is NOT logged in and trying to access a protected route
+  if (!isLoggedIn && !isPublicRoute) {
+    // Redirect them to the login page
     return NextResponse.redirect(new URL('/login', request.url));
   }
-
-  // --- At this point, the user IS logged in. ---
   
-  // --- Rule 2: Handle ADMIN users ---
-  if (userRole === 'admin') {
-    // If admin is on an auth route, redirect to their main page
-    if (isAuthRoute) {
-      return NextResponse.redirect(new URL('/admin', request.url));
-    }
-    // If admin tries to access a user-specific page, redirect them back to their main page
-    if (isUserDashboardRoute) {
-      return NextResponse.redirect(new URL('/admin', request.url));
-    }
-    // Otherwise, allow access to their designated routes
-    if (isAdminRoute) {
-        return NextResponse.next();
-    }
-    // Fallback for any other unexpected route
-    return NextResponse.redirect(new URL('/admin', request.url));
-  }
-
-  // --- Rule 3: Handle regular USERS ---
-  if (userRole === 'user') {
-    // If user is logged in and tries to access an auth route, redirect to their dashboard
-    if (isAuthRoute) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-    // If user tries to access an admin route, block them by redirecting to their dashboard
-    if (isAdminRoute) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-  }
-
-  // For any other case (e.g., user is on their dashboard), allow the request to proceed.
+  // If not logged in and on a public route, allow
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * We will handle API routes and other assets inside the middleware itself.
-     */
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };

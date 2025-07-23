@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 async function getSessionData() {
+    // Fetch with no-cache to ensure we always get the latest session state
     const res = await fetch('/api/session', { cache: 'no-store' });
     if (res.ok) {
         return res.json();
@@ -44,22 +45,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const fetchSession = useCallback(async () => {
+    // Don't re-fetch on public pages to avoid unnecessary requests
+    const isPublicPage = ['/login', '/signup', '/'].includes(pathname) || pathname.startsWith('/c/');
+    if (isPublicPage) {
+        setLoading(false);
+        return;
+    }
+    
     setLoading(true);
     try {
         const data = await getSessionData();
-
-        if (data.isLoggedIn && data.user) {
-             let finalUser = data.user;
-             // Force correct role for admin user to avoid client/server mismatches
-             if (data.user.id === 'admin_user') {
-                finalUser = { ...data.user, role: 'admin' };
-             }
-             setUser(finalUser);
-             setIsLoggedIn(true);
-        } else {
-            setUser(null);
-            setIsLoggedIn(false);
-        }
+        setUser(data.user || null);
+        setIsLoggedIn(data.isLoggedIn || false);
         setBalance(data.balance ?? 0);
     } catch (error) {
         console.error("Failed to fetch session", error);
@@ -68,37 +65,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
         setLoading(false);
     }
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     fetchSession();
-  }, [fetchSession, pathname]); // Re-fetch on path change to ensure consistency
+  }, [fetchSession]);
   
-  const publicRoutes = ['/', '/login', '/signup'];
-  const isPublicPage = publicRoutes.includes(pathname) || pathname.startsWith('/c/') || pathname.startsWith('/api/');
-
-  if (loading && !isPublicPage) {
+  // On protected pages, show a loader while checking the session
+  const isAuthPage = ['/login', '/signup', '/'].includes(pathname);
+  if (loading && !isAuthPage && !pathname.startsWith('/c/')) {
      return (
         <div className="flex h-screen w-full items-center justify-center bg-background">
-            <Loader2 className="h-8 w-8 animate-spin" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
     );
   }
 
-  // If on a public page, don't block rendering, just provide the context
-  if (isPublicPage) {
-     return (
-        <AuthContext.Provider value={{ user, loading, balance, setBalance, isLoggedIn }}>
-            {children}
-        </AuthContext.Provider>
-     )
-  }
-
-  // For protected pages, if not logged in and not loading, children won't be rendered
-  // The middleware should have already redirected, but this is a fallback.
   return (
     <AuthContext.Provider value={{ user, loading, balance, setBalance, isLoggedIn }}>
-      {!loading && isLoggedIn ? children : null}
+      {children}
     </AuthContext.Provider>
   );
 };

@@ -3,21 +3,27 @@ import { getIronSession, type IronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
 export interface SessionData {
-  userId: string;
+  userId?: string;
   isLoggedIn: boolean;
-  userRole: 'user' | 'admin';
+  userRole?: 'user' | 'admin';
 }
 
 export const sessionOptions = {
   cookieName: 'elsender_session',
   password: process.env.SESSION_SECRET || 'complex_password_at_least_32_characters_long_for_sure',
-  // Secure: true should be used in production (HTTPS) but can be false for development
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
+    // httpOnly: true, // Recommended for security
   },
 };
 
 export function getSession(): Promise<IronSession<SessionData>> {
   const session = getIronSession<SessionData>(cookies(), sessionOptions);
+
+  // Initialize session data if it doesn't exist
+  if (!session.isLoggedIn) {
+    session.isLoggedIn = false;
+  }
+  
   return Promise.resolve(session);
 }
