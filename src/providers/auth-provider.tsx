@@ -54,19 +54,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(true);
     try {
         const data = await getSessionData();
-        setUser(data.user);
-        setBalance(data.balance ?? 0);
-        setIsLoggedIn(data.isLoggedIn);
-
-        // Special handling for admin user to ensure role is always set.
+        
+        // Ensure that if it's the admin user, the role is correctly and forcefully set.
         if (data.user?.id === 'admin_user') {
             setUser({
                 id: 'admin_user',
                 name: 'Admin',
                 email: 'admin@admin.com',
-                role: 'admin'
+                role: 'admin' // This is the crucial part
             });
+        } else {
+            setUser(data.user);
         }
+
+        setBalance(data.balance ?? 0);
+        setIsLoggedIn(data.isLoggedIn);
 
     } catch (error) {
         console.error("Failed to fetch session", error);
