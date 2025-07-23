@@ -51,35 +51,11 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
                 </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
-        <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/campaigns")}>
-                <Link href="/campaigns">
-                    <MessageSquareQuote />
-                    Все рассылки
-                </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
          <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/in-progress")}>
                 <Link href="/in-progress">
                     <History />
                     В работе
-                </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/analytics")}>
-                <Link href="/analytics">
-                    <BarChart3 />
-                    Аналитика
-                </Link>
-            </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-            <SidebarMenuButton asChild isActive={isActive("/replies")}>
-                <Link href="/replies">
-                    <MessagesSquare />
-                    Ответы
                 </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
