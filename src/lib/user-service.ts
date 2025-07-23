@@ -123,7 +123,7 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
             name: userData.name,
             email: userData.email,
             password: hashedPassword,
-            role: userData.email === 'admin' ? 'admin' : 'user', // Assign role
+            role: userData.email === 'admin@admin.com' ? 'admin' : 'user', // Assign role
         };
 
         await appendUser(newUser);
