@@ -419,3 +419,15 @@ timestamp,action,details
 2025-07-23T06:29:45.547Z,getUser,Пользователь Skotik@gmail.com найден.
 2025-07-23T06:29:45.555Z,verifyPassword,Проверка хеша пароля.
 2025-07-23T06:29:45.873Z,verifyPassword,Результат проверки: успешно.
+2025-07-23T06:42:59.176Z,verifyPassword,Проверка хеша пароля.
+2025-07-23T06:42:59.828Z,verifyPassword,Ошибка при проверке пароля: Cannot read properties of undefined (reading 'byteLength')
+2025-07-23T06:42:59.837Z,getUser,Поиск пользователя с email: admin5.
+2025-07-23T06:42:59.851Z,readUsers,Начало чтения базы пользователей.
+2025-07-23T06:42:59.866Z,readUsers,Чтение завершено. Найдено 11 пользователей.
+2025-07-23T06:42:59.873Z,getUser,Пользователь admin5 не найден.
+2025-07-23T06:43:35.405Z,verifyPassword,Проверка хеша пароля.
+2025-07-23T06:43:36.609Z,verifyPassword,Ошибка при проверке пароля: Cannot read properties of undefined (reading 'byteLength')
+2025-07-23T06:43:36.702Z,getUser,Поиск пользователя с email: admin5.
+2025-07-23T06:43:36.780Z,readUsers,Начало чтения базы пользователей.
+2025-07-23T06:43:36.927Z,readUsers,Чтение завершено. Найдено 11 пользователей.
+2025-07-23T06:43:36.998Z,getUser,Пользователь admin5 не найден.

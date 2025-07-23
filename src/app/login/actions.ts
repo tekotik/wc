@@ -4,7 +4,7 @@
 import 'server-only';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
-import { getUser, verifyPassword, getAdmin, getAdminByEmail } from '@/lib/user-service';
+import { getUser, verifyPassword, getAdminByEmail } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
 
 
@@ -30,6 +30,25 @@ export async function loginAction(
     console.log("[Login Action] Started.");
     const rawFormData = Object.fromEntries(formData);
     
+    const { email, password } = rawFormData as { email: string, password: string };
+
+    // 1. Check if it's an admin (special case, bypasses Zod for password length etc.)
+    const admin = await getAdminByEmail(email);
+    if (admin) {
+        // For manually added admins in CSV, we do a direct password check.
+        const passwordsMatch = password === admin.password;
+        if (passwordsMatch) {
+            console.log("[Login Action] Admin login successful. Creating admin session.");
+            const session = await getSession();
+            session.userId = admin.id;
+            session.isLoggedIn = true;
+            session.userRole = 'admin';
+            await session.save();
+            redirect('/admin');
+        }
+    }
+    
+    // 2. If not admin, proceed with standard validation and user check
     const validatedFields = loginSchema.safeParse(rawFormData);
 
     if (!validatedFields.success) {
@@ -41,28 +60,11 @@ export async function loginAction(
         };
     }
     
-    const { email, password } = validatedFields.data;
-    console.log("[Login Action] Attempting login for:", email);
-
-    // 1. Check if it's an admin
-    const admin = await getAdminByEmail(email);
-    if (admin) {
-        const passwordsMatch = await verifyPassword(password, admin.password);
-        if (passwordsMatch) {
-            console.log("[Login Action] Admin login successful. Creating admin session.");
-            const session = await getSession();
-            session.userId = admin.id;
-            session.isLoggedIn = true;
-            session.userRole = 'admin';
-            await session.save();
-            redirect('/admin');
-        }
-    }
-
-    // 2. If not an admin, check if it's a regular user
-    const user = await getUser(email);
+    const { email: validatedEmail, password: validatedPassword } = validatedFields.data;
+    
+    const user = await getUser(validatedEmail);
     if (user) {
-        const passwordsMatch = await verifyPassword(password, user.password);
+        const passwordsMatch = await verifyPassword(validatedPassword, user.password);
         if (passwordsMatch) {
             console.log("[Login Action] User login successful. Creating user session.");
             const session = await getSession();
