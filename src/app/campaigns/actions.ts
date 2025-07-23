@@ -16,24 +16,26 @@ export async function createCampaignRequestAction(newCampaignData: Omit<Campaign
     }
     const user = await getUserById(session.userId);
 
-    // Create a request instead of a campaign directly
-    const newRequest = {
-        user_id: session.userId,
-        // Let's store campaign details in the description for now.
-        // A better approach might be to serialize the campaign data.
-        description: JSON.stringify({
-            name: newCampaignData.name,
-            text: newCampaignData.text,
-            baseFile: newCampaignData.baseFile,
-        }),
+    // Create a campaign with "На модерации" status
+    const pendingCampaign: Campaign = {
+        id: `draft_${Date.now()}`, // Temporary ID
+        name: newCampaignData.name,
+        text: newCampaignData.text,
+        baseFile: newCampaignData.baseFile,
+        status: 'На модерации',
+        submittedAt: new Date().toISOString(),
+        userId: session.userId,
+        userName: user?.name || 'N/A',
+        userEmail: user?.email || 'N/A',
     };
     
-    await addRequest(newRequest);
+    // We will save this pending campaign to the main campaigns file
+    const { updateCampaign } = await import('@/lib/campaign-service');
+    await updateCampaign(pendingCampaign);
 
-    revalidatePath('/admin');
     revalidatePath('/campaigns');
     
-    return { success: true, message: "Заявка на рассылку успешно отправлена на модерацию." };
+    return { success: true, message: "Рассылка успешно отправлена на модерацию." };
 
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Не удалось создать заявку.';
@@ -51,6 +53,7 @@ export async function updateCampaignAction(campaign: Campaign) {
         await saveCampaign(campaign);
         revalidatePath('/campaigns');
         revalidatePath(`/campaigns/${campaign.id}/edit`);
+        revalidatePath('/admin');
         return { success: true, campaign };
     } catch (error) {
         return { success: false, message: 'Не удалось сохранить рассылку.' };

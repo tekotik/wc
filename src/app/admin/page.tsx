@@ -38,7 +38,7 @@ export default async function AdminPage() {
       <SidebarInset>
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="max-w-4xl mx-auto w-full flex flex-col gap-6">
             <CreateCampaignFormForAdmin />
             <ModerationList initialRequests={moderationRequests} />
           </div>

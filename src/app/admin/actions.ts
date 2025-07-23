@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { updateRequest, type Request as RequestType } from "@/lib/request-service";
 import { createCampaignAfterApproval } from "@/lib/campaign-service";
 import type { Campaign } from "@/lib/mock-data";
+import { getUserById } from "@/lib/user-service";
 
 export async function updateRequestAction(requestData: Pick<RequestType, 'id' | 'status' | 'admin_comment'> & { description?: string }) {
     try {
@@ -13,6 +14,8 @@ export async function updateRequestAction(requestData: Pick<RequestType, 'id' | 
         // If the request is approved, create the actual campaign
         if (updatedRequest.status === 'approved' && updatedRequest.description) {
             const campaignDetails = JSON.parse(updatedRequest.description);
+            const user = await getUserById(updatedRequest.user_id);
+
             const newCampaign: Campaign = {
                 id: `campaign_${Date.now()}`,
                 name: campaignDetails.name,
@@ -21,9 +24,8 @@ export async function updateRequestAction(requestData: Pick<RequestType, 'id' | 
                 status: 'Одобрено', // Start as "Approved"
                 userId: updatedRequest.user_id,
                 submittedAt: new Date().toISOString(),
-                // You might want to fetch user name/email here
-                userName: 'Unknown', 
-                userEmail: 'unknown@example.com'
+                userName: user?.name, 
+                userEmail: user?.email
             };
             await createCampaignAfterApproval(newCampaign);
         }

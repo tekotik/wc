@@ -31,36 +31,26 @@ export default function ModerationList({ initialRequests }: ModerationListProps)
     setRequests(initialRequests);
   }, [initialRequests]);
 
-  const handleAction = async (id: number, status: 'approved' | 'rejected', comment?: string) => {
-    const result = await updateRequestAction({ id, status, admin_comment: comment });
+  const handleReject = async (id: number, comment: string) => {
+    const result = await updateRequestAction({ id, status: 'rejected', admin_comment: comment });
 
     if (result.success && result.request) {
         setRequests(requests.filter(r => r.id !== id));
         toast({
-            title: "Успех!",
-            description: `Заявка ${id} была ${status === 'approved' ? 'одобрена' : 'отклонена'}.`
+            title: "Заявка отклонена",
+            description: `Заявка ${id} была отклонена.`
         });
     } else {
         toast({
             variant: "destructive",
             title: "Ошибка",
-            description: result.message || "Не удалось обновить заявку."
+            description: result.message || "Не удалось отклонить заявку."
         });
     }
     setSelectedRequest(null);
     setAdminComment("");
   };
 
-  const getFormattedDate = (dateString?: string) => {
-      if (!dateString) return 'N/A';
-      return new Date(dateString).toLocaleString('ru-RU', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-      });
-  }
   
   const getRequestDetails = (description: string) => {
       try {
@@ -103,8 +93,11 @@ export default function ModerationList({ initialRequests }: ModerationListProps)
                   <TableCell>{request.user_id}</TableCell>
                   <TableCell>{details.name}</TableCell>
                   <TableCell className="text-right space-x-2">
-                     <Button variant="outline" size="sm" onClick={() => setSelectedRequest(request)}>
-                        Проверить
+                     <Button variant="outline" size="sm" asChild>
+                        <Link href={`/admin/edit/${request.id}`}>
+                           <Pencil className="mr-2 h-4 w-4" />
+                           Проверить
+                        </Link>
                      </Button>
                   </TableCell>
                 </TableRow>
@@ -121,53 +114,7 @@ export default function ModerationList({ initialRequests }: ModerationListProps)
             </TableBody>
           </Table>
         </CardContent>
-
-         {selectedRequest && (
-            <Dialog open={!!selectedRequest} onOpenChange={() => { setSelectedRequest(null); setAdminComment(""); }}>
-                <DialogContent className="sm:max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Проверка заявки #{selectedRequest.id}</DialogTitle>
-                         <DialogDescription>
-                            Пользователь ID: {selectedRequest.user_id}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4 space-y-4 max-h-[60vh] overflow-y-auto">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>{getRequestDetails(selectedRequest.description).name}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <Label>Текст рассылки:</Label>
-                                <Textarea readOnly rows={8} value={getRequestDetails(selectedRequest.description).text} className="mt-2" />
-                                <p className="text-sm mt-4">
-                                   <span className="font-semibold">Прикрепленный файл:</span> {getRequestDetails(selectedRequest.description).fileName}
-                                </p>
-                            </CardContent>
-                        </Card>
-                        <div>
-                            <Label htmlFor="admin_comment">Комментарий для отклонения (необязательно)</Label>
-                            <Textarea 
-                                id="admin_comment" 
-                                value={adminComment}
-                                onChange={(e) => setAdminComment(e.target.value)}
-                                placeholder="Укажите причину, если отклоняете заявку..."
-                                className="mt-2"
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => handleAction(selectedRequest.id, 'rejected', adminComment)}>
-                            <XCircle className="mr-2 h-4 w-4" />
-                            Отклонить
-                        </Button>
-                        <Button onClick={() => handleAction(selectedRequest.id, 'approved')}>
-                           <CheckCircle2 className="mr-2 h-4 w-4" />
-                           Одобрить
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-         )}
       </Card>
   );
 }
+
