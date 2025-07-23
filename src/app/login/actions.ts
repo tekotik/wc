@@ -9,14 +9,14 @@ import { getSession } from '@/lib/session';
 
 
 const loginSchema = z.object({
-  email: z.string().min(1, { message: "Логин не может быть пустым."}),
+  login: z.string().min(1, { message: "Логин не может быть пустым."}),
   password: z.string().min(1, { message: "Пароль не может быть пустым." }),
 });
 
 export type LoginFormState = {
     message: string;
     errors?: {
-        email?: string[];
+        login?: string[];
         password?: string[];
         server?: string;
     };
@@ -27,18 +27,15 @@ export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
-    console.log("[Login Action] Started.");
     const rawFormData = Object.fromEntries(formData);
     
-    const { email, password } = rawFormData as { email: string, password: string };
+    const { login, password } = rawFormData as { login: string, password: string };
 
-    // 1. Check if it's an admin (special case, bypasses Zod for password length etc.)
-    const admin = await getAdminByEmail(email);
+    // 1. Check if it's an admin
+    const admin = await getAdminByEmail(login);
     if (admin) {
-        // For manually added admins in CSV, we do a direct password check.
         const passwordsMatch = password === admin.password;
         if (passwordsMatch) {
-            console.log("[Login Action] Admin login successful. Creating admin session.");
             const session = await getSession();
             session.userId = admin.id;
             session.isLoggedIn = true;
@@ -52,7 +49,6 @@ export async function loginAction(
     const validatedFields = loginSchema.safeParse(rawFormData);
 
     if (!validatedFields.success) {
-        console.error("[Login Action] Form validation failed:", validatedFields.error.flatten().fieldErrors);
         return {
             success: false,
             errors: validatedFields.error.flatten().fieldErrors,
@@ -60,13 +56,13 @@ export async function loginAction(
         };
     }
     
-    const { email: validatedEmail, password: validatedPassword } = validatedFields.data;
+    const { login: validatedLogin, password: validatedPassword } = validatedFields.data;
     
-    const user = await getUser(validatedEmail);
+    // Check if the login is for a regular user (assuming email is used as login for users)
+    const user = await getUser(validatedLogin);
     if (user) {
         const passwordsMatch = await verifyPassword(validatedPassword, user.password);
         if (passwordsMatch) {
-            console.log("[Login Action] User login successful. Creating user session.");
             const session = await getSession();
             session.userId = user.id;
             session.isLoggedIn = true;
@@ -77,7 +73,6 @@ export async function loginAction(
     }
 
     // 3. If neither, return error
-    console.warn("[Login Action] User or admin not found, or password incorrect for:", email);
     return {
         success: false,
         message: "Неверный логин или пароль.",
@@ -86,9 +81,7 @@ export async function loginAction(
 }
 
 export async function logoutAction() {
-    console.log("[Logout Action] Started.");
     const session = await getSession();
     session.destroy();
-    console.log("[Logout Action] Session destroyed. Redirecting to /login.");
     redirect('/login');
 }

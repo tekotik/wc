@@ -78,10 +78,8 @@ async function readAdmins(): Promise<Admin[]> {
 
 // Helper function to append a user to the CSV file
 async function appendUser(user: User): Promise<void> {
-    await logDatabaseAction('appendUser', `Начало добавления пользователя ${user.email}.`);
     const csvRow = Papa.unparse([user], { header: false });
     await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
-    await logDatabaseAction('appendUser', `Пользователь ${user.email} успешно добавлен.`);
 }
 
 export async function getUser(email: string): Promise<User | undefined> {
@@ -133,18 +131,14 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
     return withFileLock(async () => {
-        await logDatabaseAction('createUser', `Попытка создания пользователя: ${userData.email}.`);
         const users = await readUsers();
         const existingUser = users.find(user => user.email === userData.email);
 
         if (existingUser) {
-            await logDatabaseAction('createUser', `Ошибка: Пользователь ${userData.email} уже существует.`);
             throw new Error('Пользователь с таким email уже существует.');
         }
 
-        await logDatabaseAction('createUser', `Хеширование пароля для ${userData.email}.`);
         const hashedPassword = await argon2.hash(userData.password_raw);
-        await logDatabaseAction('createUser', `Пароль для ${userData.email} хеширован.`);
 
         const newUser: User = {
             id: `user_${Date.now()}`,
@@ -155,7 +149,6 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
         };
 
         await appendUser(newUser);
-        await logDatabaseAction('createUser', `Пользователь ${newUser.email} успешно создан с ID: ${newUser.id}.`);
         
         const { password, ...userToReturn } = newUser;
         return userToReturn;
