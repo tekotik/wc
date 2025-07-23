@@ -27,9 +27,9 @@ export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
-    const rawFormData = Object.fromEntries(formData);
-    
-    const { login, password } = rawFormData as { login: string, password: string };
+    // Correctly get form data by name
+    const login = formData.get('login') as string;
+    const password = formData.get('password') as string;
 
     if (!login || !password) {
         return {
@@ -49,7 +49,7 @@ export async function loginAction(
             session.isLoggedIn = true;
             session.userRole = 'admin';
             await session.save();
-            redirect('/admin'); 
+            redirect('/admin');
         }
     }
     
