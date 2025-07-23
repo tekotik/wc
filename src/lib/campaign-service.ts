@@ -35,8 +35,12 @@ async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
 }
 
 
-export async function getCampaigns(): Promise<Campaign[]> {
-    const campaigns = await readCampaigns();
+export async function getCampaigns(userId?: string): Promise<Campaign[]> {
+    const allCampaigns = await readCampaigns();
+    
+    // Admins see all campaigns, users see only their own
+    const campaigns = userId ? allCampaigns.filter(c => c.userId === userId) : allCampaigns;
+    
     return campaigns.sort((a, b) => {
         const aTime = a.id.split('_')[1] ? new Date(parseInt(a.id.split('_')[1])).getTime() : 0;
         const bTime = b.id.split('_')[1] ? new Date(parseInt(b.id.split('_')[1])).getTime() : 0;

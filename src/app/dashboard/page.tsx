@@ -14,16 +14,25 @@ import Dashboard from "@/components/dashboard/dashboard";
 import Link from "next/link";
 import { ElsenderLogo } from "@/components/icons";
 import React from 'react';
+import { getSession } from "@/lib/session";
+import WelcomeDashboard from "@/components/dashboard/welcome-dashboard";
 
 // Force dynamic rendering to ensure fresh data on each request.
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const campaigns = await getCampaigns();
-  const { replies: allReplies } = await getAllReplies();
+  const session = await getSession();
+  
+  if (!session.isLoggedIn || !session.userId) {
+     // This case should be handled by middleware, but as a fallback:
+    return null; // or a redirect
+  }
+  
+  const campaigns = await getCampaigns(session.userId);
+  const { replies: allReplies } = await getAllReplies(session.userId);
   const activeCampaigns = campaigns.filter(c => c.status === "Активна");
   const completedCampaigns = campaigns.filter(c => c.status === 'Завершена' && c.stats);
-  const unreadCount = await getUnreadRepliesCount();
+  const unreadCount = await getUnreadRepliesCount(session.userId);
 
   return (
     <SidebarProvider>
@@ -40,7 +49,11 @@ export default async function DashboardPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full flex flex-col gap-4">
-            <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
+            {campaigns.length === 0 ? (
+                <WelcomeDashboard />
+            ) : (
+                <Dashboard initialCampaigns={activeCampaigns} allReplies={allReplies} completedCampaigns={completedCampaigns} />
+            )}
           </div>
         </main>
       </SidebarInset>

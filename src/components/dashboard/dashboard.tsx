@@ -5,7 +5,11 @@ import React, { useState, useMemo } from 'react';
 import type { Campaign, Reply } from '@/lib/mock-data';
 import ActiveCampaigns from './active-campaigns';
 import RecentReplies from './recent-replies';
-import CreateCampaignForm from './create-campaign-form';
+import WelcomeDashboard from './welcome-dashboard';
+import CreateCampaignDialog from '../dashboard/create-campaign-dialog';
+import { Button } from '../ui/button';
+import { PlusCircle } from 'lucide-react';
+
 
 interface DashboardProps {
     initialCampaigns: Campaign[];
@@ -20,7 +24,7 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
         // Toggle selection off if the same campaign is clicked again
         setSelectedCampaignId(prevId => prevId === id ? null : id);
     };
-
+    
     const filteredReplies = useMemo(() => {
         if (!Array.isArray(allReplies)) return [];
         if (!selectedCampaignId) {
@@ -69,6 +73,9 @@ export default function Dashboard({ initialCampaigns, allReplies, completedCampa
         });
     }, [initialCampaigns, unreadRepliesByCampaign, totalRepliesByCampaign]);
 
+    if (initialCampaigns.length === 0 && allReplies.length === 0) {
+        return <WelcomeDashboard />;
+    }
 
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 lg:gap-6">
