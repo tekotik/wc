@@ -27,11 +27,10 @@ export async function signupAction(
   prevState: SignupFormState,
   formData: FormData
 ): Promise<SignupFormState> {
-  const validatedFields = signupSchema.safeParse({
-      name: formData.get('name'),
-      email: formData.get('email'),
-      password: formData.get('password'),
-  });
+  // Correctly extract form data
+  const data = Object.fromEntries(formData.entries());
+  
+  const validatedFields = signupSchema.safeParse(data);
 
   if (!validatedFields.success) {
     return {
@@ -61,7 +60,6 @@ export async function signupAction(
   session.userRole = newUser.role;
   await session.save();
   
-  // Return a success state instead of redirecting from the action
   return {
     success: true,
     message: "Вы успешно зарегистрированы!",

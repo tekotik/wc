@@ -16,8 +16,10 @@ export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
-    const login = formData.get('login') as string;
-    const password = formData.get('password') as string;
+    // Correctly extract form data
+    const data = Object.fromEntries(formData.entries());
+    const login = data.login as string;
+    const password = data.password as string;
 
     if (!login || !password) {
         return {
