@@ -11,6 +11,7 @@ export async function middleware(request: NextRequest) {
 
   const isAuthRoute = ['/login', '/signup'].includes(pathname);
   const isAdminRoute = pathname.startsWith('/admin');
+  const isDashboardRoute = pathname.startsWith('/dashboard');
 
   // If user is logged in
   if (isLoggedIn) {
@@ -21,9 +22,15 @@ export async function middleware(request: NextRequest) {
       }
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
+
     // If a non-admin user tries to access admin routes, redirect them
     if (isAdminRoute && userRole !== 'admin') {
        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    
+    // If an admin user tries to access the user dashboard, redirect them to admin
+    if (isDashboardRoute && userRole === 'admin') {
+        return NextResponse.redirect(new URL('/admin', request.url));
     }
   } 
   // If user is not logged in

@@ -29,7 +29,7 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const pathname = usePathname();
   const { user } = useAuthContext();
   const isAdmin = user?.role === 'admin';
-  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard');
+  const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard') && (path !== '/admin' || pathname === '/admin');
   const hasUnread = unreadCount > 0;
 
 
