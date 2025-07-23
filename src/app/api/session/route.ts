@@ -23,6 +23,6 @@ export async function GET() {
   }
 
   // If user not found in DB but session exists, treat as logged out
-  session.destroy();
+  await session.destroy();
   return NextResponse.json({ isLoggedIn: false, user: null, balance: 0 });
 }

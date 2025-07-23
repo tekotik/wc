@@ -12,6 +12,7 @@ interface User {
     name: string;
     email: string;
     password: string; // This will be the hash
+    role: 'user' | 'admin';
 }
 
 // Path to the CSV file
@@ -37,7 +38,7 @@ async function readUsers(): Promise<User[]> {
         await fs.access(usersFilePath);
     } catch (error) {
         await logDatabaseAction('readUsers', 'Файл users.csv не найден, создается новый.');
-        await fs.writeFile(usersFilePath, 'id,name,email,password\n', 'utf8');
+        await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
         return [];
     }
 
@@ -102,7 +103,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     }
 }
 
-export async function createUser(userData: Omit<User, 'id' | 'password'> & { password_raw: string }) {
+export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
     return withFileLock(async () => {
         await logDatabaseAction('createUser', `Попытка создания пользователя: ${userData.email}.`);
         const users = await readUsers();
@@ -122,14 +123,13 @@ export async function createUser(userData: Omit<User, 'id' | 'password'> & { pas
             name: userData.name,
             email: userData.email,
             password: hashedPassword,
+            role: userData.email === 'admin' ? 'admin' : 'user', // Assign role
         };
 
         await appendUser(newUser);
         await logDatabaseAction('createUser', `Пользователь ${newUser.email} успешно создан с ID: ${newUser.id}.`);
         
-        // Clone user object to avoid returning the password hash
-        const userToReturn = { ...newUser };
-        delete (userToReturn as any).password;
+        const { password, ...userToReturn } = newUser;
         return userToReturn;
     });
 }

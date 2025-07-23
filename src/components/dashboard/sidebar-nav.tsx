@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useAuthContext } from "@/providers/auth-provider";
 
 interface SidebarNavProps {
   unreadCount?: number;
@@ -26,6 +27,8 @@ interface SidebarNavProps {
 
 export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const pathname = usePathname();
+  const { user } = useAuthContext();
+  const isAdmin = user?.role === 'admin';
   const isActive = (path: string) => pathname.startsWith(path) && (path !== '/dashboard' || pathname === '/dashboard');
   const hasUnread = unreadCount > 0;
 
@@ -50,17 +53,19 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive("/campaigns")}
-        >
-          <Link href="/campaigns">
-            <MessageSquareQuote />
-            Все рассылки
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
+      {isAdmin && (
+        <SidebarMenuItem>
+            <SidebarMenuButton
+            asChild
+            isActive={isActive("/campaigns")}
+            >
+            <Link href="/campaigns">
+                <MessageSquareQuote />
+                Все рассылки
+            </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+      )}
        <SidebarMenuItem>
         <SidebarMenuButton
           asChild
@@ -72,17 +77,19 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-       <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive("/admin")}
-        >
-          <Link href="/admin">
-            <Shield />
-            Админка
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
+       {isAdmin && (
+        <SidebarMenuItem>
+            <SidebarMenuButton
+            asChild
+            isActive={isActive("/admin")}
+            >
+            <Link href="/admin">
+                <Shield />
+                Админка
+            </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+       )}
       <SidebarMenuItem>
         <SidebarMenuButton
           asChild

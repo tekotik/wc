@@ -70,6 +70,7 @@ export async function loginAction(
     const session = await getSession();
     session.userId = user.id;
     session.isLoggedIn = true;
+    session.userRole = user.role;
     await session.save();
 
     console.log("[Login Action] Session saved. Redirecting to dashboard.");

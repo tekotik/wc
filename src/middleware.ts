@@ -7,11 +7,10 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
-  const { isLoggedIn } = session;
+  const { isLoggedIn, userRole } = session;
 
-  const publicRoutes = ['/', '/login', '/signup', '/admin', '/logs'];
   const isAuthRoute = ['/login', '/signup'].includes(pathname);
-  const isProtectedRoute = !publicRoutes.some(route => pathname.startsWith(route)) && pathname !== '/';
+  const isAdminRoute = pathname.startsWith('/admin');
 
   // If user is logged in
   if (isLoggedIn) {
@@ -19,12 +18,18 @@ export async function middleware(request: NextRequest) {
     if (isAuthRoute || pathname === '/') {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
+    // If a non-admin user tries to access admin routes, redirect them
+    if (isAdminRoute && userRole !== 'admin') {
+       return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
   } 
   // If user is not logged in
   else {
+    const isProtectedRoute = !isAuthRoute && pathname !== '/' && !pathname.startsWith('/c/');
     // And trying to access a protected route, redirect to login
     if (isProtectedRoute) {
-      return NextResponse.redirect(new URL('/login', request.url));
+       console.log(`[Middleware] Unauthorized access to ${pathname}, redirecting to login.`);
+       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 

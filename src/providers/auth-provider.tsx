@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 
 // A mock to simulate fetching session data. In a real app this might be an API call.
 async function getSessionData() {
-    const res = await fetch('/api/session');
+    const res = await fetch('/api/session', { cache: 'no-store' }); // Disable cache
     if (res.ok) {
         return res.json();
     }
@@ -18,6 +18,7 @@ interface User {
     id: string;
     name: string;
     email: string;
+    role: 'user' | 'admin';
 }
 
 interface AuthContextType {
@@ -45,8 +46,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchSession = useCallback(async () => {
     // No need to fetch session for public/auth pages, middleware handles redirects
-    const authRoutes = ['/login', '/signup'];
-    if (pathname === '/' || authRoutes.includes(pathname)) {
+    const publicRoutes = ['/', '/login', '/signup'];
+     if (publicRoutes.includes(pathname) || pathname.startsWith('/c/')) {
         setLoading(false);
         return;
     }

@@ -4,6 +4,8 @@
 import type { Campaign } from './mock-data';
 import fs from 'fs/promises';
 import path from 'path';
+import { getSession } from './session';
+import { getUserById } from './user-service';
 
 // Path to the JSON file
 const campaignsFilePath = path.join(process.cwd(), 'src/lib/campaigns.json');
@@ -36,16 +38,17 @@ async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
 
 
 export async function getCampaigns(userId?: string): Promise<Campaign[]> {
+    const session = await getSession();
     const allCampaigns = await readCampaigns();
-    
+
     // Admins see all campaigns, users see only their own
-    const campaigns = userId ? allCampaigns.filter(c => c.userId === userId) : allCampaigns;
+    if (session.isLoggedIn && session.userRole === 'admin') {
+         return allCampaigns.sort((a, b) => new Date(b.submittedAt!).getTime() - new Date(a.submittedAt!).getTime());
+    }
+
+    const campaigns = userId ? allCampaigns.filter(c => c.userId === userId) : [];
     
-    return campaigns.sort((a, b) => {
-        const aTime = a.id.split('_')[1] ? new Date(parseInt(a.id.split('_')[1])).getTime() : 0;
-        const bTime = b.id.split('_')[1] ? new Date(parseInt(b.id.split('_')[1])).getTime() : 0;
-        return bTime - aTime;
-    });
+    return campaigns.sort((a, b) => new Date(b.submittedAt!).getTime() - new Date(a.submittedAt!).getTime());
 }
 
 export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {

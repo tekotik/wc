@@ -59,6 +59,7 @@ export async function signupAction(
   const session = await getSession();
   session.userId = newUser.id;
   session.isLoggedIn = true;
+  session.userRole = newUser.role;
   await session.save();
 
   console.log("[Signup Action] User created and session saved.");
