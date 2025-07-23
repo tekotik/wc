@@ -102,7 +102,7 @@ export default function CreateCampaignFormForAdmin() {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="font-headline">Создать рассылку (Админ)</CardTitle>
+        <CardTitle className="font-headline">Создать рассылку клиенту (Админ)</CardTitle>
         <CardDescription>
           Администраторская форма для быстрого создания и запуска рассылок.
         </CardDescription>

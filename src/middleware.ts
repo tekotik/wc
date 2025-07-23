@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
   const { isLoggedIn } = session;
 
-  const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress'];
+  const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/replies', '/in-progress'];
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   
   console.log(`[Middleware] Path: ${pathname}, IsLoggedIn: ${isLoggedIn}, IsProtectedRoute: ${isProtectedRoute}`);
