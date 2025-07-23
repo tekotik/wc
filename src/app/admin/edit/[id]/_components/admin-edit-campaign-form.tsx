@@ -8,31 +8,37 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, ArrowLeft, CheckCircle, List, Calendar as CalendarIcon, Link as LinkIcon } from "lucide-react";
+import { CheckCircle, ArrowLeft, Link as LinkIcon, List, Calendar as CalendarIcon, User, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import type { Request as RequestType } from "@/lib/request-service";
 import type { Campaign } from "@/lib/mock-data";
-import { updateCampaignAction } from "@/app/campaigns/actions";
+import { updateRequestAction } from "@/app/admin/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-export default function AdminEditCampaignForm({ campaign: initialCampaign }: { campaign: Campaign }) {
+interface AdminEditCampaignFormProps {
+    request: RequestType;
+    user: { name?: string; email?: string; } | null;
+}
+
+export default function AdminEditCampaignForm({ request, user }: AdminEditCampaignFormProps) {
     const { toast } = useToast();
     const router = useRouter();
-    const [campaign, setCampaign] = useState(initialCampaign);
     
-    // Extract initial message count from text and store it in separate state
-    const initialMessageCount = initialCampaign.text.match(/Рассылка на (\d+)/)?.[1] || "";
-    const [messageCount, setMessageCount] = useState(initialMessageCount);
+    // Parse initial campaign details from the request description
+    const initialDetails = JSON.parse(request.description);
 
-    const [date, setDate] = useState<Date | undefined>(
-        initialCampaign.scheduledAt ? new Date(initialCampaign.scheduledAt) : undefined
-    );
-    const [time, setTime] = useState<string>(
-        initialCampaign.scheduledAt ? format(new Date(initialCampaign.scheduledAt), "HH:mm") : ""
-    );
+    const [campaignName, setCampaignName] = useState(initialDetails.name);
+    const [campaignText, setCampaignText] = useState(initialDetails.text);
+    const [baseFileName] = useState(initialDetails.baseFile?.name || 'Файл не прикреплен');
+    const [repliesCsvUrl, setRepliesCsvUrl] = useState('');
+    const [validNumbers, setValidNumbers] = useState('');
+
+    const [date, setDate] = useState<Date | undefined>();
+    const [time, setTime] = useState<string>("");
     const hiddenDateRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -43,48 +49,44 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
             if (hiddenDateRef.current) {
                 hiddenDateRef.current.value = combinedDate.toISOString();
             }
-            setCampaign(c => ({...c, scheduledAt: combinedDate.toISOString()}))
         }
     }, [date, time]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Update the campaign text with the latest message count right before submission
-        const updatedText = campaign.text.replace(/Рассылка на (\d+) сообщений/, `Рассылка на ${messageCount} сообщений`);
-
-        const updatedCampaign: Campaign = {
-            ...campaign,
-            text: updatedText,
-            status: "Одобрено"
+        // Construct the full description for the campaign to be created
+        const campaignDetails = {
+            ...initialDetails,
+            name: campaignName,
+            text: campaignText,
+            repliesCsvUrl: repliesCsvUrl,
+            scheduledAt: hiddenDateRef.current?.value,
+            validNumbers: validNumbers,
         };
         
-        const result = await updateCampaignAction(updatedCampaign);
+        const result = await updateRequestAction({ 
+            id: request.id, 
+            status: 'approved', 
+            admin_comment: 'Одобрено',
+            description: JSON.stringify(campaignDetails) // Pass all data to the action
+        });
 
         if (result.success) {
             toast({
                 title: "Успех!",
-                description: `Рассылка "${campaign.name}" одобрена и сохранена.`
+                description: `Заявка #${request.id} одобрена и рассылка создана.`
             });
             router.push('/admin');
         } else {
              toast({
                 variant: "destructive",
                 title: "Ошибка",
-                description: result.message || "Не удалось сохранить рассылку."
+                description: result.message || "Не удалось одобрить заявку."
             });
         }
     };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { id, value } = e.target;
-        setCampaign({ ...campaign, [id]: value });
-    };
-
-    const handleValidNumbersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessageCount(e.target.value);
-    }
-
+    
     return (
         <>
             <div className="flex items-center gap-4">
@@ -95,22 +97,32 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                 </Link>
             </Button>
             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                Редактирование рассылки
+                Модерация заявки #{request.id}
             </h1>
             </div>
             <Card>
                 <form onSubmit={handleSubmit}>
                     <CardHeader>
-                        <CardTitle className="font-headline">{campaign.name}</CardTitle>
+                        <CardTitle className="font-headline">Проверка и одобрение рассылки</CardTitle>
                         <CardDescription>Отредактируйте детали, одобрите и установите время запуска.</CardDescription>
+                         <div className="pt-4 space-y-2">
+                            <div className="flex items-center gap-2 text-sm">
+                                <User className="h-4 w-4 text-muted-foreground" />
+                                <strong>Пользователь:</strong> {user?.name || 'Неизвестно'} ({request.user_id})
+                            </div>
+                             <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                <strong>Email:</strong> {user?.email || 'Неизвестно'}
+                            </div>
+                        </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                         <div className="grid w-full gap-2">
+                        <div className="grid w-full gap-2">
                             <Label htmlFor="name">Название рассылки</Label>
                             <Input 
                                 id="name" 
-                                value={campaign.name}
-                                onChange={handleInputChange}
+                                value={campaignName}
+                                onChange={(e) => setCampaignName(e.target.value)}
                                 required
                             />
                         </div>
@@ -119,9 +131,17 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                             <Textarea 
                                 id="text" 
                                 rows={8} 
-                                value={campaign.text}
-                                onChange={handleInputChange}
+                                value={campaignText}
+                                onChange={(e) => setCampaignText(e.target.value)}
                                 required
+                            />
+                        </div>
+                         <div className="grid w-full gap-2">
+                            <Label>Прикрепленный файл с базой</Label>
+                            <Input 
+                                value={baseFileName}
+                                disabled
+                                className="italic"
                             />
                         </div>
                         <div className="grid w-full gap-2">
@@ -132,9 +152,10 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                             <Input 
                                 id="repliesCsvUrl"
                                 name="repliesCsvUrl"
-                                value={campaign.repliesCsvUrl || ''}
-                                onChange={handleInputChange}
+                                value={repliesCsvUrl}
+                                onChange={(e) => setRepliesCsvUrl(e.target.value)}
                                 placeholder="https://docs.google.com/spreadsheets/d/.../export?format=csv"
+                                required
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -147,8 +168,8 @@ export default function AdminEditCampaignForm({ campaign: initialCampaign }: { c
                                     id="validNumbers"
                                     name="validNumbers"
                                     type="number"
-                                    value={messageCount}
-                                    onChange={handleValidNumbersChange}
+                                    value={validNumbers}
+                                    onChange={(e) => setValidNumbers(e.target.value)}
                                     placeholder="Например, 3425"
                                     required
                                 />

@@ -80,6 +80,20 @@ export async function getRequests(): Promise<Request[]> {
     });
 }
 
+// Function to get a single request by its ID (for admin use)
+export async function getRequestById(id: number): Promise<Request | null> {
+    return withFileLock(async () => {
+        const session = await getSession();
+        if (!session.isLoggedIn || session.userRole !== 'admin') {
+            // Or maybe allow users to get their own requests by ID? For now, admin only.
+            throw new Error("Unauthorized: Only admins can get requests by ID.");
+        }
+        const requests = await readRequests();
+        return requests.find(r => r.id === id) || null;
+    });
+}
+
+
 // Function to add a new request
 export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
     return withFileLock(async () => {
@@ -93,7 +107,7 @@ export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' |
             admin_comment: ''
         };
 
-        requests.push(requestToAdd);
+        // requests.push(requestToAdd); <-- This is redundant with appendFile
         const csvRow = Papa.unparse([requestToAdd], { header: false });
         await fs.appendFile(requestsFilePath, `${csvRow}\n`);
         
@@ -102,7 +116,7 @@ export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' |
 }
 
 // Function for admin to update a request
-export async function updateRequest(updatedRequestData: Pick<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
+export async function updateRequest(updatedRequestData: Pick<Request, 'id' | 'status' | 'admin_comment'> & { description?: string }): Promise<Request> {
      return withFileLock(async () => {
         const session = await getSession();
         if (!session.isLoggedIn || session.userRole !== 'admin') {
@@ -116,11 +130,17 @@ export async function updateRequest(updatedRequestData: Pick<Request, 'id' | 'st
             throw new Error("Request not found.");
         }
 
+        // Update existing fields
         requests[requestIndex] = {
             ...requests[requestIndex],
             status: updatedRequestData.status,
-            admin_comment: updatedRequestData.admin_comment || '',
+            admin_comment: updatedRequestData.admin_comment || requests[requestIndex].admin_comment,
         };
+        
+        // If an updated description is provided (as it is on approval), update that too
+        if(updatedRequestData.description) {
+            requests[requestIndex].description = updatedRequestData.description;
+        }
 
         await writeRequests(requests);
         return requests[requestIndex];
