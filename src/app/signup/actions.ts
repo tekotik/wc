@@ -5,7 +5,6 @@ import 'server-only';
 import { z } from 'zod';
 import { createUser } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
-import { redirect } from 'next/navigation';
 
 const signupSchema = z.object({
   name: z.string().min(2, { message: "Имя должно содержать не менее 2 символов." }),
@@ -20,7 +19,7 @@ export type SignupFormState = {
         email?: string[];
         password?: string[];
         server?: string;
-    };
+    } | null;
     success: boolean;
 }
 

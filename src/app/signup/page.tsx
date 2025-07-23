@@ -46,11 +46,14 @@ export default function SignupPage() {
       // Redirect to dashboard after showing toast
       router.push('/dashboard');
     } else if (state.message) {
-      toast({
-        variant: "destructive",
-        title: "Ошибка регистрации",
-        description: state.message,
-      });
+      // Don't show toast for initial state message
+      if(state.errors) {
+         toast({
+            variant: "destructive",
+            title: "Ошибка регистрации",
+            description: state.errors.server || state.message,
+        });
+      }
     }
   }, [state, toast, router]);
 
