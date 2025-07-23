@@ -28,7 +28,11 @@ export async function signupAction(
   prevState: SignupFormState,
   formData: FormData
 ): Promise<SignupFormState> {
-  const validatedFields = signupSchema.safeParse(Object.fromEntries(formData));
+  const validatedFields = signupSchema.safeParse({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+  });
 
   if (!validatedFields.success) {
     return {
@@ -65,4 +69,3 @@ export async function signupAction(
     errors: null,
   }
 }
-
