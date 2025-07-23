@@ -28,9 +28,11 @@ export async function signupAction(
   prevState: SignupFormState,
   formData: FormData
 ): Promise<SignupFormState> {
+  console.log("Signup action started.");
   const validatedFields = signupSchema.safeParse(Object.fromEntries(formData));
 
   if (!validatedFields.success) {
+    console.error("Form validation failed:", validatedFields.error.flatten().fieldErrors);
     return {
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
@@ -41,9 +43,12 @@ export async function signupAction(
   const { name, email, password } = validatedFields.data;
   
   try {
-    await createUser({ name, email, password });
+    console.log("Calling createUser for email:", email);
+    await createUser({ name, email, password_raw: password });
+    console.log("createUser successful for email:", email);
   } catch (error) {
      const message = error instanceof Error ? error.message : "Неизвестная ошибка";
+     console.error("Error during createUser:", message);
      return {
         success: false,
         errors: { server: message },
@@ -51,7 +56,9 @@ export async function signupAction(
     }
   }
 
-
+  // This part is for session management, which we'll handle next.
+  // For now, just redirecting on successful creation.
+  console.log("User created, redirecting to dashboard.");
   revalidatePath('/', 'layout');
   redirect('/dashboard');
 }

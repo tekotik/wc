@@ -1,74 +1,100 @@
 
 'use server';
 
-import usersData from './users.json';
 import fs from 'fs/promises';
 import path from 'path';
+import Papa from 'papaparse';
+import * as argon2 from 'argon2';
 
-// This is a mock user type, in a real app you would have a more robust user model
 interface User {
     id: string;
     name: string;
     email: string;
-    password: string; // In a real app, this should be a hash
+    password: string; // This will be the hash
 }
 
-// Path to the JSON file
-const usersFilePath = path.join(process.cwd(), 'src/lib/users.json');
+// Path to the CSV file
+const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
+const fileMutex = { isLocked: false };
 
-// Helper function to read users from the file
+async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
+    while (fileMutex.isLocked) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    fileMutex.isLocked = true;
+    try {
+        return await fn();
+    } finally {
+        fileMutex.isLocked = false;
+    }
+}
+
+// Helper function to read users from the CSV file
 async function readUsers(): Promise<User[]> {
     try {
-        const fileContent = await fs.readFile(usersFilePath, 'utf8');
-        return JSON.parse(fileContent) as User[];
+        await fs.access(usersFilePath);
     } catch (error) {
-        console.error("Failed to read users file:", error);
-        // If the file doesn't exist or is empty, start with the initial data or an empty array
+        // If file doesn't exist, create it with headers
+        await fs.writeFile(usersFilePath, 'id,name,email,password\n', 'utf8');
         return [];
     }
+
+    const fileContent = await fs.readFile(usersFilePath, 'utf8');
+    const result = Papa.parse<User>(fileContent, {
+        header: true,
+        skipEmptyLines: true,
+    });
+    return result.data;
 }
 
-// Helper function to write users to the file
-async function writeUsers(users: User[]): Promise<void> {
-    try {
-        await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), 'utf8');
-    } catch (error) {
-        console.error("Failed to write users file:", error);
-        throw new Error("Could not save user data.");
-    }
+// Helper function to append a user to the CSV file
+async function appendUser(user: User): Promise<void> {
+    const csvRow = Papa.unparse([user], { header: false });
+    await fs.appendFile(usersFilePath, `\n${csvRow}`, 'utf8');
 }
-
 
 export async function getUser(email: string): Promise<User | undefined> {
-    const users = await readUsers();
-    return users.find(user => user.email === email);
+    return withFileLock(async () => {
+        const users = await readUsers();
+        return users.find(user => user.email === email);
+    });
 }
 
-// In a real app, you should use a library like bcrypt to hash and compare passwords.
-// This is a simplified version for demonstration purposes.
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    return password === hash;
+     try {
+        return await argon2.verify(hash, password);
+    } catch (err) {
+        console.error("Error verifying password:", err);
+        return false;
+    }
 }
 
-export async function createUser(userData: Omit<User, 'id'>) {
-    const users = await readUsers();
-    const existingUser = users.find(user => user.email === userData.email);
+export async function createUser(userData: Omit<User, 'id' | 'password'> & { password_raw: string }) {
+    return withFileLock(async () => {
+        console.log("Attempting to create user for:", userData.email);
+        const users = await readUsers();
+        const existingUser = users.find(user => user.email === userData.email);
 
-    if (existingUser) {
-        throw new Error('Пользователь с таким email уже существует.');
-    }
+        if (existingUser) {
+            console.error("User already exists:", userData.email);
+            throw new Error('Пользователь с таким email уже существует.');
+        }
 
-    // In a real app, hash the password before saving
-    // const hashedPassword = await bcrypt.hash(userData.password, 10);
+        console.log("Hashing password for:", userData.email);
+        const hashedPassword = await argon2.hash(userData.password_raw);
+        console.log("Password hashed for:", userData.email);
 
-    const newUser: User = {
-        id: `user_${Date.now()}`,
-        ...userData,
-        // password: hashedPassword,
-    };
+        const newUser: User = {
+            id: `user_${Date.now()}`,
+            name: userData.name,
+            email: userData.email,
+            password: hashedPassword,
+        };
 
-    const updatedUsers = [...users, newUser];
-    await writeUsers(updatedUsers);
+        console.log("Appending new user to CSV:", newUser.id);
+        await appendUser(newUser);
+        console.log("Successfully created user:", newUser.id);
 
-    return newUser;
+        return { ...newUser, password: "" }; // Return user without password hash
+    });
 }
