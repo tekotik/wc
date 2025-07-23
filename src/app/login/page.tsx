@@ -60,8 +60,8 @@ export default function LoginPage() {
           <form action={formAction}>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" placeholder="m@example.com" required/>
+                  <Label htmlFor="email">Логин</Label>
+                  <Input id="email" name="email" type="text" placeholder="m@example.com или admin5" required/>
                   {state.errors?.email && <p className="text-sm text-destructive">{state.errors.email[0]}</p>}
               </div>
               <div className="grid gap-2">
