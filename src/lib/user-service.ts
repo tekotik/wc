@@ -6,6 +6,7 @@ import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
 import { logDatabaseAction } from './log-service';
+import lockfile from 'proper-lockfile';
 
 interface BaseUser {
     id: string;
@@ -27,44 +28,30 @@ interface Admin extends BaseUser {
 // Path to the CSV file
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
 const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
-const lockfilePath = path.join(process.cwd(), 'file.lock');
+const dbFolderPath = path.join(process.cwd(), 'src/lib');
 
-// --- GLOBAL FILE MUTEX ---
-async function acquireLock() {
-    try {
-        // 'wx' flag fails if the path exists. This is an atomic operation.
-        await fs.open(lockfilePath, 'wx');
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-async function releaseLock() {
-    try {
-        await fs.unlink(lockfilePath);
-    } catch (e) {
-        console.error('Failed to release lock:', e);
-    }
-}
-
+// --- GLOBAL FILE MUTEX using a reliable library ---
 export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    let retries = 0;
-    const maxRetries = 100; // Wait for max 5 seconds
-    const waitTime = 50;
-
-    while (!(await acquireLock())) {
-        if (retries >= maxRetries) {
-            throw new Error('Could not acquire file lock, operation timed out.');
-        }
-        await new Promise(resolve => setTimeout(resolve, waitTime)); // Wait and retry
-        retries++;
-    }
-
+    // Ensure the directory exists before trying to lock
+    await fs.mkdir(dbFolderPath, { recursive: true });
+    let release;
     try {
+        // Lock the entire directory to handle operations on multiple files
+        release = await lockfile.lock(dbFolderPath, { 
+            retries: {
+                retries: 20, // Number of retries
+                factor: 3,   // Exponential backoff factor
+                minTimeout: 100, // Minimum time to wait in ms
+                maxTimeout: 500, // Maximum time to wait in ms
+                randomize: true
+            },
+            stale: 10000 // Lock is considered stale after 10 seconds
+        });
         return await fn();
     } finally {
-        await releaseLock();
+        if (release) {
+            await release();
+        }
     }
 }
 
