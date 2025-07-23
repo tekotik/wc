@@ -1,8 +1,9 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 // A mock to simulate fetching session data. In a real app this might be an API call.
 async function getSessionData() {
@@ -40,28 +41,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
+  const pathname = usePathname();
+
+  const fetchSession = useCallback(async () => {
+    // No need to fetch session for public/auth pages, middleware handles redirects
+    const authRoutes = ['/login', '/signup'];
+    if (pathname === '/' || authRoutes.includes(pathname)) {
+        setLoading(false);
+        return;
+    }
+
+    setLoading(true);
+    try {
+        const data = await getSessionData();
+        setUser(data.user);
+        setBalance(data.balance ?? 0);
+        setIsLoggedIn(data.isLoggedIn);
+    } catch (error) {
+        console.error("Failed to fetch session", error);
+        setUser(null);
+        setIsLoggedIn(false);
+    } finally {
+        setLoading(false);
+    }
+  }, [pathname]);
 
   useEffect(() => {
-    const fetchSession = async () => {
-        try {
-            const data = await getSessionData();
-            setUser(data.user);
-            setBalance(data.balance ?? 0);
-            setIsLoggedIn(data.isLoggedIn);
-        } catch (error) {
-            console.error("Failed to fetch session", error);
-            setUser(null);
-            setIsLoggedIn(false);
-        } finally {
-            setLoading(false);
-        }
-    };
     fetchSession();
-  }, []);
+  }, [fetchSession]);
   
   if (loading) {
      return (
-        <div className="flex h-screen w-full items-center justify-center">
+        <div className="flex h-screen w-full items-center justify-center bg-background">
             <Loader2 className="h-8 w-8 animate-spin" />
         </div>
     );
