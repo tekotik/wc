@@ -557,3 +557,4 @@ timestamp,action,details
 2025-07-23T07:16:08.638Z,getUser,Пользователь prusik@mail.ru найден.
 2025-07-23T07:16:08.644Z,verifyPassword,Проверка хеша пароля.
 2025-07-23T07:16:08.872Z,verifyPassword,Результат проверки: успешно.
+2025-07-23T09:41:43.288Z,CREATE_USER,New user created with email: nefor@nefor.com and ID: user_1753263703282
