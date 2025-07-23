@@ -29,16 +29,17 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const pathname = usePathname();
   const { user } = useAuthContext();
   const isAdmin = user?.role === 'admin';
+  
   const isActive = (path: string) => {
-    // Exact match for /admin or /dashboard
-    if (path === '/admin' || path === '/dashboard') {
-        return pathname === path;
+    // Exact match for admin's main page
+    if (path === '/admin') {
+        return pathname === '/admin';
     }
-    // Starts with for other paths
-    return pathname.startsWith(path);
+    // For other paths, check if the pathname starts with it
+    return pathname.startsWith(path) && path !== '/';
   };
+  
   const hasUnread = unreadCount > 0;
-
 
   if (isAdmin) {
     return (
@@ -63,10 +64,11 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
     )
   }
 
+  // --- User-facing menu ---
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={isActive("/dashboard")}>
+        <SidebarMenuButton asChild isActive={pathname === "/dashboard"}>
           <Link href="/dashboard">
             <LayoutDashboard />
             Панель управления
