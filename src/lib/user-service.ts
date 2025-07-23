@@ -178,7 +178,6 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
 
         await appendUser(newUser);
         
-        // Log action FIRST, then return the sanitized user object.
         await logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
         
         const { password, ...userToReturn } = newUser;
