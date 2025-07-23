@@ -1,3 +1,4 @@
+
 import { type NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type SessionData } from '@/lib/session';
@@ -5,50 +6,28 @@ import { sessionOptions, type SessionData } from '@/lib/session';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Get the session from the request cookies
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
   const { isLoggedIn } = session;
 
-  // Define protected routes that require authentication
-  const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/replies', '/in-progress'];
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  const publicRoutes = ['/', '/login', '/signup', '/admin', '/logs'];
+  const isAuthRoute = ['/login', '/signup'].includes(pathname);
+  const isProtectedRoute = !publicRoutes.some(route => pathname.startsWith(route)) && pathname !== '/';
 
-  // Define routes for authenticated users to be redirected away from
-  const authRoutes = ['/login', '/signup'];
-  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
-  
-  // Define public routes that are always accessible
-  const publicRoutes = ['/'];
-  const isPublicRoute = publicRoutes.includes(pathname);
-
-  // If the user is not logged in and trying to access a protected route, redirect to login
-  if (!isLoggedIn && isProtectedRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  // If user is logged in
+  if (isLoggedIn) {
+    // If they are on an auth route, redirect to dashboard
+    if (isAuthRoute || pathname === '/') {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+  } 
+  // If user is not logged in
+  else {
+    // And trying to access a protected route, redirect to login
+    if (isProtectedRoute) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
-  // If the user is logged in and trying to access an auth route (login/signup), redirect to dashboard
-  if (isLoggedIn && isAuthRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
-  }
-  
-  // If the user is not logged in and tries to access the root, redirect to the landing page
-  if (!isLoggedIn && pathname === '/') {
-     return NextResponse.next();
-  }
-
-  // If the user IS logged in and tries to access the root landing page, redirect to dashboard
-  if (isLoggedIn && pathname === '/') {
-     const url = request.nextUrl.clone();
-     url.pathname = '/dashboard';
-     return NextResponse.redirect(url);
-  }
-
-
-  // Otherwise, continue to the requested page
   return NextResponse.next();
 }
 
