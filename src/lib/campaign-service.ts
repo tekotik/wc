@@ -2,7 +2,6 @@
 'use server';
 
 import type { Campaign } from './mock-data';
-import allCampaignsData from './campaigns.json';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -12,12 +11,16 @@ const campaignsFilePath = path.join(process.cwd(), 'src/lib/campaigns.json');
 // Helper function to read campaigns from the file
 async function readCampaigns(): Promise<Campaign[]> {
     try {
+        await fs.access(campaignsFilePath);
         const fileContent = await fs.readFile(campaignsFilePath, 'utf8');
+        if (!fileContent) {
+            return [];
+        }
         return JSON.parse(fileContent) as Campaign[];
     } catch (error) {
-        console.error("Failed to read campaigns file:", error);
-        // If the file doesn't exist or is empty, start with the initial data
-        return allCampaignsData as Campaign[];
+        console.warn("Campaigns file not found or empty, creating a new one.");
+        await writeCampaigns([]);
+        return [];
     }
 }
 
@@ -34,7 +37,11 @@ async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
 
 export async function getCampaigns(): Promise<Campaign[]> {
     const campaigns = await readCampaigns();
-    return campaigns.sort((a, b) => new Date(b.id.split('_')[1]).getTime() - new Date(a.id.split('_')[1]).getTime());
+    return campaigns.sort((a, b) => {
+        const aTime = a.id.split('_')[1] ? new Date(parseInt(a.id.split('_')[1])).getTime() : 0;
+        const bTime = b.id.split('_')[1] ? new Date(parseInt(b.id.split('_')[1])).getTime() : 0;
+        return bTime - aTime;
+    });
 }
 
 export async function addCampaign(newCampaign: Campaign): Promise<Campaign> {

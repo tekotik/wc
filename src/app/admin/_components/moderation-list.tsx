@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle2, XCircle, ShieldQuestion, Download } from "lucide-react";
+import { FileText, CheckCircle2, XCircle, ShieldQuestion, Download, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import type { Campaign, CampaignStatus } from "@/lib/mock-data";
 import { updateCampaignAction } from "@/app/campaigns/actions";
+import Link from 'next/link';
 
 
 interface ModerationListProps {
@@ -106,6 +107,12 @@ export default function ModerationList({ initialCampaigns }: ModerationListProps
                         </div>
                     </div>
                     <div className="flex flex-col md:flex-row items-stretch md:items-center justify-end gap-2 mt-4 md:mt-0 w-full md:w-auto">
+                        <Button asChild size="sm" variant="outline">
+                           <Link href={`/admin/edit/${campaign.id}`}>
+                               <Pencil className="mr-2 h-4 w-4" />
+                               Редактировать
+                           </Link>
+                        </Button>
                         <Button size="sm" onClick={() => handleModerate(campaign.id, "Активна")} className="flex-grow md:flex-grow-0">
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Одобрить и запустить

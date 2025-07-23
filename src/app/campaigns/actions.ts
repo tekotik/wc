@@ -22,6 +22,7 @@ export async function updateCampaignAction(campaign: Campaign) {
         await saveCampaign(campaign);
         revalidatePath('/campaigns');
         revalidatePath(`/campaigns/${campaign.id}/edit`);
+        revalidatePath(`/admin/edit/${campaign.id}`);
         revalidatePath('/admin');
         revalidatePath('/dashboard');
         revalidatePath('/in-progress');
