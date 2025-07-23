@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
-import { logDatabaseAction } from './log-service';
+import { _logDatabaseAction, logDatabaseAction } from './log-service';
 import lockfile from 'proper-lockfile';
 
 interface BaseUser {
@@ -29,23 +29,23 @@ interface Admin extends BaseUser {
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
 const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
 const dbFolderPath = path.join(process.cwd(), 'src/lib');
+const lockfilePath = path.join(dbFolderPath, 'db.lock');
 
 // --- GLOBAL FILE MUTEX using a reliable library ---
 export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    // Ensure the directory exists before trying to lock
     await fs.mkdir(dbFolderPath, { recursive: true });
     let release;
     try {
-        // Lock the entire directory to handle operations on multiple files
         release = await lockfile.lock(dbFolderPath, { 
+            lockfilePath,
             retries: {
-                retries: 20, // Number of retries
-                factor: 3,   // Exponential backoff factor
-                minTimeout: 100, // Minimum time to wait in ms
-                maxTimeout: 500, // Maximum time to wait in ms
+                retries: 5,
+                factor: 2,
+                minTimeout: 100,
+                maxTimeout: 500,
                 randomize: true
             },
-            stale: 10000 // Lock is considered stale after 10 seconds
+            stale: 10000 
         });
         return await fn();
     } finally {
@@ -61,14 +61,12 @@ async function readUsers(): Promise<User[]> {
     try {
         await fs.access(usersFilePath);
     } catch (error) {
-        // If file doesn't exist, create it with a header and return empty array
         await fs.writeFile(usersFilePath, 'id,name,email,password,role\n', 'utf8');
         return [];
     }
 
     const fileContent = await fs.readFile(usersFilePath, 'utf8');
     
-    // If file is empty or just whitespace, it's a valid state (no users)
     if (!fileContent.trim()) {
         return [];
     }
@@ -86,12 +84,11 @@ async function readAdmins(): Promise<Admin[]> {
     try {
         await fs.access(adminsFilePath);
     } catch (error) {
-        // Create the file with the header and the default admin
         const defaultAdmin: Admin = {
             id: 'admin_user',
             name: 'Admin',
             email: 'admin5',
-            password: 'admin5', // Plain text for manual admin
+            password: 'admin5',
             role: 'admin'
         };
         const csvHeader = 'id,name,email,password,role\n';
@@ -105,7 +102,6 @@ async function readAdmins(): Promise<Admin[]> {
         header: true,
         skipEmptyLines: true,
     });
-     // Ensure the default admin exists if the file was somehow empty
     if (result.data.length === 0) {
          const defaultAdmin: Admin = {
             id: 'admin_user',
@@ -124,19 +120,13 @@ async function readAdmins(): Promise<Admin[]> {
 
 // Helper function to append a user to the CSV file
 async function appendUser(user: User): Promise<void> {
-    try {
-        const csvRow = Papa.unparse([user], { header: false });
-        await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
-    } catch (error) {
-        console.error("Error appending user to file:", error);
-        throw new Error("Не удалось записать пользователя в базу данных.");
-    }
+    const csvRow = Papa.unparse([user], { header: false });
+    await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
 }
 
 export async function getUser(email: string): Promise<User | undefined> {
     return withFileLock(async () => {
         const users = await readUsers();
-        // Return the full user object including password for verification
         return users.find(user => user.email === email);
     });
 }
@@ -171,49 +161,51 @@ export async function getUserById(id: string): Promise<Omit<User, 'password'> | 
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {
-        // Prevent argon2 from crashing on undefined/null inputs
         if (!password || !hash) return false;
-        const result = await argon2.verify(hash, password);
-        return result;
+        return await argon2.verify(hash, password);
     } catch (err) {
         console.error("Error verifying password:", err);
         return false;
     }
 }
 
+// Internal function without lock
+async function _createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
+    const users = await readUsers();
+    const existingUser = users.find(user => user.email === userData.email);
+
+    if (existingUser) {
+        throw new Error('Пользователь с таким email уже существует.');
+    }
+
+    let hashedPassword;
+    try {
+        hashedPassword = await argon2.hash(userData.password_raw);
+    } catch (error) {
+        console.error("Error hashing password:", error);
+        throw new Error("Произошла ошибка при регистрации. Пожалуйста, попробуйте снова.");
+    }
+
+    const newUser: User = {
+        id: `user_${Date.now()}`,
+        name: userData.name,
+        email: userData.email,
+        password: hashedPassword,
+        role: 'user',
+    };
+
+    await appendUser(newUser);
+    // Call the internal logging function
+    await _logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
+    
+    const { password, ...userToReturn } = newUser;
+    return userToReturn;
+}
+
+
+// Public function with lock
 export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
-    return withFileLock(async () => {
-        const users = await readUsers();
-        const existingUser = users.find(user => user.email === userData.email);
-
-        if (existingUser) {
-            throw new Error('Пользователь с таким email уже существует.');
-        }
-
-        let hashedPassword;
-        try {
-            hashedPassword = await argon2.hash(userData.password_raw);
-        } catch (error) {
-            console.error("Error hashing password:", error);
-            throw new Error("Произошла ошибка при регистрации. Пожалуйста, попробуйте снова.");
-        }
-
-
-        const newUser: User = {
-            id: `user_${Date.now()}`,
-            name: userData.name,
-            email: userData.email,
-            password: hashedPassword,
-            role: 'user', // Always assign user role on creation
-        };
-
-        await appendUser(newUser);
-        
-        await logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
-        
-        const { password, ...userToReturn } = newUser;
-        return userToReturn;
-    });
+    return withFileLock(() => _createUser(userData));
 }
 
 
