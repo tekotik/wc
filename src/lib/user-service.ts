@@ -54,7 +54,7 @@ async function readUsers(): Promise<User[]> {
 async function appendUser(user: User): Promise<void> {
     await logDatabaseAction('appendUser', `Начало добавления пользователя ${user.email}.`);
     const csvRow = Papa.unparse([user], { header: false });
-    await fs.appendFile(usersFilePath, `\n${csvRow}`, 'utf8');
+    await fs.appendFile(usersFilePath, `${csvRow}\n`, 'utf8');
     await logDatabaseAction('appendUser', `Пользователь ${user.email} успешно добавлен.`);
 }
 
@@ -71,6 +71,21 @@ export async function getUser(email: string): Promise<User | undefined> {
         return user;
     });
 }
+
+export async function getUserById(id: string): Promise<User | undefined> {
+    return withFileLock(async () => {
+        await logDatabaseAction('getUserById', `Поиск пользователя с ID: ${id}.`);
+        const users = await readUsers();
+        const user = users.find(user => user.id === id);
+        if (user) {
+            await logDatabaseAction('getUserById', `Пользователь с ID ${id} найден.`);
+        } else {
+            await logDatabaseAction('getUserById', `Пользователь с ID ${id} не найден.`);
+        }
+        return user;
+    });
+}
+
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
      try {

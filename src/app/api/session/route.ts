@@ -1,6 +1,6 @@
 
 import { getSession } from '@/lib/session';
-import { getUser } from '@/lib/user-service';
+import { getUserById } from '@/lib/user-service'; // Changed from getUser
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -10,18 +10,19 @@ export async function GET() {
     return NextResponse.json({ isLoggedIn: false, user: null, balance: 0 });
   }
 
-  // Fetch the user details, but without the password
-  const user = await getUser(session.userId); 
+  // Fetch the user details by ID, but without the password
+  const user = await getUserById(session.userId); 
 
   if (user) {
     return NextResponse.json({
       isLoggedIn: true,
-      // In a real app, you would fetch more complete user data
       user: { id: user.id, name: user.name, email: user.email },
       // Mock balance
       balance: 1500,
     });
   }
 
+  // If user not found in DB but session exists, treat as logged out
+  session.destroy();
   return NextResponse.json({ isLoggedIn: false, user: null, balance: 0 });
 }
