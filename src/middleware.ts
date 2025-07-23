@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   const { isLoggedIn, userRole } = session;
 
   const isAuthRoute = ['/login', '/signup'].includes(pathname);
-  const isAdminOnlyRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/in-progress');
 
   // If user is not logged in, redirect to login for any protected route
   if (!isLoggedIn) {
@@ -21,30 +21,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If user is logged in
+  // --- At this point, user is logged in ---
+
+  // If a logged in user tries to access login/signup/landing pages
   if (isAuthRoute || pathname === '/') {
-    const destination = userRole === 'admin' ? '/in-progress' : '/dashboard';
+    const destination = userRole === 'admin' ? '/admin' : '/dashboard';
     console.log(`[Middleware] Logged in user on auth route, redirecting to ${destination}.`);
     return NextResponse.redirect(new URL(destination, request.url));
   }
   
-  // If a non-admin tries to access admin routes, redirect to their dashboard
-  if (isAdminOnlyRoute && userRole !== 'admin') {
+  // If a non-admin user tries to access admin-only routes
+  if (isAdminRoute && userRole !== 'admin') {
     console.log(`[Middleware] Non-admin user trying to access ${pathname}, redirecting to dashboard.`);
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   
-  if (pathname === '/admin' && userRole === 'admin') {
-    return NextResponse.redirect(new URL('/in-progress', request.url));
-  }
-  
-  if (userRole === 'admin' && !isAdminOnlyRoute && pathname !== '/in-progress') {
-     console.log(`[Middleware] Admin on non-admin page ${pathname}, allowing access.`);
-     // To prevent redirection loop and allow access to other pages for admin if needed in future
-  }
-
-
-  // All other cases for logged-in users are allowed
+  // All other cases are allowed (admin on admin routes, user on user routes)
   return NextResponse.next();
 }
 
