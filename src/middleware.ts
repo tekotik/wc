@@ -36,6 +36,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   
+  // If an admin user tries to access a non-admin protected route, redirect them to the admin dashboard.
+  if (userRole === 'admin' && !isAdminRoute) {
+    const nonAdminProtectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/replies'];
+    if (nonAdminProtectedRoutes.some(p => pathname.startsWith(p))) {
+        console.log(`[Middleware] Admin trying to access user page ${pathname}. Redirecting to /admin.`);
+        return NextResponse.redirect(new URL('/admin', request.url));
+    }
+  }
+  
   // All other cases are allowed (admin on admin routes, user on user routes)
   return NextResponse.next();
 }
