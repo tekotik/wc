@@ -33,5 +33,15 @@
     "status": "Активна",
     "repliesCsvUrl": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8J73aejbuJZo7scJMjwtUqptRDTcmhaiZQ2OoQCDmuhvrvd9d23xqR7z7EE5J4quWlNo175uHj3Wq/pub?output=csv",
     "scheduledAt": "2025-07-23T07:43:00.000Z"
+  },
+  {
+    "id": "draft_1753246495818",
+    "name": "уцу",
+    "text": "цуу",
+    "baseFile": {
+      "name": "client_secret_631679353809-silglcqhsor7qagnk5pu0j39lbmq2pnl.apps.googleusercontent.com.json",
+      "content": "data:application/json;base64,eyJ3ZWIiOnsiY2xpZW50X2lkIjoiNjMxNjc5MzUzODA5LXNpbGdsY3Foc29yN3FhZ25rNXB1MGozOWxibXEycG5sLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwicHJvamVjdF9pZCI6Imdlbi1sYW5nLWNsaWVudC0wOTI4MTc3ODAzIiwiYXV0aF91cmkiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aCIsInRva2VuX3VyaSI6Imh0dHBzOi8vb2F1dGgyLmdvb2dsZWFwaXMuY29tL3Rva2VuIiwiYXV0aF9wcm92aWRlcl94NTA5X2NlcnRfdXJsIjoiaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vb2F1dGgyL3YxL2NlcnRzIiwiY2xpZW50X3NlY3JldCI6IkdPQ1NQWC1WVlhxQzJFb0ZFc3ZtX2xndWg5eDQ0QWxlQWZvIiwicmVkaXJlY3RfdXJpcyI6WyJodHRwOi8vbG9jYWxob3N0L2F1dGgvZ29vZ2xlL2NhbGxiYWNrIl19fQ=="
+    },
+    "status": "На модерации"
   }
 ]

@@ -75,15 +75,13 @@ export default function CreateCampaignDialog({ children }: { children: React.Rea
         return;
     }
 
-    const newCampaign: Campaign = {
-        id: `draft_${Date.now()}`,
+    const newCampaignData = {
         name: campaignName,
         text: campaignText,
         baseFile: campaignBaseFile,
-        status: "На модерации",
     };
     
-    const result = await createCampaignAction(newCampaign);
+    const result = await createCampaignAction(newCampaignData);
 
     if (result.success) {
         toast({

@@ -4,16 +4,36 @@
 import { addCampaign, updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
 import type { Campaign } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
+import { getSession } from '@/lib/session';
+import { getUserById } from '@/lib/user-service';
 
-export async function createCampaignAction(newCampaign: Campaign) {
+
+export async function createCampaignAction(newCampaign: Omit<Campaign, 'id' | 'status' | 'submittedAt' | 'userId' | 'userName' | 'userEmail'>) {
   try {
-    const createdCampaign = await addCampaign(newCampaign);
+    const session = await getSession();
+    if (!session.isLoggedIn || !session.userId) {
+        throw new Error("User is not authenticated.");
+    }
+    const user = await getUserById(session.userId);
+
+    const campaignToCreate: Campaign = {
+        ...newCampaign,
+        id: `draft_${Date.now()}`,
+        status: "На модерации",
+        submittedAt: new Date().toISOString(),
+        userId: session.userId,
+        userName: user?.name,
+        userEmail: user?.email,
+    };
+
+    const createdCampaign = await addCampaign(campaignToCreate);
     revalidatePath('/campaigns');
     revalidatePath('/dashboard');
     revalidatePath('/admin');
     return { success: true, campaign: createdCampaign };
   } catch (error) {
-    return { success: false, message: 'Не удалось создать рассылку.' };
+    const message = error instanceof Error ? error.message : 'Не удалось создать рассылку.';
+    return { success: false, message };
   }
 }
 

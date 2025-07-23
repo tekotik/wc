@@ -19,7 +19,11 @@ export interface Campaign {
       }>
     },
     scheduledAt?: string;
+    submittedAt?: string; // New field for submission date
     repliesCsvUrl?: string;
+    userId?: string;
+    userName?: string;
+    userEmail?: string;
 }
 
 export interface Reply {
