@@ -34,17 +34,22 @@ async function readRequests(): Promise<Request[]> {
         skipEmptyLines: true,
         transformHeader: header => header.trim(),
         transform: (value, header) => {
-            if (header === 'id') return Number(value);
+            if (header === 'id') {
+                const num = Number(value);
+                return isNaN(num) ? 0 : num; // Return 0 or handle error if not a number
+            }
             return value;
         }
     });
     if (result.errors.length) {
         console.error("Error parsing requests.csv:", result.errors);
+        // Even with errors, return what was parsed successfully
     }
-    return result.data;
+    return result.data.filter(r => r.id); // Filter out any malformed rows where ID couldn't be parsed
 }
 
 async function writeRequests(requests: Request[]): Promise<void> {
+    // Papa.unparse will correctly handle the object array and convert it to CSV string with headers
     const csvData = Papa.unparse(requests);
     await fs.writeFile(requestsFilePath, csvData, 'utf8');
 }
@@ -95,8 +100,8 @@ export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' |
             admin_comment: ''
         };
 
-        const csvRow = Papa.unparse([requestToAdd], { header: false });
-        await fs.appendFile(requestsFilePath, `${csvRow}\n`);
+        const updatedRequests = [...requests, requestToAdd];
+        await writeRequests(updatedRequests);
         
         return requestToAdd;
     });
