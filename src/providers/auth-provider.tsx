@@ -5,9 +5,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { Loader2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-// A mock to simulate fetching session data. In a real app this might be an API call.
 async function getSessionData() {
-    const res = await fetch('/api/session', { cache: 'no-store' }); // Disable cache
+    const res = await fetch('/api/session', { cache: 'no-store' });
     if (res.ok) {
         return res.json();
     }
@@ -45,18 +44,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   const fetchSession = useCallback(async () => {
-    const publicRoutes = ['/', '/login', '/signup'];
-     if (publicRoutes.includes(pathname) || pathname.startsWith('/c/') || pathname.startsWith('/api/')) {
-        setLoading(false);
-        return;
-    }
-
     setLoading(true);
     try {
         const data = await getSessionData();
-        setUser(data.user);
+
+        if (data.isLoggedIn && data.user) {
+             let finalUser = data.user;
+             // Force correct role for admin user to avoid client/server mismatches
+             if (data.user.id === 'admin_user') {
+                finalUser = { ...data.user, role: 'admin' };
+             }
+             setUser(finalUser);
+             setIsLoggedIn(true);
+        } else {
+            setUser(null);
+            setIsLoggedIn(false);
+        }
         setBalance(data.balance ?? 0);
-        setIsLoggedIn(data.isLoggedIn);
     } catch (error) {
         console.error("Failed to fetch session", error);
         setUser(null);
@@ -64,11 +68,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
         setLoading(false);
     }
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     fetchSession();
-  }, [fetchSession]);
+  }, [fetchSession, pathname]); // Re-fetch on path change to ensure consistency
   
   const publicRoutes = ['/', '/login', '/signup'];
   const isPublicPage = publicRoutes.includes(pathname) || pathname.startsWith('/c/') || pathname.startsWith('/api/');
@@ -81,9 +85,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
+  // If on a public page, don't block rendering, just provide the context
+  if (isPublicPage) {
+     return (
+        <AuthContext.Provider value={{ user, loading, balance, setBalance, isLoggedIn }}>
+            {children}
+        </AuthContext.Provider>
+     )
+  }
+
+  // For protected pages, if not logged in and not loading, children won't be rendered
+  // The middleware should have already redirected, but this is a fallback.
   return (
     <AuthContext.Provider value={{ user, loading, balance, setBalance, isLoggedIn }}>
-      {children}
+      {!loading && isLoggedIn ? children : null}
     </AuthContext.Provider>
   );
 };
