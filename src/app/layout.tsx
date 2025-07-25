@@ -19,12 +19,12 @@ export default function RootLayout({
   const isDashboard = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
 
   React.useEffect(() => {
+    // We only manage dashboard-specific classes here.
+    // Landing/auth pages will set their own styles via their specific layout.
     if (isDashboard) {
       document.documentElement.classList.remove('dark');
       document.body.classList.add('dashboard');
     } else {
-      // Landing/auth pages will set their own styles via their specific layout.
-      // We just remove the dashboard class here.
       document.body.classList.remove('dashboard');
     }
   }, [pathname, isDashboard]);
@@ -42,7 +42,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('antialiased', isDashboard ? 'dashboard' : '')}>
+      <body className={cn('antialiased')}>
         <AuthProvider>
           {children}
         </AuthProvider>
