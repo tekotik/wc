@@ -86,7 +86,9 @@ async function readAdmins(): Promise<Admin[]> {
             role: 'admin'
         };
         const adminRow = Papa.unparse([defaultAdmin], { header: false });
-        await fs.appendFile(adminsFilePath, `${adminRow}\n`);
+        // If file is empty (e.g. only has header), overwrite it.
+        const csvHeader = 'id,name,email,password,role\n';
+        await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
         return [defaultAdmin];
     }
     return result.data;
