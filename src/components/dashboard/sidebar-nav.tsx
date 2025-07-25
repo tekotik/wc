@@ -53,7 +53,7 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
             <SidebarMenuButton asChild isActive={isActive("/in-progress")}>
                 <Link href="/in-progress">
                     <History />
-                    Все рассылки
+                    В работе
                 </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
