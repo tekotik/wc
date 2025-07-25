@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   if (isLoggedIn) {
     // and tries to access login/signup page, redirect them based on role
     if (pathname === '/login' || pathname === '/signup') {
-        const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard';
+        const redirectUrl = userRole === 'admin' ? '/admin' : '/';
         return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
     // and is an admin trying to access a user page, redirect to admin page
@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
     }
     // and is a user trying to access an admin page, redirect to dashboard
     if (userRole === 'user' && pathname.startsWith('/admin')) {
-         return NextResponse.redirect(new URL('/dashboard', request.url));
+         return NextResponse.redirect(new URL('/', request.url));
     }
     // Otherwise, allow the request
     return NextResponse.next();
@@ -51,5 +51,3 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
-
-    
