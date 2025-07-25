@@ -64,11 +64,11 @@ export default function CreateCampaignDialog({ children }: { children: React.Rea
     e.preventDefault();
     setIsSubmitting(true);
 
-    if (!campaignName || !campaignText || !campaignBaseFile) {
+    if (!campaignName || !campaignText) {
         toast({
             variant: "destructive",
             title: "Ошибка",
-            description: "Пожалуйста, заполните все поля и прикрепите базу."
+            description: "Пожалуйста, заполните название и текст рассылки."
         });
         setIsSubmitting(false);
         return;

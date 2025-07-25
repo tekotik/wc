@@ -642,3 +642,8 @@ timestamp,action,details
 2025-07-25T16:33:18.503Z,READ_ADMIN,Attempted to read admin with email: admin
 2025-07-25T16:34:22.562Z,READ_ADMIN,Attempted to read admin with email: prusik@mail.ru
 2025-07-25T16:34:22.570Z,READ_USER,Attempted to read user with email: prusik@mail.ru
+2025-07-25T16:42:15.719Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:43:20.633Z,READ_ADMIN,Attempted to read admin with email: Skotik@gmail.com
+2025-07-25T16:43:20.644Z,READ_USER,Attempted to read user with email: Skotik@gmail.com
+2025-07-25T16:43:40.053Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:44:34.360Z,READ_ADMIN,Attempted to read admin with email: admin
