@@ -19,13 +19,11 @@ import { getCampaigns } from "@/lib/campaign-service";
 export const dynamic = 'force-dynamic';
 
 export default async function InProgressPage() {
-  const unreadCount = await getUnreadRepliesCount();
+  // unreadCount is needed for the sidebar, but not directly on this page
+  const unreadCount = await getUnreadRepliesCount(); 
+  
+  // For the admin, `getCampaigns` already fetches all campaigns.
   const allCampaigns = await getCampaigns();
-
-  // For the admin, "All Mailings" should show ALL campaigns, without any filtering.
-  // The getCampaigns() function already correctly handles role-based data fetching.
-  const campaignsToShow = allCampaigns;
-
 
   return (
     <SidebarProvider>
@@ -42,7 +40,7 @@ export default async function InProgressPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full">
-            <InProgressList initialCampaigns={campaignsToShow} />
+            <InProgressList initialCampaigns={allCampaigns} />
           </div>
         </main>
       </SidebarInset>
