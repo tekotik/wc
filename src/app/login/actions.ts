@@ -39,13 +39,11 @@ export async function loginAction(
                 session.userRole = 'admin';
                 await session.save();
                 return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
-            } else {
-                 // Пароль не совпал, но логин админа найден. Сразу возвращаем ошибку.
-                 return { success: false, message: "Неверный логин или пароль." };
             }
+            // Если пароль для админа неверный, не выходим, а продолжаем проверять пользователей.
         }
         
-        // 2. Если не админ, попробовать найти как обычного пользователя
+        // 2. Попробовать найти как обычного пользователя
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -59,7 +57,7 @@ export async function loginAction(
             }
         }
 
-        // 3. Если ни админ, ни пользователь не найдены (или пароль не подошел для пользователя)
+        // 3. Если ни админ, ни пользователь не найдены (или пароль не подошел ни для кого)
         return {
             success: false,
             message: "Неверный логин или пароль.",
