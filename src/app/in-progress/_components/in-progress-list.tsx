@@ -15,48 +15,6 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
 
-const CountdownTimer = ({ targetDate }: { targetDate: string }) => {
-    const calculateTimeLeft = () => {
-        const difference = +new Date(targetDate) - +new Date();
-        let timeLeft: { [key: string]: number } = {};
-
-        if (difference > 0) {
-            timeLeft = {
-                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-                minutes: Math.floor((difference / 1000 / 60) % 60),
-                seconds: Math.floor((difference / 1000) % 60),
-            };
-        }
-
-        return timeLeft;
-    };
-
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    });
-
-    const formatSegment = (value: number) => String(value).padStart(2, '0');
-
-    if (Object.keys(timeLeft).length === 0) {
-        return <span>Запущена!</span>;
-    }
-
-    return (
-        <span>
-            {timeLeft.days > 0 ? `${timeLeft.days}д ` : ''}
-            {formatSegment(timeLeft.hours)}:{formatSegment(timeLeft.minutes)}:{formatSegment(timeLeft.seconds)}
-        </span>
-    );
-};
-
-
 const statusStyles: Record<CampaignStatus, string> = {
     "Черновик": "bg-gray-100 text-gray-800",
     "На модерации": "bg-yellow-100 text-yellow-800",
@@ -118,11 +76,12 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
               </CardHeader>
               <CardContent className="flex-grow space-y-2 text-sm">
                 <p className="text-muted-foreground line-clamp-2">{campaign.text || 'Нет текста'}</p>
-                {campaign.scheduledAt && <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{scheduledDate}</span>
-                </div>}
-                 {campaign.status === "Активна" && campaign.scheduledAt && <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><CountdownTimer targetDate={campaign.scheduledAt} /></div>}
+                {campaign.scheduledAt && (
+                    <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>{scheduledDate}</span>
+                    </div>
+                )}
               </CardContent>
               <CardFooter className="flex-col items-start p-0">
                   <Separator className="mb-2" />
