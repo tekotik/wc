@@ -11,25 +11,25 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = 
     pathname === '/login' || 
     pathname === '/signup' ||
-    pathname === '/' || // The landing page is now at the root
+    pathname === '/landing' || // The landing page is now at /landing
     pathname.startsWith('/c/') ||
     pathname.startsWith('/api/') ||
     pathname.includes('.'); // Assets
 
   // If the user is logged in
   if (isLoggedIn) {
-    // and tries to access login/signup page, redirect them based on role
-    if (pathname === '/login' || pathname === '/signup') {
-        const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard';
+    // and tries to access login/signup/landing page, redirect them based on role
+    if (pathname === '/login' || pathname === '/signup' || pathname === '/landing') {
+        const redirectUrl = userRole === 'admin' ? '/admin' : '/';
         return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
     // and is an admin trying to access a user page, redirect to admin page
-    if (userRole === 'admin' && (pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies'))){
+    if (userRole === 'admin' && (pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies') || pathname === '/')){
          return NextResponse.redirect(new URL('/admin', request.url));
     }
     // and is a user trying to access an admin page, redirect to dashboard
     if (userRole === 'user' && pathname.startsWith('/admin')) {
-         return NextResponse.redirect(new URL('/dashboard', request.url));
+         return NextResponse.redirect(new URL('/', request.url));
     }
     // Otherwise, allow the request
     return NextResponse.next();

@@ -56,8 +56,8 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild isActive={pathname === "/dashboard"}>
-          <Link href="/dashboard">
+        <SidebarMenuButton asChild isActive={pathname === "/"}>
+          <Link href="/">
             <LayoutDashboard />
             Панель управления
           </Link>

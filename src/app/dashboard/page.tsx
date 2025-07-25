@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <Link href="/dashboard" className="flex items-center gap-2 text-sidebar-foreground">
+          <Link href="/" className="flex items-center gap-2 text-sidebar-foreground">
             <ElsenderLogo className="w-7 h-7 text-primary" />
             <span className="text-lg font-bold font-headline group-data-[collapsible=icon]:hidden">Elsender</span>
           </Link>

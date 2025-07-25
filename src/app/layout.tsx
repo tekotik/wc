@@ -14,7 +14,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDashboardPage = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
+  const isDashboardPage = !['/landing', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
 
   // The (landing) layout will handle its own styling.
   // The root layout only needs to handle the dashboard class.
