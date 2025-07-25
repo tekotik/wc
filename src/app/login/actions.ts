@@ -31,7 +31,7 @@ export async function loginAction(
     try {
         const admin = await getAdminByEmail(login);
         if (admin) {
-            const passwordsMatch = (password === admin.password);
+            const passwordsMatch = await verifyPassword(password, admin.password);
             if (passwordsMatch) {
                 const session = await getSession();
                 session.userId = admin.id;

@@ -57,11 +57,12 @@ async function readAdmins(): Promise<Admin[]> {
     try {
         await fs.access(adminsFilePath);
     } catch (error) {
+        const hashedPassword = await argon2.hash('admin5');
         const defaultAdmin: Admin = {
             id: 'admin_user',
             name: 'Admin',
             email: 'admin5',
-            password: 'admin5',
+            password: hashedPassword,
             role: 'admin'
         };
         const csvHeader = 'id,name,email,password,role\n';
@@ -76,11 +77,12 @@ async function readAdmins(): Promise<Admin[]> {
         skipEmptyLines: true,
     });
     if (result.data.length === 0) {
+         const hashedPassword = await argon2.hash('admin5');
          const defaultAdmin: Admin = {
             id: 'admin_user',
             name: 'Admin',
             email: 'admin5',
-            password: 'admin5',
+            password: hashedPassword,
             role: 'admin'
         };
         const adminRow = Papa.unparse([defaultAdmin], { header: false });
@@ -99,11 +101,13 @@ async function appendUser(user: User): Promise<void> {
 
 export async function getUser(email: string): Promise<User | undefined> {
     const users = await readUsers();
+    await logDatabaseAction('READ_USER', `Attempted to read user with email: ${email}`);
     return users.find(user => user.email === email);
 }
 
 export async function getAdminByEmail(email: string): Promise<Admin | undefined> {
     const admins = await readAdmins();
+    await logDatabaseAction('READ_ADMIN', `Attempted to read admin with email: ${email}`);
     return admins.find(admin => admin.email === email);
 }
 
