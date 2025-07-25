@@ -16,7 +16,6 @@ export async function loginAction(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
-    // Correctly extract form data
     const data = Object.fromEntries(formData.entries());
     const login = data.login as string;
     const password = data.password as string;
@@ -29,7 +28,7 @@ export async function loginAction(
     }
 
     try {
-        // First, check if it's an admin
+        // 1. Попробовать найти как администратора
         const admin = await getAdminByEmail(login);
         if (admin) {
             const passwordsMatch = await verifyPassword(password, admin.password);
@@ -41,12 +40,12 @@ export async function loginAction(
                 await session.save();
                 return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
             } else {
-                 // Found admin by email, but password was wrong.
+                 // Пароль не совпал, но логин админа найден. Сразу возвращаем ошибку.
                  return { success: false, message: "Неверный логин или пароль." };
             }
         }
         
-        // If not an admin, check if it's a regular user
+        // 2. Если не админ, попробовать найти как обычного пользователя
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -60,7 +59,7 @@ export async function loginAction(
             }
         }
 
-        // If neither user nor admin found with this login, or password was wrong for the user
+        // 3. Если ни админ, ни пользователь не найдены (или пароль не подошел для пользователя)
         return {
             success: false,
             message: "Неверный логин или пароль.",
