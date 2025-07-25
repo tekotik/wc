@@ -86,6 +86,7 @@ async function readAdmins(): Promise<Admin[]> {
     const result = Papa.parse<Admin>(fileContent, {
         header: true,
         skipEmptyLines: true,
+        quoteChar: '"', // Correctly handle quoted values
     });
     
     // If file has only headers but no data rows, create default admin

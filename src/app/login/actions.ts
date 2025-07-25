@@ -40,7 +40,6 @@ export async function loginAction(
                 await session.save();
                 return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
             }
-            // Если пароль для админа неверный, не выходим, а продолжаем проверять пользователей.
         }
         
         // 2. Попробовать найти как обычного пользователя
