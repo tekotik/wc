@@ -155,7 +155,9 @@ export default function LandingPage() {
         
         return () => {
              cancelAnimationFrame(animationFrameId);
-             observer.unobserve(chart);
+             if (chart) {
+                observer.unobserve(chart);
+             }
         }
     };
     

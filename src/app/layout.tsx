@@ -14,11 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDashboardPage = !['/landing', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
+  // We identify dashboard pages if they are NOT the root landing page or other public pages.
+  const isDashboardPage = pathname !== '/' && !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/c/');
 
-  // The (landing) layout will handle its own styling.
-  // The root layout only needs to handle the dashboard class.
   React.useEffect(() => {
+    // This logic now correctly assumes that the (landing) layout will handle its own styling.
+    // We only add 'dashboard' class for non-landing pages.
     if (isDashboardPage) {
       document.body.classList.add('dashboard');
       document.documentElement.classList.remove('dark');
