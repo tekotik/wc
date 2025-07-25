@@ -42,7 +42,7 @@ export async function loginAction(
             }
         }
         
-        // 2. If not a matching admin, try to find as a regular user
+        // 2. If not an admin, try to find as a regular user
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);

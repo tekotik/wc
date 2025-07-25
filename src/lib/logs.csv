@@ -597,3 +597,9 @@ timestamp,action,details
 2025-07-25T13:36:11.530Z,READ_USER,Attempted to read user with email: admin@elsender.com
 2025-07-25T13:40:20.536Z,READ_ADMIN,Attempted to read admin with email: admin@elsender.com
 2025-07-25T13:40:20.544Z,READ_USER,Attempted to read user with email: admin@elsender.com
+2025-07-25T14:21:03.177Z,READ_ADMIN,Attempted to read admin with email: admin@elsender.com
+2025-07-25T14:21:03.186Z,READ_USER,Attempted to read user with email: admin@elsender.com
+2025-07-25T14:22:00.393Z,READ_ADMIN,Attempted to read admin with email: admin@admin.com
+2025-07-25T14:22:00.403Z,READ_USER,Attempted to read user with email: admin@admin.com
+2025-07-25T14:22:11.074Z,READ_ADMIN,Attempted to read admin with email: admin@admin.com
+2025-07-25T14:22:11.084Z,READ_USER,Attempted to read user with email: admin@admin.com

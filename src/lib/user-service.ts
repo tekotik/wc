@@ -55,17 +55,17 @@ async function readUsers(): Promise<User[]> {
 // Helper function to read admins from the CSV file
 async function readAdmins(): Promise<Admin[]> {
     const createDefaultAdmin = async (): Promise<Admin[]> => {
-        const hashedPassword = await argon2.hash('password');
+        const hashedPassword = await argon2.hash('admin');
         const defaultAdmin: Admin = {
-            id: 'admin_default_id',
-            name: 'Elsender Admin',
-            email: 'admin@elsender.com',
-            password: hashedPassword, // The hashed password is now correctly assigned
+            id: 'admin_user_001',
+            name: 'Main Admin',
+            email: 'admin',
+            password: hashedPassword,
             role: 'admin'
         };
-        const csvHeader = 'id,name,email,password,role\n';
-        const adminRow = Papa.unparse([defaultAdmin], { header: false });
-        await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
+        // Correctly unparse the object to a CSV string with a header
+        const csvData = Papa.unparse([defaultAdmin]);
+        await fs.writeFile(adminsFilePath, csvData, 'utf8');
         return [defaultAdmin];
     };
 
@@ -75,7 +75,7 @@ async function readAdmins(): Promise<Admin[]> {
         const trimmedContent = fileContent.trim();
 
         // If the file is empty or only has a header, create the default admin.
-        if (!trimmedContent || trimmedContent.split('\n').length <= 1) {
+        if (!trimmedContent || trimmedContent.split('\n').length < 2) {
             return await createDefaultAdmin();
         }
 
@@ -185,3 +185,4 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
     const admins = await readAdmins();
     return admins.find(admin => admin.id === id);
 }
+
