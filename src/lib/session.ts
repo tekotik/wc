@@ -17,13 +17,13 @@ export const sessionOptions = {
   },
 };
 
-export function getSession(): Promise<IronSession<SessionData>> {
-  const session = getIronSession<SessionData>(cookies(), sessionOptions);
+export async function getSession(): Promise<IronSession<SessionData>> {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions);
 
   // Initialize session data if it doesn't exist
   if (!session.isLoggedIn) {
     session.isLoggedIn = false;
   }
   
-  return Promise.resolve(session);
+  return session;
 }
