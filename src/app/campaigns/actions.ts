@@ -5,7 +5,7 @@ import { _addRequest } from '@/lib/request-service';
 import type { Campaign } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
-import { addCampaignDraft, updateCampaign as saveCampaign, deleteCampaign as removeCampaign, _addCampaignDraft } from '@/lib/campaign-service';
+import { updateCampaign as saveCampaign, deleteCampaign as removeCampaign, _addCampaignDraft } from '@/lib/campaign-service';
 import { withFileLock } from '@/lib/user-service';
 
 
@@ -64,7 +64,8 @@ export async function updateCampaignAction(campaign: Campaign) {
         revalidatePath('/admin');
         return { success: true, campaign };
     } catch (error) {
-        return { success: false, message: 'Не удалось сохранить рассылку.' };
+        const message = error instanceof Error ? error.message : "Не удалось сохранить рассылку.";
+        return { success: false, message };
     }
 }
 
@@ -74,6 +75,7 @@ export async function deleteCampaignAction(campaignId: string) {
         revalidatePath('/campaigns');
         return { success: true };
     } catch (error) {
-        return { success: false, message: 'Не удалось удалить рассылку.' };
+        const message = error instanceof Error ? error.message : "Не удалось удалить рассылку.";
+        return { success: false, message };
     }
 }

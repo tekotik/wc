@@ -99,15 +99,6 @@ export async function _addCampaignDraft(newCampaignData: Omit<Campaign, 'userId'
 }
 
 
-// This function is for Users submitting a campaign for moderation.
-// It creates a "draft" campaign that they can see in their list.
-export async function addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>) {
-    return withFileLock(async () => {
-        const session = await getSession();
-        return _addCampaignDraft(newCampaignData, session);
-    });
-}
-
 export async function createCampaignAfterApproval(newCampaign: Campaign): Promise<Campaign> {
   return withFileLock(async () => {
     const campaigns = await readCampaigns();
@@ -121,10 +112,8 @@ export async function createCampaignAfterApproval(newCampaign: Campaign): Promis
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
-  return withFileLock(async () => {
     const campaigns = await readCampaigns();
     return campaigns.find(campaign => campaign.id === id) || null;
-  });
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
@@ -133,26 +122,7 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
 
     if (campaignIndex === -1) {
-        // If campaign not found, create a new one. This handles draft creation.
-        // Ensure that new campaigns get the necessary fields.
-        const session = await getSession();
-        if (!session.isLoggedIn || !session.userId) {
-            throw new Error("Authentication required to create a campaign.");
-        }
-        const user = await getUserById(session.userId);
-
-        const newCampaign: Campaign = {
-            id: updatedCampaign.id,
-            name: updatedCampaign.name,
-            text: updatedCampaign.text,
-            baseFile: updatedCampaign.baseFile,
-            status: updatedCampaign.status || 'Черновик',
-            submittedAt: new Date().toISOString(),
-            userId: session.userId,
-            userName: user?.name || 'N/A',
-            userEmail: user?.email || 'N/A',
-        };
-        campaigns.push(newCampaign);
+        throw new Error(`Campaign with ID ${updatedCampaign.id} not found.`);
     } else {
         // Otherwise, update the existing campaign
         campaigns[campaignIndex] = updatedCampaign;

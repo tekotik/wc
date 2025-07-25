@@ -3,7 +3,7 @@
 
 import 'server-only';
 import { z } from 'zod';
-import { getUser, verifyPassword, getAdminByEmail } from '@/lib/user-service';
+import { getUser, verifyPassword, getAdminByEmail, withFileLock } from '@/lib/user-service';
 import { getSession } from '@/lib/session';
 
 export type LoginFormState = {
@@ -29,6 +29,7 @@ export async function loginAction(
     }
 
     try {
+      return await withFileLock(async () => {
         const admin = await getAdminByEmail(login);
         if (admin) {
             const passwordsMatch = (password === admin.password);
@@ -59,6 +60,7 @@ export async function loginAction(
             success: false,
             message: "Неверный логин или пароль.",
         };
+      });
     } catch (error) {
         console.error("Login action error:", error);
         return {

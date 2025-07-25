@@ -176,7 +176,7 @@ export default function CampaignsList({ initialCampaigns }: CampaignsListProps) 
                   </div>
                 )}
                   {campaign.status === 'Отклонено' && campaign.rejectionReason && (
-                  <div className="mt-2 flex items-start gap-2 rounded-md border border-destructive/50 bg-red-50 p-3 text-sm text-red-900">
+                  <div className="mt-2 flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive-foreground">
                     <XCircle className="h-5 w-5 flex-shrink-0" />
                     <div>
                       <span className="font-semibold">Причина отклонения:</span> {campaign.rejectionReason}

@@ -125,17 +125,13 @@ async function appendUser(user: User): Promise<void> {
 }
 
 export async function getUser(email: string): Promise<User | undefined> {
-    return withFileLock(async () => {
-        const users = await readUsers();
-        return users.find(user => user.email === email);
-    });
+    const users = await readUsers();
+    return users.find(user => user.email === email);
 }
 
 export async function getAdminByEmail(email: string): Promise<Admin | undefined> {
-    return withFileLock(async () => {
-        const admins = await readAdmins();
-        return admins.find(admin => admin.email === email);
-    });
+    const admins = await readAdmins();
+    return admins.find(admin => admin.email === email);
 }
 
 export async function getUserById(id: string): Promise<Omit<User, 'password'> | Omit<Admin, 'password'> | null> {
@@ -211,8 +207,7 @@ export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'
 
 // --- Functions to get Admin for internal use ---
 export async function getAdmin(id: string): Promise<Admin | undefined> {
-    return withFileLock(async () => {
-        const admins = await readAdmins();
-        return admins.find(admin => admin.id === id);
-    });
+    const admins = await readAdmins();
+    return admins.find(admin => admin.id === id);
 }
+
