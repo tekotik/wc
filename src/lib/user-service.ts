@@ -54,9 +54,7 @@ async function readUsers(): Promise<User[]> {
 
 // Helper function to read admins from the CSV file
 async function readAdmins(): Promise<Admin[]> {
-    try {
-        await fs.access(adminsFilePath);
-    } catch (error) {
+    const createDefaultAdmin = async () => {
         const hashedPassword = await argon2.hash('admin6');
         const defaultAdmin: Admin = {
             id: 'admin_user_6',
@@ -69,28 +67,32 @@ async function readAdmins(): Promise<Admin[]> {
         const adminRow = Papa.unparse([defaultAdmin], { header: false });
         await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
         return [defaultAdmin];
+    };
+
+    try {
+        await fs.access(adminsFilePath);
+    } catch (error) {
+        // File does not exist, create it with the default admin
+        return await createDefaultAdmin();
     }
 
     const fileContent = await fs.readFile(adminsFilePath, 'utf8');
+    
+    // If file is empty or just whitespace, create default admin
+    if (!fileContent.trim()) {
+        return await createDefaultAdmin();
+    }
+
     const result = Papa.parse<Admin>(fileContent, {
         header: true,
         skipEmptyLines: true,
     });
+    
+    // If file has only headers but no data rows, create default admin
     if (result.data.length === 0) {
-         const hashedPassword = await argon2.hash('admin6');
-         const defaultAdmin: Admin = {
-            id: 'admin_user_6',
-            name: 'Admin',
-            email: 'admin6',
-            password: hashedPassword,
-            role: 'admin'
-        };
-        const adminRow = Papa.unparse([defaultAdmin], { header: false });
-        // If file is empty (e.g. only has header), overwrite it.
-        const csvHeader = 'id,name,email,password,role\n';
-        await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
-        return [defaultAdmin];
+       return await createDefaultAdmin();
     }
+    
     return result.data;
 }
 
