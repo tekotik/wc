@@ -60,33 +60,28 @@ async function readAdmins(): Promise<Admin[]> {
             id: 'admin_default_id',
             name: 'Elsender Admin',
             email: 'admin@elsender.com',
-            password: hashedPassword,
+            password: hashedPassword, // The hashed password is now correctly assigned
             role: 'admin'
         };
         const csvHeader = 'id,name,email,password,role\n';
-        const adminRow = Papa.unparse([defaultAdmin], { header: false, quotes: true });
+        const adminRow = Papa.unparse([defaultAdmin], { header: false });
         await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
         return [defaultAdmin];
     };
 
     try {
-        // Attempt to access the file. If it doesn't exist, the catch block will handle it.
         await fs.access(adminsFilePath);
-        
-        // If the file exists, read its content.
         const fileContent = await fs.readFile(adminsFilePath, 'utf8');
-        
-        // If the file is empty or contains only whitespace/header, create the default admin.
         const trimmedContent = fileContent.trim();
+
+        // If the file is empty or only has a header, create the default admin.
         if (!trimmedContent || trimmedContent.split('\n').length <= 1) {
             return await createDefaultAdmin();
         }
 
-        // If the file has content, parse it.
         const result = Papa.parse<Admin>(fileContent, {
             header: true,
             skipEmptyLines: true,
-            quoteChar: '"', 
         });
 
         if (result.errors.length) {
@@ -94,7 +89,6 @@ async function readAdmins(): Promise<Admin[]> {
             return await createDefaultAdmin();
         }
 
-        // If parsing is successful but there's no data, create default admin.
         if (result.data.length === 0) {
            return await createDefaultAdmin();
         }
@@ -102,7 +96,6 @@ async function readAdmins(): Promise<Admin[]> {
         return result.data;
 
     } catch (error) {
-        // This catch block handles the case where fs.access fails (file doesn't exist).
         return await createDefaultAdmin();
     }
 }
@@ -192,4 +185,3 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
     const admins = await readAdmins();
     return admins.find(admin => admin.id === id);
 }
-
