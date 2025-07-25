@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, History, Pencil, Trash2 } from "lucide-react";
+import { Calendar, History, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { Campaign, CampaignStatus } from "@/lib/mock-data";
 import { Separator } from "@/components/ui/separator";
@@ -75,7 +75,7 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow space-y-2 text-sm">
-                <p className="text-muted-foreground line-clamp-2">{campaign.text || 'Нет текста'}</p>
+                {campaign.text && <p className="text-muted-foreground line-clamp-2">{campaign.text ?? 'Нет текста'}</p>}
                 {campaign.scheduledAt && (
                     <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
