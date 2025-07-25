@@ -25,7 +25,9 @@ export async function updateRequestAction(requestData: Pick<RequestType, 'id' | 
                 userId: updatedRequest.user_id,
                 submittedAt: new Date().toISOString(),
                 userName: user?.name, 
-                userEmail: user?.email
+                userEmail: user?.email,
+                repliesCsvUrl: campaignDetails.repliesCsvUrl,
+                scheduledAt: campaignDetails.scheduledAt,
             };
             await createCampaignAfterApproval(newCampaign);
         }
