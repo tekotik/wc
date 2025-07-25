@@ -59,7 +59,7 @@ async function readAdmins(): Promise<Admin[]> {
         const defaultAdmin: Admin = {
             id: 'admin_user_6',
             name: 'Admin',
-            email: 'admin6',
+            email: 'xdefrin@admin.com',
             password: hashedPassword,
             role: 'admin'
         };

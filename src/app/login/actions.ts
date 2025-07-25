@@ -29,6 +29,7 @@ export async function loginAction(
     }
 
     try {
+        // First, check if it's an admin
         const admin = await getAdminByEmail(login);
         if (admin) {
             const passwordsMatch = await verifyPassword(password, admin.password);
@@ -39,9 +40,13 @@ export async function loginAction(
                 session.userRole = 'admin';
                 await session.save();
                 return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
+            } else {
+                 // Found admin by email, but password was wrong.
+                 return { success: false, message: "Неверный логин или пароль." };
             }
         }
         
+        // If not an admin, check if it's a regular user
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -55,6 +60,7 @@ export async function loginAction(
             }
         }
 
+        // If neither user nor admin found with this login, or password was wrong for the user
         return {
             success: false,
             message: "Неверный логин или пароль.",
