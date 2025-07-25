@@ -5,7 +5,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import { getSession } from './session';
-import { withFileLock } from './user-service'; 
 
 export interface Request {
     id: number;
@@ -54,35 +53,30 @@ async function writeRequests(requests: Request[]): Promise<void> {
 
 
 export async function getRequests(): Promise<Request[]> {
-    return withFileLock(async () => {
-        const session = await getSession();
-        const allRequests = await readRequests();
+    const session = await getSession();
+    const allRequests = await readRequests();
 
-        if (session.isLoggedIn && session.userRole === 'admin') {
-            return allRequests.sort((a,b) => b.id - a.id);
-        }
+    if (session.isLoggedIn && session.userRole === 'admin') {
+        return allRequests.sort((a,b) => b.id - a.id);
+    }
 
-        if (session.isLoggedIn && session.userRole === 'user' && session.userId) {
-            return allRequests.filter(r => r.user_id === session.userId).sort((a,b) => b.id - a.id);
-        }
+    if (session.isLoggedIn && session.userRole === 'user' && session.userId) {
+        return allRequests.filter(r => r.user_id === session.userId).sort((a,b) => b.id - a.id);
+    }
 
-        return [];
-    });
+    return [];
 }
 
 export async function getRequestById(id: number): Promise<Request | null> {
-    return withFileLock(async () => {
-        const session = await getSession();
-        if (!session.isLoggedIn || session.userRole !== 'admin') {
-            throw new Error("Unauthorized: Only admins can get requests by ID.");
-        }
-        const requests = await readRequests();
-        return requests.find(r => r.id === id) || null;
-    });
+    const session = await getSession();
+    if (!session.isLoggedIn || session.userRole !== 'admin') {
+        throw new Error("Unauthorized: Only admins can get requests by ID.");
+    }
+    const requests = await readRequests();
+    return requests.find(r => r.id === id) || null;
 }
 
-// Internal, non-locking version for use inside other locked functions
-export async function _addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
+export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
     const requests = await readRequests();
     const newId = requests.length > 0 ? Math.max(...requests.map(r => r.id)) + 1 : 1;
     
@@ -99,38 +93,29 @@ export async function _addRequest(newRequestData: Omit<Request, 'id' | 'status' 
     return requestToAdd;
 }
 
-
-export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
-    return withFileLock(async () => {
-       return _addRequest(newRequestData);
-    });
-}
-
 export async function updateRequest(updatedRequestData: Pick<Request, 'id' | 'status' | 'admin_comment'> & { description?: string }): Promise<Request> {
-     return withFileLock(async () => {
-        const session = await getSession();
-        if (!session.isLoggedIn || session.userRole !== 'admin') {
-            throw new Error("Unauthorized: Only admins can update requests.");
-        }
-        
-        const requests = await readRequests();
-        const requestIndex = requests.findIndex(r => r.id === updatedRequestData.id);
+    const session = await getSession();
+    if (!session.isLoggedIn || session.userRole !== 'admin') {
+        throw new Error("Unauthorized: Only admins can update requests.");
+    }
+    
+    const requests = await readRequests();
+    const requestIndex = requests.findIndex(r => r.id === updatedRequestData.id);
 
-        if (requestIndex === -1) {
-            throw new Error("Request not found.");
-        }
-        
-        requests[requestIndex] = {
-            ...requests[requestIndex],
-            status: updatedRequestData.status,
-            admin_comment: updatedRequestData.admin_comment || requests[requestIndex].admin_comment,
-        };
-        
-        if(updatedRequestData.description) {
-            requests[requestIndex].description = updatedRequestData.description;
-        }
+    if (requestIndex === -1) {
+        throw new Error("Request not found.");
+    }
+    
+    requests[requestIndex] = {
+        ...requests[requestIndex],
+        status: updatedRequestData.status,
+        admin_comment: updatedRequestData.admin_comment || requests[requestIndex].admin_comment,
+    };
+    
+    if(updatedRequestData.description) {
+        requests[requestIndex].description = updatedRequestData.description;
+    }
 
-        await writeRequests(requests);
-        return requests[requestIndex];
-    });
+    await writeRequests(requests);
+    return requests[requestIndex];
 }

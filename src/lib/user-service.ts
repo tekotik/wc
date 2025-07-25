@@ -5,8 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import Papa from 'papaparse';
 import * as argon2 from 'argon2';
-import { _logDatabaseAction, logDatabaseAction } from './log-service';
-import lockfile from 'proper-lockfile';
+import { logDatabaseAction } from './log-service';
 
 interface BaseUser {
     id: string;
@@ -28,32 +27,6 @@ interface Admin extends BaseUser {
 // Path to the CSV file
 const usersFilePath = path.join(process.cwd(), 'src/lib/users.csv');
 const adminsFilePath = path.join(process.cwd(), 'src/lib/admins.csv');
-const dbFolderPath = path.join(process.cwd(), 'src/lib');
-const lockfilePath = path.join(dbFolderPath, 'db.lock');
-
-// --- GLOBAL FILE MUTEX using a reliable library ---
-export async function withFileLock<T>(fn: () => Promise<T>): Promise<T> {
-    await fs.mkdir(dbFolderPath, { recursive: true });
-    let release;
-    try {
-        release = await lockfile.lock(dbFolderPath, { 
-            lockfilePath,
-            retries: {
-                retries: 5,
-                factor: 2,
-                minTimeout: 100,
-                maxTimeout: 500,
-                randomize: true
-            },
-            stale: 10000 
-        });
-        return await fn();
-    } finally {
-        if (release) {
-            await release();
-        }
-    }
-}
 
 
 // Helper function to read users from the CSV file
@@ -135,23 +108,21 @@ export async function getAdminByEmail(email: string): Promise<Admin | undefined>
 }
 
 export async function getUserById(id: string): Promise<Omit<User, 'password'> | Omit<Admin, 'password'> | null> {
-    return withFileLock(async () => {
-        const admins = await readAdmins();
-        const admin = admins.find(a => a.id === id);
-        if (admin) {
-             const { password, ...adminWithoutPassword } = admin;
-             return adminWithoutPassword;
-        }
+    const admins = await readAdmins();
+    const admin = admins.find(a => a.id === id);
+    if (admin) {
+            const { password, ...adminWithoutPassword } = admin;
+            return adminWithoutPassword;
+    }
 
-        const users = await readUsers();
-        const user = users.find(user => user.id === id);
-        if (user) {
-            const { password, ...userWithoutPassword } = user;
-            return userWithoutPassword;
-        }
-        
-        return null;
-    });
+    const users = await readUsers();
+    const user = users.find(user => user.id === id);
+    if (user) {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+    }
+    
+    return null;
 }
 
 
@@ -165,8 +136,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
     }
 }
 
-// Internal function without lock
-async function _createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
+export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
     const users = await readUsers();
     const existingUser = users.find(user => user.email === userData.email);
 
@@ -191,17 +161,10 @@ async function _createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { 
     };
 
     await appendUser(newUser);
-    // Call the internal logging function
-    await _logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
+    await logDatabaseAction('CREATE_USER', `New user created with email: ${newUser.email} and ID: ${newUser.id}`);
     
     const { password, ...userToReturn } = newUser;
     return userToReturn;
-}
-
-
-// Public function with lock
-export async function createUser(userData: Omit<User, 'id' | 'password' | 'role'> & { password_raw: string }) {
-    return withFileLock(() => _createUser(userData));
 }
 
 
@@ -210,4 +173,3 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
     const admins = await readAdmins();
     return admins.find(admin => admin.id === id);
 }
-

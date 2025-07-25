@@ -5,8 +5,8 @@ import type { Campaign } from './mock-data';
 import fs from 'fs/promises';
 import path from 'path';
 import { getSession } from './session';
-import { getUserById, withFileLock } from './user-service';
-import { _addRequest } from './request-service';
+import { getUserById } from './user-service';
+import { addRequest } from './request-service';
 
 // Path to the JSON file
 const campaignsFilePath = path.join(process.cwd(), 'src/lib/campaigns.json');
@@ -39,7 +39,6 @@ async function writeCampaigns(campaigns: Campaign[]): Promise<void> {
 
 
 export async function getCampaigns(): Promise<Campaign[]> {
-  return withFileLock(async () => {
     const session = await getSession();
     const allCampaigns = await readCampaigns();
 
@@ -56,12 +55,10 @@ export async function getCampaigns(): Promise<Campaign[]> {
 
     // If no user session, or something went wrong, return empty array
     return [];
-  });
 }
 
 // This function is for Admins to create campaigns directly via their form
 export async function addCampaign(newCampaign: Omit<Campaign, 'id'>): Promise<Campaign> {
-  return withFileLock(async () => {
     const campaigns = await readCampaigns();
     const campaignToAdd: Campaign = {
         ...newCampaign,
@@ -72,12 +69,12 @@ export async function addCampaign(newCampaign: Omit<Campaign, 'id'>): Promise<Ca
     await writeCampaigns(updatedCampaigns);
 
     return campaignToAdd;
-  });
 }
 
 
 // Internal, non-locking version for use inside other locked functions
-export async function _addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>, session: any) {
+export async function addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>) {
+    const session = await getSession();
     if (!session.isLoggedIn || !session.userId) {
         throw new Error("Authentication required.");
     }
@@ -100,7 +97,6 @@ export async function _addCampaignDraft(newCampaignData: Omit<Campaign, 'userId'
 
 
 export async function createCampaignAfterApproval(newCampaign: Campaign): Promise<Campaign> {
-  return withFileLock(async () => {
     const campaigns = await readCampaigns();
      if (campaigns.some(c => c.id === newCampaign.id)) {
         throw new Error("Campaign with this ID already exists.");
@@ -108,7 +104,6 @@ export async function createCampaignAfterApproval(newCampaign: Campaign): Promis
     const updatedCampaigns = [...campaigns, newCampaign];
     await writeCampaigns(updatedCampaigns);
     return newCampaign;
-  });
 }
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
@@ -117,7 +112,6 @@ export async function getCampaignById(id: string): Promise<Campaign | null> {
 }
 
 export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
-  return withFileLock(async () => {
     let campaigns = await readCampaigns();
     const campaignIndex = campaigns.findIndex(c => c.id === updatedCampaign.id);
 
@@ -129,11 +123,9 @@ export async function updateCampaign(updatedCampaign: Campaign): Promise<void> {
     }
     
     await writeCampaigns(campaigns);
-  });
 }
 
 export async function deleteCampaign(campaignId: string): Promise<void> {
-  return withFileLock(async () => {
     let campaigns = await readCampaigns();
     const updatedCampaigns = campaigns.filter(c => c.id !== campaignId);
 
@@ -143,5 +135,4 @@ export async function deleteCampaign(campaignId: string): Promise<void> {
     }
 
     await writeCampaigns(updatedCampaigns);
-  });
 }
