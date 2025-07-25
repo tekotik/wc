@@ -28,7 +28,7 @@ export async function loginAction(
     }
 
     try {
-        // 1. Попробовать найти как администратора
+        // 1. Try to find as an administrator first
         const admin = await getAdminByEmail(login);
         if (admin) {
             const passwordsMatch = await verifyPassword(password, admin.password);
@@ -42,7 +42,7 @@ export async function loginAction(
             }
         }
         
-        // 2. Попробовать найти как обычного пользователя
+        // 2. If not a matching admin, try to find as a regular user
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -56,7 +56,7 @@ export async function loginAction(
             }
         }
 
-        // 3. Если ни админ, ни пользователь не найдены (или пароль не подошел ни для кого)
+        // 3. If neither admin nor user is found (or password didn't match for found user)
         return {
             success: false,
             message: "Неверный логин или пароль.",

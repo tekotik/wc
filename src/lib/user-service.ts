@@ -57,14 +57,15 @@ async function readAdmins(): Promise<Admin[]> {
     const createDefaultAdmin = async () => {
         const hashedPassword = await argon2.hash('admin6');
         const defaultAdmin: Admin = {
-            id: 'admin_user_6',
+            id: 'admin_default_id',
             name: 'Admin',
             email: 'xdefrin@admin.com',
             password: hashedPassword,
             role: 'admin'
         };
         const csvHeader = 'id,name,email,password,role\n';
-        const adminRow = Papa.unparse([defaultAdmin], { header: false });
+        // IMPORTANT: Set quotes: true to match the reader config
+        const adminRow = Papa.unparse([defaultAdmin], { header: false, quotes: true });
         await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
         return [defaultAdmin];
     };
@@ -79,7 +80,7 @@ async function readAdmins(): Promise<Admin[]> {
     const fileContent = await fs.readFile(adminsFilePath, 'utf8');
     
     // If file is empty or just whitespace, create default admin
-    if (!fileContent.trim()) {
+    if (!fileContent.trim() || fileContent.trim().split('\n').length <= 1) {
         return await createDefaultAdmin();
     }
 
