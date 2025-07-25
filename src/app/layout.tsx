@@ -14,30 +14,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const isDashboard = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && pathname !== '/';
+  // A simple check to see if we are on a "dashboard" like page.
+  // The new (landing) layout will handle its own styling.
+  const isDashboard = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
 
   React.useEffect(() => {
     if (isDashboard) {
       document.documentElement.classList.remove('dark');
       document.body.classList.add('dashboard');
-      document.body.style.backgroundColor = '';
-      document.body.style.color = '';
     } else {
-      document.documentElement.classList.add('dark');
+      // Landing/auth pages will set their own styles via their specific layout.
+      // We just remove the dashboard class here.
       document.body.classList.remove('dashboard');
-       if (pathname === '/') {
-        document.body.style.backgroundColor = '#111827';
-        document.body.style.color = '#E5E7EB';
-       } else {
-        document.body.style.backgroundColor = '';
-        document.body.style.color = '';
-       }
     }
   }, [pathname, isDashboard]);
 
 
   return (
-    <html lang="ru" className={isDashboard ? '' : 'dark'} suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <title>Elsender — Профессиональные WhatsApp рассылки</title>
         <meta name="description" content="L-Sender — это мощная платформа для автоматизации маркетинга в WhatsApp. Генерируйте тексты с помощью ИИ, управляйте контактами и анализируйте результаты." />
@@ -48,7 +42,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet" />
       </head>
-      <body className={cn('antialiased', isDashboard ? 'dashboard' : 'bg-gray-900 text-gray-200')}>
+      <body className={cn('antialiased', isDashboard ? 'dashboard' : '')}>
         <AuthProvider>
           {children}
         </AuthProvider>

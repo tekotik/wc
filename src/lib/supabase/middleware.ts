@@ -50,23 +50,23 @@ export async function updateSession(request: NextRequest) {
   );
 
   // refreshing the auth session
-  const { data: { user } } = await supabase.auth.getUser();
-  const { pathname } = request.nextUrl;
+  // const { data: { user } } = await supabase.auth.getUser(); // Закомментировано
+  // const { pathname } = request.nextUrl; // Закомментировано
 
-  const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress'];
-  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  // const protectedRoutes = ['/dashboard', '/campaigns', '/analytics', '/admin', '/replies', '/in-progress']; // Закомментировано
+  // const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route)); // Закомментировано
 
-  if (!user && isProtectedRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
-  }
+  // if (!user && isProtectedRoute) { // Закомментировано
+  //   const url = request.nextUrl.clone(); // Закомментировано
+  //   url.pathname = '/login'; // Закомментировано
+  //   return NextResponse.redirect(url); // Закомментировано
+  // } // Закомментировано
 
-   if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname === '/')) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/dashboard';
-    return NextResponse.redirect(url);
-  }
+  //  if (user && (pathname.startsWith('/login') || pathname.startsWith('/signup') || pathname === '/')) { // Закомментировано
+  //   const url = request.nextUrl.clone(); // Закомментировано
+  //   url.pathname = '/dashboard'; // Закомментировано
+  //   return NextResponse.redirect(url); // Закомментировано
+  // } // Закомментировано
 
   return supabaseResponse;
 }
