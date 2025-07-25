@@ -22,12 +22,9 @@ export default async function InProgressPage() {
   const unreadCount = await getUnreadRepliesCount();
   const allCampaigns = await getCampaigns();
 
-  // Filter campaigns that should be displayed on the "In Progress" page
-  // For admins, this shows all. For users, it will be filtered by their ID in getCampaigns.
-  const inProgressCampaigns = allCampaigns.filter(c => 
-    c.status === "Активна" || 
-    c.status === "Завершена"
-  );
+  // For the admin, "All Mailings" should show ALL campaigns, without any filtering.
+  // The getCampaigns() function already correctly handles role-based data fetching.
+  const campaignsToShow = allCampaigns;
 
 
   return (
@@ -45,7 +42,7 @@ export default async function InProgressPage() {
         <DashboardHeader unreadCount={unreadCount} />
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="max-w-7xl mx-auto w-full">
-            <InProgressList initialCampaigns={inProgressCampaigns} />
+            <InProgressList initialCampaigns={campaignsToShow} />
           </div>
         </main>
       </SidebarInset>

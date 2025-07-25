@@ -647,3 +647,5 @@ timestamp,action,details
 2025-07-25T16:43:20.644Z,READ_USER,Attempted to read user with email: Skotik@gmail.com
 2025-07-25T16:43:40.053Z,READ_ADMIN,Attempted to read admin with email: admin
 2025-07-25T16:44:34.360Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T17:12:32.114Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T17:40:39.952Z,READ_ADMIN,Attempted to read admin with email: admin
