@@ -8,28 +8,29 @@ export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request.cookies, sessionOptions);
   const { isLoggedIn, userRole } = session;
 
+  // Define public routes that don't require authentication
   const isPublicRoute = 
+    pathname === '/' || // The landing page is now public at the root
     pathname === '/login' || 
     pathname === '/signup' ||
-    pathname === '/landing' || // The landing page is now at /landing
     pathname.startsWith('/c/') ||
     pathname.startsWith('/api/') ||
-    pathname.includes('.'); // Assets
+    pathname.includes('.'); // Assets like images, icons, etc.
 
   // If the user is logged in
   if (isLoggedIn) {
-    // and tries to access login/signup/landing page, redirect them based on role
-    if (pathname === '/login' || pathname === '/signup' || pathname === '/landing') {
-        const redirectUrl = userRole === 'admin' ? '/admin' : '/';
+    // and tries to access login/signup page, redirect them based on role
+    if (pathname === '/login' || pathname === '/signup') {
+        const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard';
         return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
     // and is an admin trying to access a user page, redirect to admin page
-    if (userRole === 'admin' && (pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies') || pathname === '/')){
+    if (userRole === 'admin' && (pathname.startsWith('/dashboard') || pathname.startsWith('/campaigns') || pathname.startsWith('/analytics') || pathname.startsWith('/replies'))){
          return NextResponse.redirect(new URL('/admin', request.url));
     }
     // and is a user trying to access an admin page, redirect to dashboard
     if (userRole === 'user' && pathname.startsWith('/admin')) {
-         return NextResponse.redirect(new URL('/', request.url));
+         return NextResponse.redirect(new URL('/dashboard', request.url));
     }
     // Otherwise, allow the request
     return NextResponse.next();
@@ -50,3 +51,5 @@ export const config = {
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
+
+    
