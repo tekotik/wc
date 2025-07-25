@@ -81,23 +81,28 @@ export async function getRequestById(id: number): Promise<Request | null> {
     });
 }
 
+// Internal, non-locking version for use inside other locked functions
+export async function _addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
+    const requests = await readRequests();
+    const newId = requests.length > 0 ? Math.max(...requests.map(r => r.id)) + 1 : 1;
+    
+    const requestToAdd: Request = {
+        id: newId,
+        ...newRequestData,
+        status: 'pending',
+        admin_comment: ''
+    };
+
+    const updatedRequests = [...requests, requestToAdd];
+    await writeRequests(updatedRequests);
+    
+    return requestToAdd;
+}
+
 
 export async function addRequest(newRequestData: Omit<Request, 'id' | 'status' | 'admin_comment'>): Promise<Request> {
     return withFileLock(async () => {
-        const requests = await readRequests();
-        const newId = requests.length > 0 ? Math.max(...requests.map(r => r.id)) + 1 : 1;
-        
-        const requestToAdd: Request = {
-            id: newId,
-            ...newRequestData,
-            status: 'pending',
-            admin_comment: ''
-        };
-
-        const updatedRequests = [...requests, requestToAdd];
-        await writeRequests(updatedRequests);
-        
-        return requestToAdd;
+       return _addRequest(newRequestData);
     });
 }
 

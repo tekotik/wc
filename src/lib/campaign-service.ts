@@ -6,7 +6,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { getSession } from './session';
 import { getUserById, withFileLock } from './user-service';
-import { addRequest } from './request-service';
+import { _addRequest } from './request-service';
 
 // Path to the JSON file
 const campaignsFilePath = path.join(process.cwd(), 'src/lib/campaigns.json');
@@ -75,29 +75,36 @@ export async function addCampaign(newCampaign: Omit<Campaign, 'id'>): Promise<Ca
   });
 }
 
+
+// Internal, non-locking version for use inside other locked functions
+export async function _addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>, session: any) {
+    if (!session.isLoggedIn || !session.userId) {
+        throw new Error("Authentication required.");
+    }
+    const user = await getUserById(session.userId);
+    const campaigns = await readCampaigns();
+    
+    const campaignDraft: Campaign = {
+        ...newCampaignData,
+        status: 'На модерации',
+        userId: session.userId,
+        userName: user?.name,
+        userEmail: user?.email,
+        submittedAt: new Date().toISOString(),
+    };
+
+    const updatedCampaigns = [...campaigns, campaignDraft];
+    await writeCampaigns(updatedCampaigns);
+    return campaignDraft;
+}
+
+
 // This function is for Users submitting a campaign for moderation.
 // It creates a "draft" campaign that they can see in their list.
 export async function addCampaignDraft(newCampaignData: Omit<Campaign, 'userId' | 'userName' | 'userEmail' | 'submittedAt'>) {
     return withFileLock(async () => {
         const session = await getSession();
-        if (!session.isLoggedIn || !session.userId) {
-            throw new Error("Authentication required.");
-        }
-        const user = await getUserById(session.userId);
-        const campaigns = await readCampaigns();
-        
-        const campaignDraft: Campaign = {
-            ...newCampaignData,
-            status: 'На модерации',
-            userId: session.userId,
-            userName: user?.name,
-            userEmail: user?.email,
-            submittedAt: new Date().toISOString(),
-        };
-
-        const updatedCampaigns = [...campaigns, campaignDraft];
-        await writeCampaigns(updatedCampaigns);
-        return campaignDraft;
+        return _addCampaignDraft(newCampaignData, session);
     });
 }
 

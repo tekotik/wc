@@ -1,11 +1,11 @@
 
 'use server';
 
-import { addRequest } from '@/lib/request-service';
+import { _addRequest } from '@/lib/request-service';
 import type { Campaign } from '@/lib/mock-data';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/session';
-import { addCampaignDraft, updateCampaign as saveCampaign, deleteCampaign as removeCampaign } from '@/lib/campaign-service';
+import { addCampaignDraft, updateCampaign as saveCampaign, deleteCampaign as removeCampaign, _addCampaignDraft } from '@/lib/campaign-service';
 import { withFileLock } from '@/lib/user-service';
 
 
@@ -23,12 +23,11 @@ export async function createCampaignRequestAction(newCampaignData: Omit<Campaign
       const campaignId = `campaign_draft_${Date.now()}`;
 
       // 2. Create the campaign draft that the user will see
-      // This function no longer needs its own lock, as it's wrapped by this action's lock.
-      await addCampaignDraft({
+      // Use the internal, non-locking version of the function
+      await _addCampaignDraft({
           ...newCampaignData,
           id: campaignId,
-          status: 'На модерации', // Set status immediately
-      });
+      }, session);
 
       // 3. Create the moderation request for the admin
       const requestDescription = JSON.stringify({
@@ -37,8 +36,8 @@ export async function createCampaignRequestAction(newCampaignData: Omit<Campaign
           baseFile: newCampaignData.baseFile,
       });
       
-      // This function no longer needs its own lock.
-      await addRequest({
+      // Use the internal, non-locking version of the function
+      await _addRequest({
           user_id: session.userId,
           description: requestDescription,
           campaignId: campaignId, // Link request to the campaign draft
