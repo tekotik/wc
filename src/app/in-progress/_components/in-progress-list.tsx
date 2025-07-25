@@ -79,13 +79,13 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
         setCampaigns(initialCampaigns);
     }, [initialCampaigns]);
 
-    const handleStatusChange = async (campaign: Campaign, newStatus: "Активна" | "Отклонено") => { // "Отклонено" is "Остановлена"
+    const handleStatusChange = async (campaign: Campaign, newStatus: "Активна" | "Завершена") => {
         const result = await updateCampaignAction({ ...campaign, status: newStatus });
         if (result.success && result.campaign) {
             setCampaigns(prev => prev.map(c => c.id === campaign.id ? result.campaign! : c));
             toast({
                 title: "Статус обновлен!",
-                description: `Рассылка "${result.campaign.name}" теперь имеет статус "${newStatus === 'Активна' ? 'Активна' : 'Остановлена'}".`
+                description: `Рассылка "${result.campaign.name}" теперь имеет статус "${newStatus}".`
             });
         } else {
             toast({ variant: "destructive", title: "Ошибка", description: result.message });
@@ -113,7 +113,7 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
             label: "Запущена",
             actions: (campaign) => (
                 <>
-                    <Button variant="ghost" size="icon" onClick={() => handleStatusChange(campaign, "Отклонено")}><Pause className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleStatusChange(campaign, "Завершена")}><Pause className="h-4 w-4" /></Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild><Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button></AlertDialogTrigger>
                         <AlertDialogContent>
@@ -134,29 +134,6 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
                     {campaign.scheduledAt && <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground" /><CountdownTimer targetDate={campaign.scheduledAt} /></div>}
                 </>
             )
-        },
-        "Отклонено": { // Representing "Остановлена"
-            badgeClass: "bg-yellow-100 text-yellow-800 border-yellow-200",
-            label: "Остановлена",
-            actions: (campaign) => (
-                 <>
-                    <Button variant="ghost" size="icon" onClick={() => handleStatusChange(campaign, "Активна")}><Play className="h-4 w-4" /></Button>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild><Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button></AlertDialogTrigger>
-                         <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
-                                <AlertDialogDescription>Это действие необратимо. Рассылка "{campaign.name}" будет удалена.</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Отмена</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(campaign.id)} className="bg-destructive hover:bg-destructive/90">Удалить</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </>
-            ),
-            details: () => null,
         },
         "Завершена": {
             badgeClass: "bg-gray-100 text-gray-800 border-gray-200",
@@ -190,7 +167,7 @@ export default function InProgressList({ initialCampaigns }: InProgressListProps
           <div>
               <h1 className="text-2xl font-bold font-headline">Рассылки в работе</h1>
               <p className="text-muted-foreground">
-                  Здесь находятся все ваши запущенные, остановленные и завершенные рассылки.
+                  Здесь находятся все ваши запущенные и завершенные рассылки.
               </p>
           </div>
       </div>

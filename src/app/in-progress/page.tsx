@@ -26,7 +26,6 @@ export default async function InProgressPage() {
   // For admins, this shows all. For users, it will be filtered by their ID in getCampaigns.
   const inProgressCampaigns = allCampaigns.filter(c => 
     c.status === "Активна" || 
-    c.status === "Отклонено" || // "Отклонено" is used for "Остановлена"
     c.status === "Завершена"
   );
 

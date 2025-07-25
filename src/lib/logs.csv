@@ -629,3 +629,12 @@ timestamp,action,details
 2025-07-25T15:08:25.489Z,READ_USER,Attempted to read user with email: admin5
 2025-07-25T15:26:28.424Z,READ_ADMIN,Attempted to read admin with email: admin@admini.com
 2025-07-25T15:26:28.435Z,READ_USER,Attempted to read user with email: admin@admini.com
+2025-07-25T16:11:06.431Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:11:09.802Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:11:11.860Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:11:26.504Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:22:25.417Z,READ_ADMIN,Attempted to read admin with email: Skotik@gmail.com
+2025-07-25T16:22:25.424Z,READ_USER,Attempted to read user with email: Skotik@gmail.com
+2025-07-25T16:25:17.381Z,READ_ADMIN,Attempted to read admin with email: admin
+2025-07-25T16:25:44.386Z,READ_ADMIN,Attempted to read admin with email: Skotik@gmail.com
+2025-07-25T16:25:44.392Z,READ_USER,Attempted to read user with email: Skotik@gmail.com
