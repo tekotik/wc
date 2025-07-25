@@ -54,48 +54,57 @@ async function readUsers(): Promise<User[]> {
 
 // Helper function to read admins from the CSV file
 async function readAdmins(): Promise<Admin[]> {
-    const createDefaultAdmin = async () => {
-        const hashedPassword = await argon2.hash('admin6');
+    const createDefaultAdmin = async (): Promise<Admin[]> => {
+        const hashedPassword = await argon2.hash('password');
         const defaultAdmin: Admin = {
             id: 'admin_default_id',
-            name: 'Admin',
-            email: 'xdefrin@admin.com',
+            name: 'Elsender Admin',
+            email: 'admin@elsender.com',
             password: hashedPassword,
             role: 'admin'
         };
         const csvHeader = 'id,name,email,password,role\n';
-        // IMPORTANT: Set quotes: true to match the reader config
         const adminRow = Papa.unparse([defaultAdmin], { header: false, quotes: true });
         await fs.writeFile(adminsFilePath, `${csvHeader}${adminRow}\n`, 'utf8');
         return [defaultAdmin];
     };
 
     try {
+        // Attempt to access the file. If it doesn't exist, the catch block will handle it.
         await fs.access(adminsFilePath);
+        
+        // If the file exists, read its content.
+        const fileContent = await fs.readFile(adminsFilePath, 'utf8');
+        
+        // If the file is empty or contains only whitespace/header, create the default admin.
+        const trimmedContent = fileContent.trim();
+        if (!trimmedContent || trimmedContent.split('\n').length <= 1) {
+            return await createDefaultAdmin();
+        }
+
+        // If the file has content, parse it.
+        const result = Papa.parse<Admin>(fileContent, {
+            header: true,
+            skipEmptyLines: true,
+            quoteChar: '"', 
+        });
+
+        if (result.errors.length) {
+            console.error("Error parsing admins.csv, recreating with default:", result.errors);
+            return await createDefaultAdmin();
+        }
+
+        // If parsing is successful but there's no data, create default admin.
+        if (result.data.length === 0) {
+           return await createDefaultAdmin();
+        }
+        
+        return result.data;
+
     } catch (error) {
-        // File does not exist, create it with the default admin
+        // This catch block handles the case where fs.access fails (file doesn't exist).
         return await createDefaultAdmin();
     }
-
-    const fileContent = await fs.readFile(adminsFilePath, 'utf8');
-    
-    // If file is empty or just whitespace, create default admin
-    if (!fileContent.trim() || fileContent.trim().split('\n').length <= 1) {
-        return await createDefaultAdmin();
-    }
-
-    const result = Papa.parse<Admin>(fileContent, {
-        header: true,
-        skipEmptyLines: true,
-        quoteChar: '"', // Correctly handle quoted values
-    });
-    
-    // If file has only headers but no data rows, create default admin
-    if (result.data.length === 0) {
-       return await createDefaultAdmin();
-    }
-    
-    return result.data;
 }
 
 
@@ -183,3 +192,4 @@ export async function getAdmin(id: string): Promise<Admin | undefined> {
     const admins = await readAdmins();
     return admins.find(admin => admin.id === id);
 }
+
