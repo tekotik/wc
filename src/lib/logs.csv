@@ -572,3 +572,5 @@ timestamp,action,details
 2025-07-25T08:36:33.740Z,READ_USER,Attempted to read user with email: admin5
 2025-07-25T08:36:46.669Z,READ_ADMIN,Attempted to read admin with email: admin5
 2025-07-25T08:36:47.034Z,READ_USER,Attempted to read user with email: admin5
+2025-07-25T08:48:59.451Z,READ_ADMIN,Attempted to read admin with email: admin5
+2025-07-25T08:49:00.217Z,READ_USER,Attempted to read user with email: admin5

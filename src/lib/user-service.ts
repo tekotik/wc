@@ -57,11 +57,11 @@ async function readAdmins(): Promise<Admin[]> {
     try {
         await fs.access(adminsFilePath);
     } catch (error) {
-        const hashedPassword = await argon2.hash('admin5');
+        const hashedPassword = await argon2.hash('admin6');
         const defaultAdmin: Admin = {
-            id: 'admin_user',
+            id: 'admin_user_6',
             name: 'Admin',
-            email: 'admin5',
+            email: 'admin6',
             password: hashedPassword,
             role: 'admin'
         };
@@ -77,11 +77,11 @@ async function readAdmins(): Promise<Admin[]> {
         skipEmptyLines: true,
     });
     if (result.data.length === 0) {
-         const hashedPassword = await argon2.hash('admin5');
+         const hashedPassword = await argon2.hash('admin6');
          const defaultAdmin: Admin = {
-            id: 'admin_user',
+            id: 'admin_user_6',
             name: 'Admin',
-            email: 'admin5',
+            email: 'admin6',
             password: hashedPassword,
             role: 'admin'
         };
