@@ -603,3 +603,7 @@ timestamp,action,details
 2025-07-25T14:22:00.403Z,READ_USER,Attempted to read user with email: admin@admin.com
 2025-07-25T14:22:11.074Z,READ_ADMIN,Attempted to read admin with email: admin@admin.com
 2025-07-25T14:22:11.084Z,READ_USER,Attempted to read user with email: admin@admin.com
+2025-07-25T14:24:40.801Z,READ_ADMIN,Attempted to read admin with email: admin@admini.com
+2025-07-25T14:24:40.811Z,READ_USER,Attempted to read user with email: admin@admini.com
+2025-07-25T14:25:45.753Z,READ_ADMIN,Attempted to read admin with email: admin@admini.com
+2025-07-25T14:25:45.761Z,READ_USER,Attempted to read user with email: admin@admini.com

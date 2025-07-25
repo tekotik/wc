@@ -31,7 +31,7 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
   const isAdmin = user?.role === 'admin';
   
   const isActive = (path: string) => {
-    // For dashboard, we want an exact match, not startsWith
+    if (path === '/admin') return pathname === '/admin';
     if (path === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(path);
   };
@@ -42,10 +42,18 @@ export default function SidebarNav({ unreadCount = 0 }: SidebarNavProps) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={isActive("/admin")}>
+                <Link href="/admin">
+                    <Shield />
+                    Модерация
+                </Link>
+            </SidebarMenuButton>
+        </SidebarMenuItem>
+         <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={isActive("/in-progress")}>
                 <Link href="/in-progress">
                     <History />
-                    В работе
+                    Все рассылки
                 </Link>
             </SidebarMenuButton>
         </SidebarMenuItem>
