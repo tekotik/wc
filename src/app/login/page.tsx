@@ -3,7 +3,7 @@
 
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
-import { loginAction, type LoginFormState } from "./actions";
+import { loginAction, type LoginFormState, autoLoginAdminAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -48,7 +48,20 @@ export default function LoginPage() {
         description: state.message,
       });
     }
-  }, [state, router]);
+  }, [state, router, toast]);
+
+  const handleAutoLogin = async () => {
+    const result = await autoLoginAdminAction();
+    if (result.success) {
+        router.push(result.redirectUrl!);
+    } else {
+         toast({
+            variant: "destructive",
+            title: "Ошибка авто-входа",
+            description: result.message,
+        });
+    }
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -81,6 +94,11 @@ export default function LoginPage() {
                     <Link href="/signup">
                         Зарегистрироваться
                     </Link>
+                </Button>
+            </div>
+            <div className="mt-4 text-center text-sm">
+                <Button variant="link" onClick={handleAutoLogin}>
+                    Автоматический вход для администратора
                 </Button>
             </div>
         </CardContent>

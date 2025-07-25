@@ -42,7 +42,7 @@ export async function loginAction(
             }
         }
         
-        // 2. If not an admin, try to find as a regular user
+        // 2. If not an admin (or password was wrong), try to find as a regular user
         const user = await getUser(login);
         if (user) {
             const passwordsMatch = await verifyPassword(password, user.password);
@@ -69,6 +69,29 @@ export async function loginAction(
         };
     }
 }
+
+export async function autoLoginAdminAction(): Promise<LoginFormState> {
+    try {
+        const admin = await getAdminByEmail('admin');
+        if (!admin) {
+            return { success: false, message: 'Учетная запись администратора по умолчанию не найдена.' };
+        }
+        const session = await getSession();
+        session.userId = admin.id;
+        session.isLoggedIn = true;
+        session.userRole = 'admin';
+        await session.save();
+        return { success: true, message: 'Успешный вход!', redirectUrl: '/admin' };
+
+    } catch (error) {
+        console.error("Auto-login action error:", error);
+        return {
+            success: false,
+            message: "Произошла непредвиденная ошибка на сервере.",
+        };
+    }
+}
+
 
 export async function logoutAction() {
     const { redirect } = await import('next/navigation');
