@@ -14,20 +14,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  // A simple check to see if we are on a "dashboard" like page.
-  // The new (landing) layout will handle its own styling.
-  const isDashboard = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
+  const isDashboardPage = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
 
+  // The (landing) layout will handle its own styling.
+  // The root layout only needs to handle the dashboard class.
   React.useEffect(() => {
-    // We only manage dashboard-specific classes here.
-    // Landing/auth pages will set their own styles via their specific layout.
-    if (isDashboard) {
-      document.documentElement.classList.remove('dark');
+    if (isDashboardPage) {
       document.body.classList.add('dashboard');
+      document.documentElement.classList.remove('dark');
     } else {
       document.body.classList.remove('dashboard');
     }
-  }, [pathname, isDashboard]);
+  }, [isDashboardPage]);
 
 
   return (
