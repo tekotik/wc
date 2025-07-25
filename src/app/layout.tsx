@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -15,11 +16,11 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   // We identify dashboard pages if they are NOT the root landing page or other public pages.
-  const isDashboardPage = pathname !== '/' && !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/c/');
+  const isDashboardPage = !['/', '/login', '/signup'].includes(pathname) && !pathname.startsWith('/c/');
 
   React.useEffect(() => {
-    // This logic now correctly assumes that the (landing) layout will handle its own styling.
     // We only add 'dashboard' class for non-landing pages.
+    // The landing page itself will manage its dark theme via its own useEffect.
     if (isDashboardPage) {
       document.body.classList.add('dashboard');
       document.documentElement.classList.remove('dark');
@@ -50,3 +51,4 @@ export default function RootLayout({
     </html>
   );
 }
+
