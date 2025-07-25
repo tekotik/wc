@@ -10,16 +10,16 @@ export async function middleware(request: NextRequest) {
 
   const isPublicRoute = 
     pathname === '/login' || 
-    pathname === '/signup' || 
-    pathname === '/' ||
+    pathname === '/signup' ||
+    pathname === '/' || // The landing page is now at the root
     pathname.startsWith('/c/') ||
     pathname.startsWith('/api/') ||
     pathname.includes('.'); // Assets
 
   // If the user is logged in
   if (isLoggedIn) {
-    // and tries to access login/signup/landing, redirect them based on role
-    if (pathname === '/login' || pathname === '/signup' || pathname === '/') {
+    // and tries to access login/signup page, redirect them based on role
+    if (pathname === '/login' || pathname === '/signup') {
         const redirectUrl = userRole === 'admin' ? '/admin' : '/dashboard';
         return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
